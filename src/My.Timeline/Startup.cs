@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using My.Timeline.Infrastructure;
 
 namespace My.Timeline
 {
@@ -22,6 +23,10 @@ namespace My.Timeline
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.Configure<DbConfiguration>(Configuration.GetSection("ConnectionStrings:Sqlite"));
+            services.AddDbContext<MyDbContext>();
+            services.AddScoped<TimelineRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
