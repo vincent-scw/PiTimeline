@@ -1,4 +1,4 @@
-﻿namespace My.Timeline.Utilities
+﻿namespace MyTimeline.Utilities
 {
     public static class IdGen
     {

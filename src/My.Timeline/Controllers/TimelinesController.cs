@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using My.Timeline.Infrastructure;
+using MyTimeline.Infrastructure;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace My.Timeline.Controllers
+namespace MyTimeline.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LinesController : ControllerBase
+    public class TimelinesController : ControllerBase
     {
         private readonly TimelineRepository _repository;
-        public LinesController(TimelineRepository repository)
+        public TimelinesController(TimelineRepository repository)
         {
             _repository = repository;
         }

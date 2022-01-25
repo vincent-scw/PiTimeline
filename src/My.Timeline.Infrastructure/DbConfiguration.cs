@@ -1,4 +1,4 @@
-﻿namespace My.Timeline.Infrastructure
+﻿namespace MyTimeline.Infrastructure
 {
     public class DbConfiguration
     {

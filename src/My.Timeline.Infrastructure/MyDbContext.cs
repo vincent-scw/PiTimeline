@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using My.Timeline.Domain.TimelineAggregate;
+using MyTimeline.Domain;
 
-namespace My.Timeline.Infrastructure
+namespace MyTimeline.Infrastructure
 {
     public class MyDbContext : DbContext
     {
@@ -12,7 +12,7 @@ namespace My.Timeline.Infrastructure
             _configuration = options.Value;
         }
 
-        public DbSet<Line> Lines { get; set; }
+        public DbSet<Timeline> Lines { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -22,7 +22,7 @@ namespace My.Timeline.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Line>(entity =>
+            modelBuilder.Entity<Timeline>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.Title).IsUnique();

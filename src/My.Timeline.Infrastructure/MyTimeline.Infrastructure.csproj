@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\My.Timeline.Domain\My.Timeline.Domain.csproj" />
+    <ProjectReference Include="..\My.Timeline.Domain\MyTimeline.Domain.csproj" />
   </ItemGroup>
 
 </Project>

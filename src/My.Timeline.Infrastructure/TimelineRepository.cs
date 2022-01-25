@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using My.Timeline.Domain.TimelineAggregate;
+using MyTimeline.Domain;
+using MyTimeline.Domain;
 
-namespace My.Timeline.Infrastructure
+namespace MyTimeline.Infrastructure
 {
-    public class TimelineRepository
+    public class TimelineRepository : ITimelineRepository
     {
         private readonly MyDbContext _dbContext;
         public TimelineRepository(MyDbContext dbContext)
@@ -16,7 +17,7 @@ namespace My.Timeline.Infrastructure
             _dbContext = dbContext;
         }
 
-        public Task<List<Line>> FetchLinesAsync()
+        public Task<List<Timeline>> FetchLinesAsync()
         {
             return _dbContext.Lines.ToListAsync();
         }
