@@ -6,7 +6,7 @@ using MyTimeline.Utilities;
 
 namespace MyTimeline.Domain
 {
-    public class Moment : Entity
+    public class Moment : Entity, IAggregateRoot
     {
         protected Moment()
         {

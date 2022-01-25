@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using MyTimeline.Domain;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using MyTimeline.Infrastructure;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,24 +11,28 @@ namespace MyTimeline.Controllers
     [ApiController]
     public class TimelinesController : ControllerBase
     {
-        private readonly TimelineRepository _repository;
-        public TimelinesController(TimelineRepository repository)
+        private readonly ITimelineRepository _repository;
+        private readonly TimelineQueries _queries;
+        public TimelinesController(
+            ITimelineRepository repository,
+            TimelineQueries queries)
         {
             _repository = repository;
+            _queries = queries;
         }
 
         [HttpGet]
         public async Task<IActionResult> FetchLines()
         {
-            var result = _repository.FetchLinesAsync();
+            var result = await _queries.FetchLinesAsync();
             return Ok(result);
         }
 
-        // GET api/<LinesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
-            return "value";
+            var result = await _queries.GetLineAsync(id);
+            return Ok(result);
         }
 
         // POST api/<LinesController>

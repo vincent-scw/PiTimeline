@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MyTimeline.Domain;
-using MyTimeline.Domain;
 
 namespace MyTimeline.Infrastructure
 {
@@ -15,11 +14,6 @@ namespace MyTimeline.Infrastructure
         {
             dbContext.Database.EnsureCreated();
             _dbContext = dbContext;
-        }
-
-        public Task<List<Timeline>> FetchLinesAsync()
-        {
-            return _dbContext.Lines.ToListAsync();
         }
     }
 }

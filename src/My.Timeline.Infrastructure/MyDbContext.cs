@@ -12,7 +12,8 @@ namespace MyTimeline.Infrastructure
             _configuration = options.Value;
         }
 
-        public DbSet<Timeline> Lines { get; set; }
+        public DbSet<Timeline> Timelines { get; set; }
+        public DbSet<Moment> Moments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -28,6 +29,10 @@ namespace MyTimeline.Infrastructure
                 entity.HasIndex(e => e.Title).IsUnique();
                 entity.Property(e => e.Title).HasMaxLength(256);
                 entity.Property(e => e.IsCompleted);
+            });
+            modelBuilder.Entity<Moment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
             });
             base.OnModelCreating(modelBuilder);
         }
