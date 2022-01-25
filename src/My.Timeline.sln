@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTimeline.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTimeline.Domain", "My.Timeline.Domain\MyTimeline.Domain.csproj", "{EE1C5ADD-4864-41EC-8C57-9709B9BF8FBD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTimeline.Utilities", "My.Timeline.Utilities\MyTimeline.Utilities.csproj", "{65562073-7C8E-4162-ADB6-9DAAD3807C99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTimeline.Shared", "My.Timeline.Shared\MyTimeline.Shared.csproj", "{65562073-7C8E-4162-ADB6-9DAAD3807C99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

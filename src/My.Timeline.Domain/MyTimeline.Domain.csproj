@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\My.Timeline.Utilities\MyTimeline.Utilities.csproj" />
+    <ProjectReference Include="..\My.Timeline.Utilities\MyTimeline.Shared.csproj" />
   </ItemGroup>
 
 </Project>
