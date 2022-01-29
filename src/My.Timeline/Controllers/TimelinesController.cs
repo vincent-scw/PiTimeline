@@ -11,13 +11,13 @@ namespace MyTimeline.Controllers
     [ApiController]
     public class TimelinesController : ControllerBase
     {
-        private readonly ITimelineRepository _repository;
+        private readonly ITimelineRepository _timelineRepository;
         private readonly TimelineQueries _queries;
         public TimelinesController(
-            ITimelineRepository repository,
+            ITimelineRepository timelineRepository,
             TimelineQueries queries)
         {
-            _repository = repository;
+            _timelineRepository = timelineRepository;
             _queries = queries;
         }
 
@@ -29,28 +29,42 @@ namespace MyTimeline.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> GetLine(string id)
         {
             var result = await _queries.GetLineAsync(id);
             return Ok(result);
         }
 
-        // POST api/<LinesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> CreateLine([FromBody] Timeline timeline)
         {
+            var result = _timelineRepository.Add(timeline);
+            await _timelineRepository.UnitOfWork.SaveChangesAsync();
+            return Ok(result);
         }
 
-        // PUT api/<LinesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<IActionResult> UpdateLine([FromBody] Timeline timeline)
         {
+            _timelineRepository.Update(timeline);
+            await _timelineRepository.UnitOfWork.SaveChangesAsync();
+            return Ok();
         }
 
-        // DELETE api/<LinesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //[HttpPost("{lineId}/moments")]
+        //public async Task<IActionResult> AddMoment(string lineId, [FromBody] Moment moment)
+        //{
+        //    var result = _momentRepository.Add(moment);
+        //    await _momentRepository.UnitOfWork.SaveChangesAsync();
+        //    return Ok(result);
+        //}
+
+        //[HttpPost("{lineId}/moments/{momentId}")]
+        //public async Task<IActionResult> UpdateMoment(string lineId, string momentId, [FromBody] Moment moment)
+        //{
+        //    _momentRepository.Update(moment);
+        //    await _momentRepository.UnitOfWork.SaveChangesAsync();
+        //    return Ok();
+        //}
     }
 }

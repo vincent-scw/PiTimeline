@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyTimeline.Domain;
+using MyTimeline.Domain.SeedWork;
 
 namespace MyTimeline.Infrastructure
 {
@@ -14,6 +11,23 @@ namespace MyTimeline.Infrastructure
         {
             dbContext.Database.EnsureCreated();
             _dbContext = dbContext;
+        }
+
+        public IUnitOfWork UnitOfWork => _dbContext;
+
+        public Timeline Add(Timeline entity)
+        {
+            return _dbContext.Timelines.Add(entity).Entity;
+        }
+
+        public void Update(Timeline entity)
+        {
+            _dbContext.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Delete(Timeline entity)
+        {
+            _dbContext.Timelines.Remove(entity);
         }
     }
 }

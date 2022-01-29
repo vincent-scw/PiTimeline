@@ -1,10 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MyTimeline.Domain;
+using MyTimeline.Domain.SeedWork;
 
 namespace MyTimeline.Infrastructure
 {
-    public class MyDbContext : DbContext
+    public class MyDbContext : DbContext, IUnitOfWork
     {
         private readonly DbConfiguration _configuration;
         public MyDbContext(IOptions<DbConfiguration> options)
@@ -40,6 +43,13 @@ namespace MyTimeline.Infrastructure
         private string BuildConnectionString()
         {
             return $"Data Source={_configuration.DataSource}";
+        }
+
+        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // TODO: handle domain events
+            var result = await base.SaveChangesAsync(cancellationToken);
+            return true;
         }
     }
 }

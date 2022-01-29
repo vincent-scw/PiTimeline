@@ -28,7 +28,6 @@ namespace MyTimeline
             services.Configure<DbConfiguration>(Configuration.GetSection("ConnectionStrings:Sqlite"));
             services.AddDbContext<MyDbContext>();
             services.AddScoped<ITimelineRepository, TimelineRepository>();
-            services.AddScoped<IMomentRepository, MomentRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

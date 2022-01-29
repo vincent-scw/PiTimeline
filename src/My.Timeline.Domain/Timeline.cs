@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MyTimeline.Domain.SeedWork;
-using MyTimeline.Utilities;
+using MyTimeline.Shared.Utilities;
 
 namespace MyTimeline.Domain
 {

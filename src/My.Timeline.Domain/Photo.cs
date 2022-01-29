@@ -1,6 +1,6 @@
-﻿using System;
-using MyTimeline.Domain.SeedWork;
-using MyTimeline.Utilities;
+﻿using MyTimeline.Domain.SeedWork;
+using MyTimeline.Shared.Utilities;
+using System;
 
 namespace MyTimeline.Domain
 {
@@ -21,5 +21,6 @@ namespace MyTimeline.Domain
         public string Description { get; private set; }
         public string Link { get; private set; }
         public int Sequence { get; private set; }
+        public string ThumbnailLink { get; private set; }
     }
 }

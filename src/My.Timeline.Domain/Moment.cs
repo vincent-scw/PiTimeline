@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using MyTimeline.Domain.SeedWork;
-using MyTimeline.Utilities;
+using MyTimeline.Shared.Utilities;
 
 namespace MyTimeline.Domain
 {
-    public class Moment : Entity, IAggregateRoot
+    public class Moment : Entity
     {
         protected Moment()
         {
