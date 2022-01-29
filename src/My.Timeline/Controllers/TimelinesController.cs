@@ -51,6 +51,14 @@ namespace MyTimeline.Controllers
             return Ok();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLine(string id)
+        {
+            _timelineRepository.Delete(id);
+            await _timelineRepository.UnitOfWork.SaveChangesAsync();
+            return NoContent();
+        }
+
         //[HttpPost("{lineId}/moments")]
         //public async Task<IActionResult> AddMoment(string lineId, [FromBody] Moment moment)
         //{

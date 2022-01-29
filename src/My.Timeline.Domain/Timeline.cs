@@ -16,7 +16,7 @@ namespace MyTimeline.Domain
             : this()
         {
             Id = IdGen.Generate();
-            CreatedDateTimeUtc = DateTimeOffset.UtcNow;
+            CreatedDateTimeUtc = DateTime.UtcNow;
 
             Title = title;
             IsCompleted = isCompleted;

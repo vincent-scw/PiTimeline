@@ -17,7 +17,7 @@ namespace MyTimeline.Domain
             : this()
         {
             Id = IdGen.Generate();
-            CreatedDateTimeUtc = DateTimeOffset.UtcNow;
+            CreatedDateTimeUtc = DateTime.UtcNow;
 
             Content = content;
             if (photos != null)

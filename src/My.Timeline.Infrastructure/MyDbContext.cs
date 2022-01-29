@@ -28,14 +28,24 @@ namespace MyTimeline.Infrastructure
         {
             modelBuilder.Entity<Timeline>(entity =>
             {
+                entity.ToTable("Timelines");
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.Title).IsUnique();
                 entity.Property(e => e.Title).HasMaxLength(256);
                 entity.Property(e => e.IsCompleted);
+                entity.Property(e => e.CreatedDateTimeUtc).IsRequired();
             });
             modelBuilder.Entity<Moment>(entity =>
             {
+                entity.ToTable("Moments");
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.CreatedDateTimeUtc).IsRequired();
+            });
+            modelBuilder.Entity<Photo>(entity =>
+            {
+                entity.ToTable("Photos");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CreatedDateTimeUtc).IsRequired();
             });
             base.OnModelCreating(modelBuilder);
         }

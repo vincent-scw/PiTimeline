@@ -24,10 +24,12 @@ namespace MyTimeline
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddSwaggerGen();
 
             services.Configure<DbConfiguration>(Configuration.GetSection("ConnectionStrings:Sqlite"));
             services.AddDbContext<MyDbContext>();
             services.AddScoped<ITimelineRepository, TimelineRepository>();
+            services.AddScoped<TimelineQueries>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -41,6 +43,8 @@ namespace MyTimeline
         {
             if (env.IsDevelopment())
             {
+                app.UseSwagger();
+                app.UseSwaggerUI();
                 app.UseDeveloperExceptionPage();
             }
             else

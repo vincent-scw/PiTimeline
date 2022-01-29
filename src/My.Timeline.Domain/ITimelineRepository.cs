@@ -6,6 +6,6 @@ namespace MyTimeline.Domain
     {
         Timeline Add(Timeline entity);
         void Update(Timeline entity);
-        void Delete(Timeline entity);
+        void Delete(string id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MyTimeline.Domain;
 using MyTimeline.Domain.SeedWork;
 
@@ -25,9 +26,11 @@ namespace MyTimeline.Infrastructure
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
 
-        public void Delete(Timeline entity)
+        public void Delete(string id)
         {
-            _dbContext.Timelines.Remove(entity);
+            var entity = _dbContext.Timelines.FirstOrDefault(x => x.Id == id);
+            if (entity != null)
+                _dbContext.Timelines.Remove(entity);
         }
     }
 }

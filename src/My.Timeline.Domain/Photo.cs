@@ -11,7 +11,7 @@ namespace MyTimeline.Domain
         public Photo(string link, string description, int sequence)
         {
             Id = IdGen.Generate();
-            CreatedDateTimeUtc = DateTimeOffset.UtcNow;
+            CreatedDateTimeUtc = DateTime.UtcNow;
 
             Link = link;
             Description = description;
