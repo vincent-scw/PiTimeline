@@ -7,7 +7,8 @@ namespace MyTimeline.Domain.SeedWork
         int? _requestedHashCode;
 
         public string Id { get; protected set; }
-        public DateTime CreatedDateTimeUtc { get; protected set; }
+        public DateTime CreatedDateTime { get; protected set; }
+        public DateTime? UpdatedDateTime { get; protected set; }
 
         public bool IsTransient()
         {

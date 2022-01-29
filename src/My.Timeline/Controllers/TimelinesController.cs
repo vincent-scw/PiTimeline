@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyTimeline.Domain;
-using System.Threading.Tasks;
 using MyTimeline.Infrastructure;
+using System.Threading.Tasks;
+using AutoMapper;
+using MyTimeline.Dtos;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,12 +15,15 @@ namespace MyTimeline.Controllers
     {
         private readonly ITimelineRepository _timelineRepository;
         private readonly TimelineQueries _queries;
+        private readonly IMapper _mapper;
         public TimelinesController(
             ITimelineRepository timelineRepository,
-            TimelineQueries queries)
+            TimelineQueries queries,
+            IMapper mapper)
         {
             _timelineRepository = timelineRepository;
             _queries = queries;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -36,26 +41,27 @@ namespace MyTimeline.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateLine([FromBody] Timeline timeline)
+        public async Task<IActionResult> CreateLine([FromBody] TimelineDto dto)
         {
-            var result = _timelineRepository.Add(timeline);
-            await _timelineRepository.UnitOfWork.SaveChangesAsync();
+            var timeline = _mapper.Map<Timeline>(dto);
+            var result = await _timelineRepository.AddAsync(timeline);
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateLine([FromBody] Timeline timeline)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateLine(string id, [FromBody] TimelineDto dto)
         {
-            _timelineRepository.Update(timeline);
-            await _timelineRepository.UnitOfWork.SaveChangesAsync();
-            return Ok();
+            var timeline = await _timelineRepository.GetByIdAsync(id);
+            timeline.Update(dto.Title, dto.IsCompleted);
+
+            await _timelineRepository.UpdateAsync(timeline);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLine(string id)
         {
-            _timelineRepository.Delete(id);
-            await _timelineRepository.UnitOfWork.SaveChangesAsync();
+            await _timelineRepository.DeleteAsync(id);
             return NoContent();
         }
 

@@ -1,13 +1,10 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MyTimeline.Domain;
-using MyTimeline.Domain.SeedWork;
 
 namespace MyTimeline.Infrastructure
 {
-    public class MyDbContext : DbContext, IUnitOfWork
+    public class MyDbContext : DbContext
     {
         private readonly DbConfiguration _configuration;
         public MyDbContext(IOptions<DbConfiguration> options)
@@ -16,7 +13,7 @@ namespace MyTimeline.Infrastructure
         }
 
         public DbSet<Timeline> Timelines { get; set; }
-        public DbSet<Moment> Moments { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -33,19 +30,23 @@ namespace MyTimeline.Infrastructure
                 entity.HasIndex(e => e.Title).IsUnique();
                 entity.Property(e => e.Title).HasMaxLength(256);
                 entity.Property(e => e.IsCompleted);
-                entity.Property(e => e.CreatedDateTimeUtc).IsRequired();
+                entity.Property(e => e.CreatedDateTime).IsRequired();
             });
             modelBuilder.Entity<Moment>(entity =>
             {
                 entity.ToTable("Moments");
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.CreatedDateTimeUtc).IsRequired();
+                entity.Property(e => e.Content).HasMaxLength(2000);
+                entity.Property(e => e.CreatedDateTime).IsRequired();
             });
             modelBuilder.Entity<Photo>(entity =>
             {
                 entity.ToTable("Photos");
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.CreatedDateTimeUtc).IsRequired();
+                entity.Property(e => e.Description);
+                entity.Property(e => e.Sequence);
+                entity.Property(e => e.Link);
+                entity.Property(e => e.CreatedDateTime).IsRequired();
             });
             base.OnModelCreating(modelBuilder);
         }
@@ -53,13 +54,6 @@ namespace MyTimeline.Infrastructure
         private string BuildConnectionString()
         {
             return $"Data Source={_configuration.DataSource}";
-        }
-
-        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            // TODO: handle domain events
-            var result = await base.SaveChangesAsync(cancellationToken);
-            return true;
         }
     }
 }

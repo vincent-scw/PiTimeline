@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyTimeline.Domain;
-using MyTimeline.Domain.SeedWork;
+using System.Threading.Tasks;
 
 namespace MyTimeline.Infrastructure
 {
@@ -14,23 +13,32 @@ namespace MyTimeline.Infrastructure
             _dbContext = dbContext;
         }
 
-        public IUnitOfWork UnitOfWork => _dbContext;
-
-        public Timeline Add(Timeline entity)
+        public async Task<Timeline> GetByIdAsync(string id)
         {
-            return _dbContext.Timelines.Add(entity).Entity;
+            var t = await _dbContext.Timelines.FindAsync(id);
+            return t;
+        }
+        
+        public async Task<Timeline> AddAsync(Timeline entity)
+        {
+            var t = _dbContext.Timelines.Add(entity).Entity;
+            await _dbContext.SaveChangesAsync();
+            return t;
         }
 
-        public void Update(Timeline entity)
+        public async Task UpdateAsync(Timeline entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void Delete(string id)
+        public async Task DeleteAsync(string id)
         {
-            var entity = _dbContext.Timelines.FirstOrDefault(x => x.Id == id);
-            if (entity != null)
-                _dbContext.Timelines.Remove(entity);
+            var entity = await _dbContext.Timelines.FirstOrDefaultAsync(x => x.Id == id);
+            if (entity == null) return;
+
+            _dbContext.Timelines.Remove(entity);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

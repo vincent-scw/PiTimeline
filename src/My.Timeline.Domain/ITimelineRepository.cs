@@ -1,11 +1,13 @@
-﻿using MyTimeline.Domain.SeedWork;
+﻿using System.Threading.Tasks;
+using MyTimeline.Domain.SeedWork;
 
 namespace MyTimeline.Domain
 {
     public interface ITimelineRepository : IRepository<Timeline>
     {
-        Timeline Add(Timeline entity);
-        void Update(Timeline entity);
-        void Delete(string id);
+        Task<Timeline> GetByIdAsync(string id);
+        Task<Timeline> AddAsync(Timeline entity);
+        Task UpdateAsync(Timeline entity);
+        Task DeleteAsync(string id);
     }
 }

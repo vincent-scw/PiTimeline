@@ -25,6 +25,7 @@ namespace MyTimeline
         {
             services.AddControllersWithViews();
             services.AddSwaggerGen();
+            services.AddAutoMapper(typeof(MappingProfile));
 
             services.Configure<DbConfiguration>(Configuration.GetSection("ConnectionStrings:Sqlite"));
             services.AddDbContext<MyDbContext>();

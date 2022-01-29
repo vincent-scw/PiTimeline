@@ -16,17 +16,25 @@ namespace MyTimeline.Domain
             : this()
         {
             Id = IdGen.Generate();
-            CreatedDateTimeUtc = DateTime.UtcNow;
+            CreatedDateTime = DateTime.Now;
 
             Title = title;
             IsCompleted = isCompleted;
         }
 
-        public string Title { get; }
+        public string Title { get; private set; }
 
-        public bool IsCompleted { get; }
+        public bool IsCompleted { get; private set; }
 
         private List<Moment> _moments;
         public IReadOnlyList<Moment> Moments => _moments;
+
+        public void Update(string title, bool isCompleted)
+        {
+            UpdatedDateTime = DateTime.Now;
+
+            Title = title;
+            IsCompleted = isCompleted;
+        }
     }
 }
