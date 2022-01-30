@@ -1,0 +1,56 @@
+﻿@import "../../node_modules/bulma/sass/utilities/_all";
+$menu-item-active-color: $primary-invert;
+$menu-item-active-background-color: $primary;
+
+@import "../../node_modules/bulma/bulma";
+
+@import "_constants";
+@import "_scrollbar";
+
+@import "./layouts/_bg";
+@import "./layouts/_navbar";
+@import "./layouts/_footer";
+
+@import "./modules/_timeline";
+@import "./modules/_moment-editor";
+
+.has-navbar-fixed-top {
+    padding-top: 4rem !important;
+}
+
+.main {
+    background-color: white;
+    height: 100%;
+    padding: 0 1rem;
+}
+
+.is-fullwidth {
+    width: 100%;
+}
+
+.editor-container {
+    min-width: 400px;
+}
+
+.mat-radio-button {
+    margin: 0 12px;
+}
+
+.mat-hint {
+    font-size: small;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+code {
+    color: #e01a76;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
