@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../store';
-import * as WeatherForecastsStore from '../store/WeatherForecasts';
+import * as WeatherForecastsStore from '../store/Timelines';
 
 // At runtime, Redux will merge together...
 type WeatherForecastProps =
-  WeatherForecastsStore.WeatherForecastsState // ... state we've requested from the Redux store
+  WeatherForecastsStore.TimelinesState // ... state we've requested from the Redux store
   & typeof WeatherForecastsStore.actionCreators // ... plus action creators we've requested
   & RouteComponentProps<{ startDateIndex: string }>; // ... plus incoming routing parameters
 
@@ -36,7 +36,7 @@ class FetchData extends React.PureComponent<WeatherForecastProps> {
 
   private ensureDataFetched() {
     const startDateIndex = parseInt(this.props.match.params.startDateIndex, 10) || 0;
-    this.props.requestWeatherForecasts(startDateIndex);
+    this.props.requestTimelines(startDateIndex);
   }
 
   private renderForecastsTable() {
@@ -51,9 +51,9 @@ class FetchData extends React.PureComponent<WeatherForecastProps> {
           </tr>
         </thead>
         <tbody>
-          {this.props.forecasts.map((forecast: WeatherForecastsStore.WeatherForecast) =>
-            <tr key={forecast.date}>
-              <td>{forecast.date}</td>
+          {this.props.timelines.map((forecast: WeatherForecastsStore.Timeline) =>
+            <tr key={forecast.title}>
+              <td>{forecast.title}</td>
               <td>{forecast.temperatureC}</td>
               <td>{forecast.temperatureF}</td>
               <td>{forecast.summary}</td>
@@ -79,6 +79,6 @@ class FetchData extends React.PureComponent<WeatherForecastProps> {
 }
 
 export default connect(
-  (state: ApplicationState) => state.weatherForecasts, // Selects which state properties are merged into the component's props
+  (state: ApplicationState) => state.timelines, // Selects which state properties are merged into the component's props
   WeatherForecastsStore.actionCreators // Selects which action creators are merged into the component's props
 )(FetchData as any); // eslint-disable-line @typescript-eslint/no-explicit-any

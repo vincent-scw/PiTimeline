@@ -43,7 +43,7 @@ namespace MyTimeline.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateLine([FromBody] TimelineDto dto)
         {
-            var timeline = _mapper.Map<Timeline>(dto);
+            var timeline = new Timeline(dto.Title, dto.IsCompleted);
             var result = await _timelineRepository.AddAsync(timeline);
             return Ok(result);
         }

@@ -1,53 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
+import { ApplicationState } from '../../store';
+import * as TimelinesStore from '../../store/Timelines';
 
-export class TimelineList extends React.Component<{}> {
-  public render(): React.ReactNode {
-    return (
-      <div className="tile is-ancestor">
-        <div className="tile is-vertical is-8">
-          <div className="tile">
-            <div className="tile is-parent is-vertical">
-              <article className="tile is-child notification is-primary">
-                <p className="title">Vertical...</p>
-                <p className="subtitle">Top tile</p>
-              </article>
-              <article className="tile is-child notification is-warning">
-                <p className="title">...tiles</p>
-                <p className="subtitle">Bottom tile</p>
-              </article>
-            </div>
-            <div className="tile is-parent">
-              <article className="tile is-child notification is-info">
-                <p className="title">Middle tile</p>
-                <p className="subtitle">With an image</p>
-                <figure className="image is-4by3">
-                  <img src="https://bulma.io/images/placeholders/640x480.png" />
-                </figure>
-              </article>
-            </div>
-          </div>
-          <div className="tile is-parent">
-            <article className="tile is-child notification is-danger">
-              <p className="title">Wide tile</p>
-              <p className="subtitle">Aligned with the right tile</p>
-              <div className="content">
+// At runtime, Redux will merge together...
+type TimelineListProps =
+  TimelinesStore.TimelinesState // ... state we've requested from the Redux store
+  & typeof TimelinesStore.actionCreators // ... plus action creators we've requested
+  & RouteComponentProps<{ startDateIndex: string }>; // ... plus incoming routing parameters
 
-              </div>
-            </article>
-          </div>
-        </div>
-        <div className="tile is-parent">
-          <article className="tile is-child notification is-success">
-            <div className="content">
-              <p className="title">Tall tile</p>
-              <p className="subtitle">With even more content</p>
-              <div className="content">
+const TimelineList: React.FC<TimelineListProps> = (props) => {
+  useEffect(() => {
+    props.requestTimelines(1)
+  }, []);
 
-              </div>
-            </div>
+  return (
+    <div className="columns">
+      {props.timelines.map(tl =>
+        <div className="column is-4">
+          <article key={tl.title} className="notification is-info">
+            <p className="title">{tl.title}</p>
+            <p className="subtitle">With an image</p>
+            <figure className="image is-4by3">
+              <img src="https://bulma.io/images/placeholders/640x480.png" />
+            </figure>
           </article>
         </div>
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
 }
+
+export default connect(
+  (state: ApplicationState) => state.timelines, // Selects which state properties are merged into the component's props
+  TimelinesStore.actionCreators // Selects which action creators are merged into the component's props
+)(TimelineList as any); // eslint-disable-line @typescript-eslint/no-explicit-any
