@@ -1,10 +1,12 @@
 import * as Timelines from './Timelines';
+import * as Timeline from './Timeline';
 import * as Counter from './Counter';
 
 // The top-level state object
 export interface ApplicationState {
     counter: Counter.CounterState | undefined;
     timelines: Timelines.TimelinesState | undefined;
+    currentTimeline: Timeline.TimelineDetailState | undefined;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -12,7 +14,8 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
     counter: Counter.reducer,
-    timelines: Timelines.reducer
+    timelines: Timelines.reducer,
+    currentTimeline: Timeline.reducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

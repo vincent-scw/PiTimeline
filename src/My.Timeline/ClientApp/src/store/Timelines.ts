@@ -7,14 +7,14 @@ import { AppThunkAction } from './';
 export interface TimelinesState {
     isLoading: boolean;
     startDateIndex?: number;
-    timelines: Timeline[];
+    timelines: TimelineSummary[];
 }
 
-export interface Timeline {
+export interface TimelineSummary {
+    id: string;
     title: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
+    description: string;
+    snapshot: string;
 }
 
 // -----------------
@@ -29,7 +29,7 @@ interface RequestTimelinesAction {
 interface ReceiveTimelinesAction {
     type: 'RECEIVE_TIMELINES';
     startDateIndex: number;
-    timelines: Timeline[];
+    timelines: TimelineSummary[];
 }
 
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
@@ -46,7 +46,7 @@ export const actionCreators = {
         const appState = getState();
         if (appState && appState.timelines && startDateIndex !== appState.timelines.startDateIndex) {
             fetch(`api/timelines`)
-                .then(response => response.json() as Promise<Timeline[]>)
+                .then(response => response.json() as Promise<TimelineSummary[]>)
                 .then(data => {
                     dispatch({ type: 'RECEIVE_TIMELINES', startDateIndex: startDateIndex, timelines: data });
                 });
