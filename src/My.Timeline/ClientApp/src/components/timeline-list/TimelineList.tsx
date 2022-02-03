@@ -9,13 +9,13 @@ import * as TimelinesStore from '../../store/Timelines';
 type TimelineListProps =
   TimelinesStore.TimelinesState // ... state we've requested from the Redux store
   & typeof TimelinesStore.actionCreators // ... plus action creators we've requested
-  & RouteComponentProps<{ startDateIndex: string }>; // ... plus incoming routing parameters
+  & RouteComponentProps<{}>; // ... plus incoming routing parameters
 
 const TimelineList: React.FC<TimelineListProps> = (props) => {
   const columnsInLine = 4;
 
   useEffect(() => {
-    props.requestTimelines(1)
+    props.requestTimelines()
   }, []);
 
   const buildCard = () => {
