@@ -12,24 +12,49 @@ type TimelineListProps =
   & RouteComponentProps<{ startDateIndex: string }>; // ... plus incoming routing parameters
 
 const TimelineList: React.FC<TimelineListProps> = (props) => {
+  const columnsInLine = 3;
+
   useEffect(() => {
     props.requestTimelines(1)
   }, []);
 
+  const buildCard = () => {
+    const data = props.timelines;
+    if (!data) return;
+
+    var result = [];
+    for (var i = 0; i < data.length; i += columnsInLine) {
+      result.push(data.slice(i, i + columnsInLine));
+    }
+
+    return (
+      result.map((r, i) =>
+        <div className="columns" key={`c${i}`}>
+          {r.map(c =>
+            <div className="column" key={c.title}>
+              <div className="is-4 card">
+                <div className="card-image">
+                  <figure className="image is-4by3">
+                    <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image" />
+                  </figure>
+                </div>
+                <div className="card-content">
+                  <div className="content">
+                    <div className="title is-4">{c.title}</div>
+                    <br />
+                    <time>11:09 PM - 1 Jan 2016</time>
+                  </div>
+                </div>
+              </div>
+            </div>)}
+        </div>)
+    );
+  }
+
   return (
-    <div className="columns">
-      {props.timelines.map(tl =>
-        <div className="column is-4">
-          <article key={tl.title} className="notification is-info">
-            <p className="title">{tl.title}</p>
-            <p className="subtitle">With an image</p>
-            <figure className="image is-4by3">
-              <img src="https://bulma.io/images/placeholders/640x480.png" />
-            </figure>
-          </article>
-        </div>
-      )}
-    </div>
+    <React.Fragment>
+      {buildCard()}
+    </React.Fragment>
   );
 }
 
