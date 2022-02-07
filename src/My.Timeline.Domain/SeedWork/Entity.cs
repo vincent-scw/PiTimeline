@@ -9,10 +9,16 @@ namespace MyTimeline.Domain.SeedWork
         public string Id { get; protected set; }
         public DateTime CreatedDateTime { get; protected set; }
         public DateTime? UpdatedDateTime { get; protected set; }
+        public bool IsDeleted { get; protected set; }
 
         public bool IsTransient()
         {
             return string.IsNullOrEmpty(Id);
+        }
+
+        public void SetDeleted(bool deleted)
+        {
+            IsDeleted = deleted;
         }
 
         public override bool Equals(object obj)

@@ -13,7 +13,6 @@ export interface TimelinesState {
 export interface TimelineSummary {
     id: string;
     title: string;
-    description: string;
     snapshot: string;
 }
 

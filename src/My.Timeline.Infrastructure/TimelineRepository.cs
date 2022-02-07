@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyTimeline.Domain;
+using MyTimeline.Domain.SeedWork;
 using System.Threading.Tasks;
 
 namespace MyTimeline.Infrastructure
@@ -32,12 +33,20 @@ namespace MyTimeline.Infrastructure
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(string id, bool hardDelete)
         {
             var entity = await _dbContext.Timelines.FirstOrDefaultAsync(x => x.Id == id);
-            if (entity == null) return;
+            if (entity == null)
+                throw new DomainException(DefinedExceptions.NotFound, $"Timeline {id} not found.");
 
-            _dbContext.Timelines.Remove(entity);
+            if (hardDelete)
+                _dbContext.Timelines.Remove(entity);
+            else
+            {
+                entity.SetDeleted(true);
+                _dbContext.Entry(entity).State = EntityState.Modified;
+            }
+
             await _dbContext.SaveChangesAsync();
         }
     }

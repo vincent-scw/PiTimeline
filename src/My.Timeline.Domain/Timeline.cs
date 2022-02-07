@@ -26,6 +26,8 @@ namespace MyTimeline.Domain
 
         public bool IsCompleted { get; private set; }
 
+        public DateTime Since { get; private set; }
+
         private List<Moment> _moments;
         public IReadOnlyList<Moment> Moments => _moments;
 

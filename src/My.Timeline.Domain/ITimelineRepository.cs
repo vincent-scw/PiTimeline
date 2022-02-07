@@ -8,6 +8,6 @@ namespace MyTimeline.Domain
         Task<Timeline> GetByIdAsync(string id);
         Task<Timeline> AddAsync(Timeline entity);
         Task UpdateAsync(Timeline entity);
-        Task DeleteAsync(string id);
+        Task DeleteAsync(string id, bool hardDelete);
     }
 }

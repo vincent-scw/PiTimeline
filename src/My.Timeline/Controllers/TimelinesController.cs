@@ -61,7 +61,7 @@ namespace MyTimeline.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLine(string id)
         {
-            await _timelineRepository.DeleteAsync(id);
+            await _timelineRepository.DeleteAsync(id, false);
             return NoContent();
         }
 

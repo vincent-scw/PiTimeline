@@ -4,6 +4,8 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../store';
 import * as TimelinesStore from '../../store/Timelines';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 // At runtime, Redux will merge together...
 type TimelineListProps =
@@ -42,8 +44,17 @@ const TimelineList: React.FC<TimelineListProps> = (props) => {
                     <div className="title is-4">
                       <Link to={`t/${summary.id}`}>{summary.title}</Link>
                     </div>
-                    <div className="subtitle">{summary.description}</div>
-                    <time>11:09 PM - 1 Jan 2016</time>
+                    <div className="level">
+                      <div className="level-left">
+                        <div className="level-items tags has-addons">
+                          <span className="tag">Since</span>
+                          <span className="tag is-info"><time>1 Jan 2016</time></span>
+                        </div>
+                      </div>
+                      <div className="level-right">
+                        <a><FontAwesomeIcon icon={faTrashAlt} className="has-text-grey-light" /></a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
