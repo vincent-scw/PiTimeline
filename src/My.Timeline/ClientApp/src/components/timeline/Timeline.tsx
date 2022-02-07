@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../store';
 import * as MomentsStore from "../../store/Moments";
 import * as TimelineStore from '../../store/Timeline';
+import { ActionPanel } from './ActionPanel';
 
 type TimelineProps =
   TimelineStore.TimelineDetailState
@@ -27,7 +28,7 @@ const Timeline: React.FC<TimelineProps> = (props) => {
   }, [props.match.params.tid])
 
   return (
-    <React.Fragment>
+    <div>
       {isLoading && <div>Loading...</div>}
       {timeline &&
         <div>
@@ -49,16 +50,29 @@ const Timeline: React.FC<TimelineProps> = (props) => {
                   <div className="timeline-content">
                     <p className="heading">{m.dateTime.toDateString()}</p>
                     <p>{m.content}</p>
+                    <div className="level is-mobile">
+                      <div className="level-left"></div>
+                      <div className="level-right">
+                        <button className="level-item button is-ghost">
+
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           ))
-
           }
+          <div className="timeline">
+            <div className="timeline-header">
+              <span className="tag is-medium is-primary">{timeline.isCompleted ? 'End' : 'TBD...'}</span>
+            </div>
+          </div>
+          <ActionPanel />
         </div>
       }
-    </React.Fragment>
+    </div>
   );
 }
 

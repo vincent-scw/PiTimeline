@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../../store';
 import * as TimelinesStore from '../../store/Timelines';
+import { ActionPanel } from "./ActionPanel";
 
 // At runtime, Redux will merge together...
 type TimelineListProps =
@@ -53,10 +54,11 @@ const TimelineList: React.FC<TimelineListProps> = (props) => {
   }
 
   return (
-    <React.Fragment>
+    <div>
       {props.isLoading && <span>Loading...</span>}
       {props.timelines && buildCard()}
-    </React.Fragment>
+      <ActionPanel />
+    </div>
   );
 }
 

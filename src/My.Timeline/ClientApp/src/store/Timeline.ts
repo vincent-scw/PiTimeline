@@ -13,6 +13,7 @@ export interface TimelineDetail {
     title: string;
     description: string;
     moments: Moment[];
+    isCompleted?: boolean;
 }
 
 interface GetTimelineDetailAction {
