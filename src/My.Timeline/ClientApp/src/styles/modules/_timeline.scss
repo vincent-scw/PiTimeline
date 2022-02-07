@@ -39,8 +39,6 @@
     word-wrap: normal;
     text-align: center;
     display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center
@@ -731,7 +729,6 @@
 
 .t-content {
     padding: 0 5px 20px 13px;
-    background-color: $white;
 }
 
 .by-owner {
