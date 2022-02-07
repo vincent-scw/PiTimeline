@@ -1,13 +1,17 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MyTimeline.Domain;
 using MyTimeline.Infrastructure;
+using MyTimeline.Shared.Dtos;
 
 namespace MyTimeline
 {
@@ -76,6 +80,28 @@ namespace MyTimeline
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
+            });
+
+            app.UseExceptionHandler(builder =>
+            {
+                builder.Use(async (ctx, next) =>
+                {
+                    var feature = ctx.Features.Get<IExceptionHandlerPathFeature>();
+                    var exception = feature.Error;
+
+                    var logger = ctx.RequestServices.GetService<ILogger<Startup>>();
+
+                    switch (exception)
+                    {
+                        case null:
+                            await next();
+                            break;
+                        default:
+                            await ctx.Response.WriteAsJsonAsync(new ErrorResponse("Exception", exception.Message));
+                            logger.LogError(exception.StackTrace ?? exception.Message);
+                            break;
+                    }
+                });
             });
         }
     }

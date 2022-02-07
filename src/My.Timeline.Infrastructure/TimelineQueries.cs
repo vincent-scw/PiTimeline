@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using MyTimeline.Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,9 +20,11 @@ namespace MyTimeline.Infrastructure
             return _dbContext.Timelines.ToListAsync();
         }
 
-        public Task<Timeline> GetLineAsync(string id)
+        public async Task<Timeline> GetLineAsync(string id)
         {
-            return _dbContext.Timelines.FirstOrDefaultAsync(x => x.Id == id);
+            var timeline = await _dbContext.Timelines.FirstOrDefaultAsync(x => x.Id == id);
+            if (timeline == null) throw new Exception("NotFound");
+            return timeline;
         }
     }
 }

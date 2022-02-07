@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default class NavMenu extends React.PureComponent<{}> {
   public render(): React.ReactNode {
@@ -6,12 +7,12 @@ export default class NavMenu extends React.PureComponent<{}> {
         <nav className="navbar is-fixed-top is-transparent is-primary top-nav" role="navigation" aria-label="main navigation">
           <div className="container">
             <div className="navbar-brand">
-              <a className="navbar-item" >
+              <Link className="navbar-item" to="/">
                 <img src="../assets/favicon.png"></img>
-              </a>
-              <a className="navbar-item">
+              </Link>
+              <Link className="navbar-item" to="/">
                 <img src="../assets/logo.png"></img>
-              </a>
+              </Link>
             </div>
           </div>
         </nav>
