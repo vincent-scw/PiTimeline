@@ -44,7 +44,6 @@ namespace MyTimeline.Infrastructure
                 entity.ToTable("Photos");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Description);
-                entity.Property(e => e.Sequence);
                 entity.Property(e => e.Link);
                 entity.Property(e => e.CreatedDateTime).IsRequired();
             });
