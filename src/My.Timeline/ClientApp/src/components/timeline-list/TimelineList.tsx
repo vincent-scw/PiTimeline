@@ -1,26 +1,25 @@
-import React, { useEffect } from "react";
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { ApplicationState } from '../../store';
-import * as TimelinesStore from '../../store/Timelines';
+import * as Svc from '../../services';
 import { ActionPanel } from "./ActionPanel";
 
-// At runtime, Redux will merge together...
-type TimelineListProps =
-  TimelinesStore.TimelinesState // ... state we've requested from the Redux store
-  & typeof TimelinesStore.actionCreators // ... plus action creators we've requested
-  & RouteComponentProps<{}>; // ... plus incoming routing parameters
-
-const TimelineList: React.FC<TimelineListProps> = (props) => {
+export const TimelineList: React.FC = () => {
   const columnsInLine = 4;
 
+  const [timelines, setTimelines] = useState<Svc.TimelineSummary[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   useEffect(() => {
-    props.requestTimelines()
+    setIsLoading(true);
+    Svc.TimelineSvc.fetchTimelines()
+      .then(res => {
+        setTimelines(res.data);
+        setIsLoading(false);
+      });
   }, []);
 
   const buildCard = () => {
-    const data = props.timelines;
+    const data = timelines;
 
     var result = [];
     for (var i = 0; i < data.length; i += columnsInLine) {
@@ -55,14 +54,9 @@ const TimelineList: React.FC<TimelineListProps> = (props) => {
 
   return (
     <div>
-      {props.isLoading && <span>Loading...</span>}
-      {props.timelines && buildCard()}
+      {isLoading && <span>Loading...</span>}
+      {timelines && buildCard()}
       <ActionPanel />
     </div>
   );
 }
-
-export default connect(
-  (state: ApplicationState) => state.timelines, // Selects which state properties are merged into the component's props
-  TimelinesStore.actionCreators // Selects which action creators are merged into the component's props
-)(TimelineList as any); // eslint-disable-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import TimelineList from './timeline-list/TimelineList';
+import { TimelineList } from './timeline-list/TimelineList';
 
 const Home = () => (
   <div>
@@ -8,4 +7,4 @@ const Home = () => (
   </div>
 );
 
-export default connect()(Home);
+export default Home;
