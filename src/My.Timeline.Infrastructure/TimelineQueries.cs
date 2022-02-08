@@ -2,27 +2,39 @@
 using Microsoft.EntityFrameworkCore;
 using MyTimeline.Domain;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using MyTimeline.Shared.Dtos;
 
 namespace MyTimeline.Infrastructure
 {
     public class TimelineQueries
     {
         private readonly MyDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public TimelineQueries(MyDbContext dbContext)
+        public TimelineQueries(
+            MyDbContext dbContext,
+            IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public Task<List<Timeline>> FetchLinesAsync()
+        public async Task<List<TimelineDto>> FetchLinesAsync()
         {
-            return _dbContext.Timelines.ToListAsync();
+            var timelines = await _dbContext.Timelines.Where(x => !x.IsDeleted).ToListAsync();
+            return timelines.Select(x => _mapper.Map<TimelineDto>(x)).ToList();
         }
 
-        public async Task<Timeline> GetLineAsync(string id)
+        public async Task<TimelineDto> GetLineAsync(string id)
         {
-            return await _dbContext.Timelines.FirstOrDefaultAsync(x => x.Id == id);
+            var timeline = await _dbContext.Timelines.FirstOrDefaultAsync(x => x.Id == id);
+            if (timeline == null)
+                return null;
+
+            return _mapper.Map<TimelineDto>(timeline);
         }
     }
 }

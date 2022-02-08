@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import * as Svc from '../../services';
 import { ActionPanel } from "./ActionPanel";
+import { toast } from "react-toastify";
+import { TimelineSummary } from "../../services";
 
 export const TimelineList: React.FC = () => {
   const columnsInLine = 4;
@@ -12,13 +14,25 @@ export const TimelineList: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    refresh();
+  }, []);
+
+  const refresh = () => {
     setIsLoading(true);
     Svc.TimelineSvc.fetchTimelines()
       .then(res => {
         setTimelines(res.data);
         setIsLoading(false);
       });
-  }, []);
+  }
+
+  const deleteTimeline = (timeline: TimelineSummary) => {
+    if (window.confirm('Are you sure you wish to delete this item?'))
+      Svc.TimelineSvc.deleteTimeline(timeline.id).then(_ => {
+        toast.info(`Timeline ${timeline.title} has been deleted`);
+        refresh();
+      });
+  }
 
   const buildCard = () => {
     const data = timelines;
@@ -52,7 +66,9 @@ export const TimelineList: React.FC = () => {
                         </div>
                       </div>
                       <div className="level-right">
-                        <a><FontAwesomeIcon icon={faTrashAlt} className="has-text-grey-light" /></a>
+                        <a onClick={() => deleteTimeline(summary)}>
+                          <FontAwesomeIcon icon={faTrashAlt} className="has-text-grey-light" />
+                        </a>
                       </div>
                     </div>
                   </div>

@@ -17,5 +17,9 @@ export const TimelineSvc = {
   getTimeline: (timelineId: string) => instance({
     method: 'GET',
     url: `api/timelines/${timelineId}`
+  }),
+  deleteTimeline: (timelineId: string) => instance({
+    method: 'DELETE',
+    url: `api/timelines/${timelineId}`
   })
 }

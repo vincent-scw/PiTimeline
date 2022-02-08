@@ -1,4 +1,6 @@
 import React from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export const ActionPanel: React.FC = () => {
   const create = () => {
@@ -8,9 +10,10 @@ export const ActionPanel: React.FC = () => {
   return (
     <div className="panel left-dockbg">
       <p className="panel-block dock-img-block">
-        <a onClick={create}>Create</a>
+        <a onClick={create} className="has-text-success">
+          <FontAwesomeIcon icon={faPlus} />
+        </a>
       </p>
-      <p className="panel-block dock-img-block"></p>
     </div>
   );
 }
