@@ -15,6 +15,6 @@ export interface TimelineDetail {
   id: string;
   title: string;
   description: string;
-  moments: Moment[];
+  moments?: Moment[];
   isCompleted?: boolean;
 }

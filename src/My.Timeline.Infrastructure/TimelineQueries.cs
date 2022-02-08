@@ -1,11 +1,9 @@
-﻿using System;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using MyTimeline.Domain;
+using MyTimeline.Shared.Dtos;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using MyTimeline.Shared.Dtos;
 
 namespace MyTimeline.Infrastructure
 {
