@@ -3,7 +3,7 @@ using MyTimeline.Domain;
 using MyTimeline.Infrastructure;
 using System.Threading.Tasks;
 using AutoMapper;
-using MyTimeline.Dtos;
+using MyTimeline.Shared.Dtos;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,14 +14,17 @@ namespace MyTimeline.Controllers
     public class TimelinesController : ControllerBase
     {
         private readonly ITimelineRepository _timelineRepository;
+        private readonly IMomentRepository _momentRepository;
         private readonly TimelineQueries _queries;
         private readonly IMapper _mapper;
         public TimelinesController(
             ITimelineRepository timelineRepository,
+            IMomentRepository momentRepository,
             TimelineQueries queries,
             IMapper mapper)
         {
             _timelineRepository = timelineRepository;
+            _momentRepository = momentRepository;
             _queries = queries;
             _mapper = mapper;
         }
@@ -37,7 +40,7 @@ namespace MyTimeline.Controllers
         public async Task<IActionResult> GetLine(string id)
         {
             var result = await _queries.GetLineAsync(id);
-            return Ok(result);
+            return result == null ? NotFound(id) : Ok(result);
         }
 
         [HttpPost]
@@ -65,20 +68,33 @@ namespace MyTimeline.Controllers
             return NoContent();
         }
 
-        //[HttpPost("{lineId}/moments")]
-        //public async Task<IActionResult> AddMoment(string lineId, [FromBody] Moment moment)
-        //{
-        //    var result = _momentRepository.Add(moment);
-        //    await _momentRepository.UnitOfWork.SaveChangesAsync();
-        //    return Ok(result);
-        //}
+        [HttpPost("{lineId}/moments")]
+        public async Task<IActionResult> AddMoment(string lineId, [FromBody] MomentDto moment)
+        {
+            // Check timeline
+            var _ = await _timelineRepository.GetByIdAsync(lineId);
+            var result = await _momentRepository.AddAsync(new Moment(lineId, moment.Content, moment.TakePlaceAtDateTime));
+            
+            return Ok(result);
+        }
 
-        //[HttpPost("{lineId}/moments/{momentId}")]
-        //public async Task<IActionResult> UpdateMoment(string lineId, string momentId, [FromBody] Moment moment)
-        //{
-        //    _momentRepository.Update(moment);
-        //    await _momentRepository.UnitOfWork.SaveChangesAsync();
-        //    return Ok();
-        //}
+        [HttpPost("{lineId}/moments/{momentId}")]
+        public async Task<IActionResult> UpdateMoment(string lineId, string momentId, [FromBody] MomentDto dto)
+        {
+            // Check timeline
+            var _ = await _timelineRepository.GetByIdAsync(lineId);
+            // Get moment
+            var moment = await _momentRepository.GetByIdAsync(momentId);
+            moment.Update(dto.Content, dto.TakePlaceAtDateTime);
+            await _momentRepository.UpdateAsync(moment);
+            return NoContent();
+        }
+
+        [HttpDelete("{lineId}/moments/{momentId}")]
+        public async Task<IActionResult> DeleteMoment(string lineId, string momentId)
+        {
+            await _momentRepository.DeleteAsync(momentId, false);
+            return NoContent();
+        }
     }
 }

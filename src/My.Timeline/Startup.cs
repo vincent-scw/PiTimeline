@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,9 +30,9 @@ namespace MyTimeline
             services.AddSwaggerGen();
             services.AddAutoMapper(typeof(MappingProfile));
 
-            services.Configure<DbConfiguration>(Configuration.GetSection("ConnectionStrings:Sqlite"));
-            services.AddDbContext<MyDbContext>();
+            services.AddDbContext<MyDbContext>(opt => opt.UseSqlite(Configuration.GetConnectionString("Sqlite")));
             services.AddScoped<ITimelineRepository, TimelineRepository>();
+            services.AddScoped<IMomentRepository, MomentRepository>();
             services.AddScoped<TimelineQueries>();
 
             // In production, the React files will be served from this directory

@@ -22,9 +22,7 @@ namespace MyTimeline.Infrastructure
 
         public async Task<Timeline> GetLineAsync(string id)
         {
-            var timeline = await _dbContext.Timelines.FirstOrDefaultAsync(x => x.Id == id);
-            if (timeline == null) throw new Exception("NotFound");
-            return timeline;
+            return await _dbContext.Timelines.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MyTimeline.Domain
 {
-    public interface ITimelineRepository : IRepository<Timeline>
+    public interface IMomentRepository : IRepository<Moment>
     {
         
     }

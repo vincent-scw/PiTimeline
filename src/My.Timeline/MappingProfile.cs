@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MyTimeline.Domain;
-using MyTimeline.Dtos;
+using MyTimeline.Shared.Dtos;
 
 namespace MyTimeline
 {

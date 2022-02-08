@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MyTimeline.Domain.SeedWork;
+﻿using MyTimeline.Domain.SeedWork;
 using MyTimeline.Shared.Utilities;
+using System;
 
 namespace MyTimeline.Domain
 {
-    public class Moment : Entity, IAggregateRoot
+    public class Moment : Entity, IAggregateRoot // set moment as another aggregate root to make mutation easier.
     {
         protected Moment()
         {
-            _photos = new List<MomentPhoto>();
         }
 
         public Moment(
             string timelineId, 
             string content, 
-            DateTime occurredAt,
-            IEnumerable<MomentPhoto> photos)
+            DateTime takePlaceAt)
             : this()
         {
             Id = IdGen.Generate();
@@ -25,18 +21,21 @@ namespace MyTimeline.Domain
 
             TimelineId = timelineId;
             Content = content;
-            OccurredAtDateTime = occurredAt;
-            if (photos != null)
-                _photos = photos.ToList();
+            TakePlaceAtDateTime = takePlaceAt;
         }
 
         public string TimelineId { get; }
 
-        public string Content { get; }
+        public string Content { get; private set; }
 
-        public DateTime OccurredAtDateTime { get; }
+        public DateTime TakePlaceAtDateTime { get; private set; }
 
-        private List<MomentPhoto> _photos;
-        public IReadOnlyList<MomentPhoto> Photos => _photos;
+        public void Update(string content, DateTime takePlaceAt)
+        {
+            Content = content;
+            TakePlaceAtDateTime = takePlaceAt;
+
+            UpdatedDateTime = DateTime.Now;
+        }
     }
 }
