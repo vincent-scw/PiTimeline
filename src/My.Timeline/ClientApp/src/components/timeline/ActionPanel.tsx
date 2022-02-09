@@ -10,8 +10,10 @@ export const ActionPanel: React.FC = () => {
   return (
     <div className="panel left-dockbg">
       <p className="panel-block dock-img-block">
-        <a onClick={create} className="has-text-success">
-          <FontAwesomeIcon icon={faPlus} />
+        <a onClick={create}>
+          <span className="icon has-text-success">
+            <FontAwesomeIcon icon={faPlus} />
+          </span>
         </a>
       </p>
     </div>

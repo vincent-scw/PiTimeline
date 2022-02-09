@@ -16,8 +16,10 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
     <div className="panel left-dockbg">
       <p className="panel-block dock-img-block">
         <Popup position="right center"
-          trigger={<a className="has-text-success">
-            <FontAwesomeIcon icon={faPlus} />
+          trigger={<a>
+            <span className="icon has-text-success">
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
           </a>}>
           {close => <TimelineEditor saved={(t) => { close(); saved(t); }} />
           }

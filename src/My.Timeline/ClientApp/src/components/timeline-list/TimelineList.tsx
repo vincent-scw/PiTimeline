@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
 import * as Svc from '../../services';
 import { ActionPanel } from "./ActionPanel";
 import { toast } from "react-toastify";
-import { TimelineSummary } from "../../services";
+import Popup from "reactjs-popup";
+import 'reactjs-popup/dist/index.css';
+import { TimelineEditor } from '../timeline/TimelineEditor';
 
 export const TimelineList: React.FC = () => {
   const columnsInLine = 4;
 
-  const [timelines, setTimelines] = useState<Svc.TimelineSummary[]>([]);
+  const [timelines, setTimelines] = useState<Svc.Timeline[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -26,12 +28,19 @@ export const TimelineList: React.FC = () => {
       });
   }
 
-  const deleteTimeline = (timeline: TimelineSummary) => {
+  const deleteTimeline = (timeline: Svc.Timeline) => {
     if (window.confirm('Are you sure you wish to delete this item?'))
       Svc.TimelineSvc.deleteTimeline(timeline.id).then(_ => {
         toast.info(`Timeline ${timeline.title} has been deleted`);
         refresh();
       });
+  }
+
+  const timelineUpdated = (timeline: Svc.Timeline) => {
+    let newList = [...timelines];
+    const updatedIndex = newList.findIndex(x => x.id === timeline.id);
+    newList[updatedIndex] = timeline;
+    setTimelines(newList);
   }
 
   const buildCard = () => {
@@ -66,8 +75,22 @@ export const TimelineList: React.FC = () => {
                         </div>
                       </div>
                       <div className="level-right">
+                        <Popup position="top center"
+                          trigger={<a>
+                            <span className="icon has-text-info">
+                              <FontAwesomeIcon icon={faEdit} />
+                            </span>
+                          </a>
+                          }>
+                          {close => <TimelineEditor 
+                            timeline={summary}
+                            saved={(t) => { close(); timelineUpdated(t); }} />}
+                        </Popup>
+
                         <a onClick={() => deleteTimeline(summary)}>
-                          <FontAwesomeIcon icon={faTrashAlt} className="has-text-grey-light" />
+                          <span className="icon has-text-grey-light">
+                            <FontAwesomeIcon icon={faTrashAlt} />
+                          </span>
                         </a>
                       </div>
                     </div>
@@ -83,7 +106,7 @@ export const TimelineList: React.FC = () => {
     <div>
       {isLoading && <span>Loading...</span>}
       {timelines && buildCard()}
-      <ActionPanel saved={(t) => setTimelines([t, ...timelines])}/>
+      <ActionPanel saved={(t) => setTimelines([t, ...timelines])} />
     </div>
   );
 }

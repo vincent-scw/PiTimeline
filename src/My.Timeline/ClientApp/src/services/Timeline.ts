@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TimelineDetail } from '.';
+import { Timeline } from '.';
 import { setupInterceptorsTo } from './Interceptors';
 setupInterceptorsTo(axios);
 
@@ -23,12 +23,12 @@ export const TimelineSvc = {
     method: 'DELETE',
     url: `api/timelines/${timelineId}`
   }),
-  createTimeline: (timeline: TimelineDetail) => instance({
+  createTimeline: (timeline: Timeline) => instance({
     method: 'POST',
     url: `api/timelines`,
     data: timeline
   }),
-  updateTimeline: (timeline: TimelineDetail) => instance({
+  updateTimeline: (timeline: Timeline) => instance({
     method: 'PUT',
     url: `api/timelines/${timeline.id}`,
     data: timeline

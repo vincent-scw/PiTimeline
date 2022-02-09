@@ -10,7 +10,7 @@ type GroupedMoments = {
 
 export const Timeline: React.FC = () => {
   const { tid } = useParams<any>();
-  const [timeline, setTimeline] = useState<Svc.TimelineDetail>();
+  const [timeline, setTimeline] = useState<Svc.Timeline>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const groupedMoments: GroupedMoments[] = [

@@ -4,13 +4,14 @@ import { toast } from "react-toastify";
 import * as Svc from '../../services';
 
 export interface TimelineEditorProps {
+  timeline?: Svc.Timeline;
   saved?: Function;
 }
 
 export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
   const { saved } = props;
 
-  const [timeline, setTimeline] = useState<Svc.TimelineDetail>({});
+  const [timeline, setTimeline] = useState<Svc.Timeline>(props.timeline || {});
 
   const stateChanged = (prop: string, v: any) => {
     let newEntity = { ...timeline, [prop]: v };
@@ -18,11 +19,19 @@ export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
   }
 
   const saveTimeline = () => {
-    Svc.TimelineSvc.createTimeline(timeline)
-      .then(t => {
-        toast.info(`${t.data.name} has been created.`)
-        if (saved) saved(t.data);
-      });
+    if (timeline.id) {
+      Svc.TimelineSvc.updateTimeline(timeline)
+        .then(t => {
+          toast.info(`${t.data.name} has been updated.`)
+          if (saved) saved(t.data);
+        });
+    } else {
+      Svc.TimelineSvc.createTimeline(timeline)
+        .then(t => {
+          toast.info(`${t.data.name} has been created.`)
+          if (saved) saved(t.data);
+        });
+    }
   }
 
   return (
