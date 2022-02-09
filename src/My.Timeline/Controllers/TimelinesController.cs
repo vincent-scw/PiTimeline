@@ -46,7 +46,7 @@ namespace MyTimeline.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateLine([FromBody] TimelineDto dto)
         {
-            var timeline = new Timeline(dto.Title, dto.IsCompleted);
+            var timeline = new Timeline(dto.Title);
             var result = await _timelineRepository.AddAsync(timeline);
             return Ok(result);
         }
@@ -55,7 +55,7 @@ namespace MyTimeline.Controllers
         public async Task<IActionResult> UpdateLine(string id, [FromBody] TimelineDto dto)
         {
             var timeline = await _timelineRepository.GetByIdAsync(id);
-            timeline.Update(dto.Title, dto.IsCompleted);
+            timeline.Update(dto.Title);
 
             await _timelineRepository.UpdateAsync(timeline);
             return NoContent();

@@ -10,28 +10,24 @@ namespace MyTimeline.Domain
         {
         }
 
-        public Timeline(string title, bool isCompleted)
+        public Timeline(string title)
             : this()
         {
             Id = IdGen.Generate();
             CreatedDateTime = DateTime.Now;
 
             Title = title;
-            IsCompleted = isCompleted;
         }
 
         public string Title { get; private set; }
 
-        public bool IsCompleted { get; private set; }
-
         public DateTime Since { get; private set; }
 
-        public void Update(string title, bool isCompleted)
+        public void Update(string title)
         {
             UpdatedDateTime = DateTime.Now;
 
             Title = title;
-            IsCompleted = isCompleted;
         }
     }
 }

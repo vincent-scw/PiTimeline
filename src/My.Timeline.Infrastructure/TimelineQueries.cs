@@ -13,6 +13,7 @@ namespace MyTimeline.Infrastructure
         private readonly IMapper _mapper;
 
         public TimelineQueries(
+
             MyDbContext dbContext,
             IMapper mapper)
         {

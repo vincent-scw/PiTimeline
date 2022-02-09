@@ -22,7 +22,6 @@ namespace MyTimeline.Infrastructure
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.Title).IsUnique();
                 entity.Property(e => e.Title).HasMaxLength(256);
-                entity.Property(e => e.IsCompleted);
                 entity.Property(e => e.Since);
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
                 entity.Property(e => e.CreatedDateTime).IsRequired();

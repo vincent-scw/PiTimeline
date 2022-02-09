@@ -2,8 +2,8 @@
 {
     public class MomentDto
     {
-        public string Id { get; set; }
-        public string Content { get; set; }
+        public string? Id { get; set; }
+        public string? Content { get; set; }
         public DateTime TakePlaceAtDateTime { get; set; }
     }
 }

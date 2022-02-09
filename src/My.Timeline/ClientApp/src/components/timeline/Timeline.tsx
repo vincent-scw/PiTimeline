@@ -66,7 +66,7 @@ export const Timeline: React.FC = () => {
           }
           <div className="timeline">
             <div className="timeline-header">
-              <span className="tag is-medium is-primary">{timeline.isCompleted ? 'End' : 'TBD...'}</span>
+              <span className="tag is-medium is-primary"><img src="../assets/favicon.png"></img></span>
             </div>
           </div>
           <ActionPanel />

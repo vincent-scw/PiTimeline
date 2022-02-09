@@ -83,7 +83,7 @@ export const TimelineList: React.FC = () => {
     <div>
       {isLoading && <span>Loading...</span>}
       {timelines && buildCard()}
-      <ActionPanel />
+      <ActionPanel saved={(t) => setTimelines([t, ...timelines])}/>
     </div>
   );
 }
