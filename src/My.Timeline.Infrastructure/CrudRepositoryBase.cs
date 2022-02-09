@@ -30,10 +30,11 @@ namespace MyTimeline.Infrastructure
             return t;
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             DbContext.Entry(entity).State = EntityState.Modified;
             await DbContext.SaveChangesAsync();
+            return entity;
         }
 
         public async Task DeleteAsync(string id, bool hardDelete)

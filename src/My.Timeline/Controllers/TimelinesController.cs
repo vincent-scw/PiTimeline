@@ -57,8 +57,8 @@ namespace MyTimeline.Controllers
             var timeline = await _timelineRepository.GetByIdAsync(id);
             timeline.Update(dto.Title);
 
-            await _timelineRepository.UpdateAsync(timeline);
-            return NoContent();
+            timeline = await _timelineRepository.UpdateAsync(timeline);
+            return Ok(timeline);
         }
 
         [HttpDelete("{id}")]
@@ -86,8 +86,8 @@ namespace MyTimeline.Controllers
             // Get moment
             var moment = await _momentRepository.GetByIdAsync(momentId);
             moment.Update(dto.Content, dto.TakePlaceAtDateTime);
-            await _momentRepository.UpdateAsync(moment);
-            return NoContent();
+            moment = await _momentRepository.UpdateAsync(moment);
+            return Ok(moment);
         }
 
         [HttpDelete("{lineId}/moments/{momentId}")]

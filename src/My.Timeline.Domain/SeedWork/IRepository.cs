@@ -7,7 +7,7 @@ namespace MyTimeline.Domain.SeedWork
     {
         Task<T> GetByIdAsync(string id);
         Task<T> AddAsync(T entity);
-        Task UpdateAsync(T entity);
+        Task<T> UpdateAsync(T entity);
         Task DeleteAsync(string id, bool hardDelete);
     }
 }
