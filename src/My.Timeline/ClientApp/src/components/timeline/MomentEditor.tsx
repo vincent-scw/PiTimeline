@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TDatePicker } from "../controls";
+import { toast } from "react-toastify";
 import * as Svc from '../../services';
 
 export interface MomentEditorProps {
@@ -17,9 +18,17 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
 
   const saveMoment = () => {
     if (moment.id) {
-
+      Svc.MomentSvc.updateMoment(moment)
+        .then(t => {
+          toast.info(`${t.data.name} has been updated.`)
+          if (props.saved) props.saved(t.data);
+        });
     } else {
-
+      Svc.MomentSvc.createMoment(moment)
+        .then(t => {
+          toast.info(`${t.data.name} has been created.`)
+          if (props.saved) props.saved(t.data);
+        });
     }
   }
 

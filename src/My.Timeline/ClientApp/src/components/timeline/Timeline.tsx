@@ -19,13 +19,17 @@ export const Timeline: React.FC = () => {
   ];
 
   useEffect(() => {
+    refresh();
+  }, [tid])
+
+  const refresh = () => {
     setIsLoading(true);
     Svc.TimelineSvc.getTimeline(tid)
       .then(res => {
         setTimeline(res.data);
         setIsLoading(false);
       });
-  }, [tid])
+  }
 
   return (
     <div>
@@ -69,7 +73,7 @@ export const Timeline: React.FC = () => {
               <span className="tag is-medium is-primary"><img src="../assets/favicon.png"></img></span>
             </div>
           </div>
-          <ActionPanel />
+          <ActionPanel saved={refresh} timeline={timeline}/>
         </div>
       }
     </div>
