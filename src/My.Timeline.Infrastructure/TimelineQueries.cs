@@ -33,7 +33,13 @@ namespace MyTimeline.Infrastructure
             if (timeline == null)
                 return null;
 
-            return _mapper.Map<TimelineDto>(timeline);
+            var moments = await _dbContext.Moments.Where(m => m.TimelineId == timeline.Id && !m.IsDeleted)
+                .OrderBy(x => x.TakePlaceAtDateTime)
+                .ToListAsync();
+
+            var dto = _mapper.Map<TimelineDto>(timeline);
+            dto.Moments = moments.Select(m => _mapper.Map<MomentDto>(m)).ToList();
+            return dto;
         }
     }
 }

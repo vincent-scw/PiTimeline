@@ -2,7 +2,7 @@
 {
     public static class IdGen
     {
-        public static string Generate(int capacity = 7)
+        public static string Generate(int capacity = 9)
         {
             return Encode(Guid.NewGuid())[..capacity];
         }

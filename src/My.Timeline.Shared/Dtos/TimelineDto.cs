@@ -8,5 +8,7 @@ namespace MyTimeline.Shared.Dtos
         public string? Title { get; set; }
         public DateTime? Since { get; set; }
         public DateTime? LastUpdatedDateTime { get; set; }
+
+        public IList<MomentDto> Moments { get; set; }
     }
 }
