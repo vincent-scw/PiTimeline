@@ -1,7 +1,8 @@
 export interface Moment {
   id?: string;
+  timelineId?: string;
   content?: string;
-  dateTime?: Date;
+  takePlaceAtDateTime?: Date;
 }
 
 export interface Timeline {
