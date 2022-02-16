@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Moment from 'react-moment';
 import { ActionPanel } from './ActionPanel';
 import * as Svc from '../../services';
-import { 
-  GroupedMoments, 
-  MomentsGroupingHandler as MGHandler 
+import {
+  GroupedMoments,
+  MomentsGroupingHandler as MGHandler
 } from './MomentsGroupingHandler';
 
 export const Timeline: React.FC = () => {
@@ -52,7 +53,9 @@ export const Timeline: React.FC = () => {
                 <div className="timeline-item" key={m.id}>
                   <div className="timeline-marker"></div>
                   <div className="timeline-content">
-                    <p className="heading">{m.takePlaceAtDateTime.toDateString()}</p>
+                    <p className="heading">
+                      <Moment format="ddd MMM DD YYYY">{m.takePlaceAtDateTime}</Moment>
+                    </p>
                     <p>{m.content}</p>
                     <div className="level is-mobile">
                       <div className="level-left"></div>
@@ -73,7 +76,7 @@ export const Timeline: React.FC = () => {
               <span className="tag is-medium is-primary"><img src="../assets/favicon.png"></img></span>
             </div>
           </div>
-          <ActionPanel saved={refresh} timeline={timeline}/>
+          <ActionPanel saved={refresh} timeline={timeline} />
         </div>
       }
     </div>
