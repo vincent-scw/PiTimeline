@@ -7,6 +7,10 @@ import {
   GroupedMoments,
   MomentsGroupingHandler as MGHandler
 } from './MomentsGroupingHandler';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import Popup from "reactjs-popup";
+import { MomentEditor } from "./MomentEditor";
 
 export const Timeline: React.FC = () => {
   const { tid } = useParams<any>();
@@ -32,6 +36,10 @@ export const Timeline: React.FC = () => {
       });
   }
 
+  const deleteMoment = (moment: Svc.Moment) => {
+
+  }
+
   return (
     <div>
       {isLoading && <div>Loading...</div>}
@@ -54,15 +62,27 @@ export const Timeline: React.FC = () => {
                   <div className="timeline-marker"></div>
                   <div className="timeline-content">
                     <p className="heading">
-                      <Moment format="ddd MMM DD YYYY">{m.takePlaceAtDateTime}</Moment>
+                      <Moment format="ddd MMM DD">{m.takePlaceAtDateTime}</Moment>
                     </p>
-                    <p>{m.content}</p>
+                    <p dangerouslySetInnerHTML={{ __html: m.content }} />
                     <div className="level is-mobile">
                       <div className="level-left"></div>
                       <div className="level-right">
-                        <button className="level-item button is-ghost">
+                        <Popup position="center center" modal={true} trigger={
+                          <a className="level-item" >
+                            <span className="icon has-text-info">
+                              <FontAwesomeIcon icon={faEdit} />
+                            </span>
+                          </a>
+                        }>
+                          {close => <MomentEditor saved={(t) => { close(); refresh(); }} moment={m} />}
+                        </Popup>
 
-                        </button>
+                        <a onClick={() => deleteMoment(m)}>
+                          <span className="icon has-text-grey-light">
+                            <FontAwesomeIcon icon={faTrashAlt} />
+                          </span>
+                        </a>
                       </div>
                     </div>
                   </div>

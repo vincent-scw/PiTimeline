@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TDatePicker } from "../controls";
+import { RichTextInput, TDatePicker } from "../controls";
 import { toast } from "react-toastify";
 import * as Svc from '../../services';
 
@@ -41,8 +41,10 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
       </section>
       <hr />
       <form>
-        <TDatePicker name="Date" value={moment.takePlaceAtDateTime} valueChanged={(date) => stateChanged('takePlaceAtDateTime', date)}></TDatePicker>
-
+        <TDatePicker name="Date"
+          value={moment.takePlaceAtDateTime}
+          valueChanged={(date) => stateChanged('takePlaceAtDateTime', date)}></TDatePicker>
+        <RichTextInput value={moment.content} valueChanged={(c) => stateChanged('content', c)} />
         <div className="field">
           <div className="control">
             <a className="button is-primary is-small is-fullwidth"

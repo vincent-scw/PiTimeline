@@ -1,11 +1,10 @@
 import React from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-date-picker';
 
 export interface TDatePickerProps {
   name?: string;
   value?: Date;
-  valueChanged: Function;
+  valueChanged: (date) => void;
 }
 
 export const TDatePicker: React.FC<TDatePickerProps> = (props) => {
@@ -22,7 +21,7 @@ export const TDatePicker: React.FC<TDatePickerProps> = (props) => {
         <div className="field-body">
           <div className="field">
             <div className="control">
-              <DatePicker selected={value} onChange={valueChanged} />
+              <DatePicker value={value ? new Date(value): new Date()} onChange={valueChanged} />
             </div>
           </div>
         </div>
