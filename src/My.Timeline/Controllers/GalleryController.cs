@@ -1,13 +1,10 @@
-﻿using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MyTimeline.Shared.Configuration;
 using MyTimeline.Shared.Dtos;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyTimeline.Controllers
 {
@@ -26,37 +23,26 @@ namespace MyTimeline.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            var dto = new DirectoryDto()
-            {
-                Directories = Directory.GetDirectories(_configuration.RootPath)
-                    .Select(x => new DirectoryDto { Path = BuildPath(x) }).ToList(),
-                Photos = Directory.GetFiles(_configuration.RootPath).Select(x => new PhotoDto { Src = BuildPath(x) })
-                    .ToList()
-            };
+            var dto = BuildDirectoryDto(_configuration.RootPath);
 
             return Ok(dto);
         }
 
         [HttpGet("{path}")]
-        public async Task<IActionResult> HandlePath(string path)
+        public IActionResult HandlePath(string path)
         {
             var absolutePath = Path.Combine(_configuration.RootPath, path);
 
             if (Directory.Exists(absolutePath))
             {
-                var dto = new DirectoryDto()
-                {
-                    Directories = Directory.GetDirectories(absolutePath)
-                        .Select(x => new DirectoryDto { Path = BuildPath(x) }).ToList(),
-                    Photos = Directory.GetFiles(absolutePath).Select(x => new PhotoDto { Src = BuildPath(x) })
-                        .ToList()
-                };
+                var dto = BuildDirectoryDto(absolutePath);
 
                 return Ok(dto);
             }
-            else if (System.IO.File.Exists(absolutePath))
+
+            if (System.IO.File.Exists(absolutePath))
             {
                 var img = System.IO.File.OpenRead(absolutePath);
                 return File(img, "image/jpeg");
@@ -70,6 +56,23 @@ namespace MyTimeline.Controllers
             var relative = Path.GetRelativePath(_configuration.RootPath, absolutePath)
                 .Replace('\\', '/');
             return $"api/Gallery/{relative}";
+        }
+
+        private DirectoryDto BuildDirectoryDto(string absolutePath)
+        {
+            return new DirectoryDto()
+            {
+                Directories = Directory.GetDirectories(absolutePath)
+                    .Select(x => new DirectoryDto { Path = BuildPath(x) }).ToList(),
+                Photos = Directory.GetFiles(absolutePath).Select(x => new PhotoDto
+                    {
+                        Src = BuildPath(x),
+                        Thumbnail = BuildPath(x),
+                        ThumbnailWidth = 320,
+                        ThumbnailHeight = 174
+                    })
+                    .ToList()
+            };
         }
     }
 }
