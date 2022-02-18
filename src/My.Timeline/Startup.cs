@@ -8,8 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MyTimeline.Controllers;
 using MyTimeline.Domain;
 using MyTimeline.Infrastructure;
+using MyTimeline.Shared.Configuration;
 using MyTimeline.Shared.Dtos;
 
 namespace MyTimeline
@@ -28,7 +30,11 @@ namespace MyTimeline
         {
             services.AddControllersWithViews();
             services.AddSwaggerGen();
+
+            services.Configure<GalleryConfiguration>(Configuration.GetSection("Gallery"));
             services.AddAutoMapper(typeof(MappingProfile));
+
+            services.AddSingleton<GalleryValueTransformer>();
 
             services.AddDbContext<MyDbContext>(opt => opt.UseSqlite(Configuration.GetConnectionString("Sqlite")));
             services.AddScoped<ITimelineRepository, TimelineRepository>();
@@ -66,6 +72,7 @@ namespace MyTimeline
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDynamicControllerRoute<GalleryValueTransformer>("api/gallery/{*path}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

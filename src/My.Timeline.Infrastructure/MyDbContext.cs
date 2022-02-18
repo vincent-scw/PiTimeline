@@ -12,7 +12,6 @@ namespace MyTimeline.Infrastructure
 
         public DbSet<Timeline> Timelines { get; set; }
         public DbSet<Moment> Moments { get; set; }
-        public DbSet<Photo> Photos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,14 +33,6 @@ namespace MyTimeline.Infrastructure
                 entity.Property(e => e.Content).IsRequired();
                 entity.Property(e => e.TakePlaceAtDateTime).IsRequired();
                 entity.Property(e => e.IsDeleted).HasDefaultValue(false);
-                entity.Property(e => e.CreatedDateTime).IsRequired();
-            });
-            modelBuilder.Entity<Photo>(entity =>
-            {
-                entity.ToTable("Photos");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Description);
-                entity.Property(e => e.Link);
                 entity.Property(e => e.CreatedDateTime).IsRequired();
             });
             base.OnModelCreating(modelBuilder);
