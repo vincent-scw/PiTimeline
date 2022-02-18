@@ -1,9 +1,10 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faImages, faPlus } from '@fortawesome/free-solid-svg-icons';
 import Popup from "reactjs-popup";
 import 'reactjs-popup/dist/index.css';
 import { TimelineEditor } from '../timeline/TimelineEditor';
+import { Link } from "react-router-dom";
 
 export interface ActionPanelProps {
   saved?: Function;
@@ -24,7 +25,11 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
           {close => <TimelineEditor saved={(t) => { close(); saved(t); }} />
           }
         </Popup>
-
+      </p>
+      <p className="panel-block dock-img-block">
+        <Link to={'/g'}>
+          <FontAwesomeIcon icon={faImages} />
+        </Link>
       </p>
     </div>
   );
