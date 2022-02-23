@@ -20,4 +20,16 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PiTimeline.Domain\PiTimeline.Domain.csproj" />
+    <ProjectReference Include="..\..\src\PiTimeline.Infrastructure\PiTimeline.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\PiTimeline.Shared\PiTimeline.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="magnificent-picture.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
