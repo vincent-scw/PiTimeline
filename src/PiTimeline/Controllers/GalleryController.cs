@@ -16,7 +16,7 @@ namespace PiTimeline.Controllers
 
         public GalleryController(IOptions<GalleryConfiguration> options)
         {
-            if (!Directory.Exists(options.Value.RootPath))
+            if (!Directory.Exists(options.Value.PhotoRoot))
                 throw new DirectoryNotFoundException("Root path not found.");
 
             _configuration = options.Value;
@@ -25,7 +25,7 @@ namespace PiTimeline.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var dto = BuildDirectoryDto(_configuration.RootPath);
+            var dto = BuildDirectoryDto(_configuration.PhotoRoot);
 
             return Ok(dto);
         }
@@ -33,7 +33,7 @@ namespace PiTimeline.Controllers
         [HttpGet("{path}")]
         public IActionResult HandlePath(string path)
         {
-            var absolutePath = Path.Combine(_configuration.RootPath, path);
+            var absolutePath = Path.Combine(_configuration.PhotoRoot, path);
 
             if (Directory.Exists(absolutePath))
             {
@@ -51,9 +51,10 @@ namespace PiTimeline.Controllers
             return NotFound(path);
         }
 
-        private string BuildPath(string absolutePath)
+        private string BuildPath(string absolutePath, bool isThumbnail)
         {
-            var relative = Path.GetRelativePath(_configuration.RootPath, absolutePath)
+            var relative = Path.GetRelativePath(
+                    isThumbnail ? _configuration.ThumbnailRoot : _configuration.PhotoRoot, absolutePath)
                 .Replace('\\', '/');
             return $"api/Gallery/{relative}";
         }
@@ -63,11 +64,11 @@ namespace PiTimeline.Controllers
             return new DirectoryDto()
             {
                 Directories = Directory.GetDirectories(absolutePath)
-                    .Select(x => new DirectoryDto { Path = BuildPath(x) }).ToList(),
+                    .Select(x => new DirectoryDto { Path = BuildPath(x, false) }).ToList(),
                 Photos = Directory.GetFiles(absolutePath).Select(x => new PhotoDto
                     {
-                        Src = BuildPath(x),
-                        Thumbnail = BuildPath(x),
+                        Src = BuildPath(x, false),
+                        Thumbnail = BuildPath(x, true),
                         ThumbnailWidth = 320,
                         ThumbnailHeight = 174
                     })

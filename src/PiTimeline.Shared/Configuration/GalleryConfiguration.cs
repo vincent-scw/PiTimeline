@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PiTimeline.Shared.Configuration
+﻿namespace PiTimeline.Shared.Configuration
 {
     public class GalleryConfiguration
     {
-        public string RootPath { get; set; }
+        public string PhotoRoot { get; set; }
+        public string ThumbnailRoot { get; set; }
     }
 }
