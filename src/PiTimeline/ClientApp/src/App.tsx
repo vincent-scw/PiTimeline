@@ -14,5 +14,6 @@ export default () => (
         <Route exact path='/t' component={TimelineList} />
         <Route path='/t/:tid' component={Timeline} />
         <Route exact path='/g' component={TGallery} />
+        <Route path='/g/*' component={TGallery} />
     </Layout>
 );

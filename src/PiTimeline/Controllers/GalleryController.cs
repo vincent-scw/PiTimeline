@@ -67,8 +67,12 @@ namespace PiTimeline.Controllers
         {
             var relative = Path.GetRelativePath(_configuration.PhotoRoot, absolutePath)
                 .Replace(Path.DirectorySeparatorChar, '/');
-            var path = isThumbnail ? $"{ThumbnailPrefix}/{relative}" : relative;
-            return $"api/Gallery/{path}";
+            return isThumbnail ? $"{ThumbnailPrefix}/{relative}" : relative;
+        }
+
+        private string BuildApiUrl(string absolutePath, bool isThumbnail)
+        {
+            return $"api/Gallery/{BuildUrl(absolutePath, isThumbnail)}";
         }
 
         private string UrlToLocal(string path, out bool isThumbnail)
@@ -90,8 +94,7 @@ namespace PiTimeline.Controllers
                     var firstFile = GetFirstPhotoInDirectory(x);
                     return new DirectoryDto
                     {
-                        Name = Path.GetFileName(x),
-                        Path = BuildUrl(x, false),
+                        Caption = Path.GetFileName(x),
                         Src = BuildUrl(x, false),
                         Thumbnail = firstFile?.Thumbnail,
                         ThumbnailHeight = firstFile?.ThumbnailHeight,
@@ -100,8 +103,8 @@ namespace PiTimeline.Controllers
                 }).ToList(),
                 Photos = Directory.GetFiles(absolutePath).Select(x => new PhotoDto
                 {
-                    Src = BuildUrl(x, false),
-                    Thumbnail = BuildUrl(x, true),
+                    Src = BuildApiUrl(x, false),
+                    Thumbnail = BuildApiUrl(x, true),
                     ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(x, FixedThumbnailHeight),
                     ThumbnailHeight = FixedThumbnailHeight
                 }).ToList()
@@ -116,7 +119,7 @@ namespace PiTimeline.Controllers
 
             return new PhotoDto()
             {
-                Thumbnail = BuildUrl(firstFile, true),
+                Thumbnail = BuildApiUrl(firstFile, true),
                 ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(firstFile, FixedThumbnailHeight),
                 ThumbnailHeight = FixedThumbnailHeight
             };
