@@ -15,6 +15,7 @@ namespace PiTimeline.Controllers
     {
         private const string ThumbnailPrefix = "Thumbnail";
         private const int FixedThumbnailHeight = 200;
+        private const int FixedDirectoryThumbnailHeight = 120;
         private readonly GalleryConfiguration _configuration;
 
         public GalleryController(IOptions<GalleryConfiguration> options)
@@ -120,8 +121,8 @@ namespace PiTimeline.Controllers
             return new PhotoDto()
             {
                 Thumbnail = BuildApiUrl(firstFile, true),
-                ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(firstFile, FixedThumbnailHeight),
-                ThumbnailHeight = FixedThumbnailHeight
+                ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(firstFile, FixedDirectoryThumbnailHeight),
+                ThumbnailHeight = FixedDirectoryThumbnailHeight
             };
         }
     }

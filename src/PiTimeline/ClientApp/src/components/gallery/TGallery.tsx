@@ -8,7 +8,7 @@ import * as Svc from '../../services';
 
 export const TGallery: React.FC = () => {
   const history = useHistory();
-  
+
   const [directories, setDirectories] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [pathSegments, setPathSegments] = useState([]);
@@ -54,14 +54,10 @@ export const TGallery: React.FC = () => {
         </ul>
       </nav>
 
-      <div className="section">
-        {directories && directories.map((d) => (
-          <Link to={`/g/${d.src}`} key={d.src}>{d.caption}</Link>
-        ))
-        }
-      </div>
       <div className="gallery-container">
-        <Gallery images={directories} enableLightbox={false} onClickThumbnail={directoryClicked} isSelectable={false} />
+        <Gallery images={directories} enableLightbox={false}
+          onClickThumbnail={directoryClicked} isSelectable={false} 
+          rowHeight={120} />
       </div>
       <hr />
       <div className="gallery-container">
