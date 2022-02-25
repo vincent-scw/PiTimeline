@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import Gallery from 'react-grid-gallery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages } from '@fortawesome/free-solid-svg-icons';
@@ -7,6 +7,8 @@ import { ActionPanel } from "./ActionPanel";
 import * as Svc from '../../services';
 
 export const TGallery: React.FC = () => {
+  const history = useHistory();
+  
   const [directories, setDirectories] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [pathSegments, setPathSegments] = useState([]);
@@ -26,6 +28,10 @@ export const TGallery: React.FC = () => {
       })
   }, [path])
 
+  const directoryClicked = (index: number) => {
+    history.push(`/g/${directories[index].src}`);
+  }
+
   return (
     <React.Fragment>
       <nav className="breadcrumb" aria-label="breadcrumbs">
@@ -34,14 +40,14 @@ export const TGallery: React.FC = () => {
             <Link to={`/g`}>
               <span className="icon">
                 <FontAwesomeIcon icon={faImages} />
-              </span> 
+              </span>
               <span>Gallery</span>
             </Link>
           </li>
           {pathSegments &&
             pathSegments.map(ps => (
-              <li>
-                <Link to={`/g/${ps}`} key={ps}>{ps}</Link>
+              <li key={ps}>
+                <Link to={`/g/${ps}`}>{ps}</Link>
               </li>
             ))
           }
@@ -54,8 +60,13 @@ export const TGallery: React.FC = () => {
         ))
         }
       </div>
-
-      <Gallery images={photos} />
+      <div className="gallery-container">
+        <Gallery images={directories} enableLightbox={false} onClickThumbnail={directoryClicked} isSelectable={false} />
+      </div>
+      <hr />
+      <div className="gallery-container">
+        <Gallery images={photos} isSelectable={false} />
+      </div>
       <ActionPanel />
     </React.Fragment>
   );

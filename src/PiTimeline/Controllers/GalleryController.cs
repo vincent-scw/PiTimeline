@@ -94,7 +94,7 @@ namespace PiTimeline.Controllers
                     var firstFile = GetFirstPhotoInDirectory(x);
                     return new DirectoryDto
                     {
-                        Caption = Path.GetFileName(x),
+                        ThumbnailCaption = Path.GetFileName(x),
                         Src = BuildUrl(x, false),
                         Thumbnail = firstFile?.Thumbnail,
                         ThumbnailHeight = firstFile?.ThumbnailHeight,
