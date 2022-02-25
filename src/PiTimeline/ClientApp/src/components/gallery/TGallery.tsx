@@ -18,6 +18,8 @@ export const TGallery: React.FC = () => {
 
   return (
     <React.Fragment>
+      <Gallery images={directories} />
+      <hr />
       <Gallery images={photos} />
       <ActionPanel />
     </React.Fragment>

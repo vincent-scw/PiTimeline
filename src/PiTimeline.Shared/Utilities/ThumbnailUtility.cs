@@ -2,12 +2,15 @@
 
 namespace PiTimeline.Shared.Utilities
 {
-    public static class ThumbnailCreator
+    public static class ThumbnailUtility
     {
         private const int MaxHeight = 720;
 
         public static void CreateThumbnail(string imgPath, string outputPath)
         {
+            if (!File.Exists(imgPath))
+                throw new FileNotFoundException(imgPath);
+
             using var bitmap = SKBitmap.Decode(imgPath);
 
             var resizeFactor = bitmap.Height > MaxHeight ? (float)MaxHeight / bitmap.Height : 1f;
@@ -25,8 +28,25 @@ namespace PiTimeline.Shared.Utilities
             using var image = SKImage.FromBitmap(toBitmap);
             using var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
 
+            var directory =Path.GetDirectoryName(outputPath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             using var stream = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
             data.SaveTo(stream);
+        }
+
+        public static int GetWidthForFixedHeight(string imgPath, int fixedHeight)
+        {
+            if (!File.Exists(imgPath))
+                throw new FileNotFoundException(imgPath);
+
+            using var bitmap = SKBitmap.Decode(imgPath);
+
+            var rate = (float) fixedHeight / bitmap.Height;
+            return (int) (bitmap.Width * rate);
         }
     }
 }

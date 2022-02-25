@@ -11,7 +11,7 @@ namespace PiTimeline.UnitTests.Shared
         {
             var input = "magnificent-picture.jpg";
             var output = "magnificent-picture-thumbnail.jpg";
-            ThumbnailCreator.CreateThumbnail(input, output);
+            ThumbnailUtility.CreateThumbnail(input, output);
 
             Assert.True(File.Exists(output));
         }

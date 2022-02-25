@@ -5,6 +5,7 @@ using PiTimeline.Shared.Dtos;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using PiTimeline.Shared.Utilities;
 
 namespace PiTimeline.Controllers
 {
@@ -12,6 +13,8 @@ namespace PiTimeline.Controllers
     [ApiController]
     public class GalleryController : ControllerBase
     {
+        private const string ThumbnailPrefix = "Thumbnail";
+        private const int FixedThumbnailHeight = 200;
         private readonly GalleryConfiguration _configuration;
 
         public GalleryController(IOptions<GalleryConfiguration> options)
@@ -31,15 +34,24 @@ namespace PiTimeline.Controllers
         }
 
         [HttpGet("{path}")]
-        public IActionResult HandlePath(string path)
+        public async Task<IActionResult> HandlePath(string path)
         {
-            var absolutePath = Path.Combine(_configuration.PhotoRoot, path);
+            var absolutePath = UrlToLocal(path, out bool isThumbnail);
 
             if (Directory.Exists(absolutePath))
             {
                 var dto = BuildDirectoryDto(absolutePath);
 
                 return Ok(dto);
+            }
+
+            if (isThumbnail && !System.IO.File.Exists(absolutePath))
+            {
+                // When thumbnail doesn't exist, create it
+                var photoPath = Path.Combine(
+                    _configuration.PhotoRoot, 
+                    path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar));
+                await Task.Run(() => ThumbnailUtility.CreateThumbnail(photoPath, absolutePath));
             }
 
             if (System.IO.File.Exists(absolutePath))
@@ -51,28 +63,62 @@ namespace PiTimeline.Controllers
             return NotFound(path);
         }
 
-        private string BuildPath(string absolutePath, bool isThumbnail)
+        private string BuildUrl(string absolutePath, bool isThumbnail)
         {
-            var relative = Path.GetRelativePath(
-                    isThumbnail ? _configuration.ThumbnailRoot : _configuration.PhotoRoot, absolutePath)
-                .Replace('\\', '/');
-            return $"api/Gallery/{relative}";
+            var relative = Path.GetRelativePath(_configuration.PhotoRoot, absolutePath)
+                .Replace(Path.DirectorySeparatorChar, '/');
+            var path = isThumbnail ? $"{ThumbnailPrefix}/{relative}" : relative;
+            return $"api/Gallery/{path}";
+        }
+
+        private string UrlToLocal(string path, out bool isThumbnail)
+        {
+            isThumbnail = path.StartsWith(ThumbnailPrefix);
+            var absolutePath = Path.Combine(
+                isThumbnail ? _configuration.ThumbnailRoot : _configuration.PhotoRoot,
+                isThumbnail ? path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar) : path);
+
+            return absolutePath;
         }
 
         private DirectoryDto BuildDirectoryDto(string absolutePath)
         {
             return new DirectoryDto()
             {
-                Directories = Directory.GetDirectories(absolutePath)
-                    .Select(x => new DirectoryDto { Path = BuildPath(x, false) }).ToList(),
-                Photos = Directory.GetFiles(absolutePath).Select(x => new PhotoDto
+                Directories = Directory.GetDirectories(absolutePath).Select(x =>
+                {
+                    var firstFile = GetFirstPhotoInDirectory(x);
+                    return new DirectoryDto
                     {
-                        Src = BuildPath(x, false),
-                        Thumbnail = BuildPath(x, true),
-                        ThumbnailWidth = 320,
-                        ThumbnailHeight = 174
-                    })
-                    .ToList()
+                        Name = Path.GetFileName(x),
+                        Path = BuildUrl(x, false),
+                        Src = BuildUrl(x, false),
+                        Thumbnail = firstFile?.Thumbnail,
+                        ThumbnailHeight = firstFile?.ThumbnailHeight,
+                        ThumbnailWidth = firstFile?.ThumbnailWidth,
+                    };
+                }).ToList(),
+                Photos = Directory.GetFiles(absolutePath).Select(x => new PhotoDto
+                {
+                    Src = BuildUrl(x, false),
+                    Thumbnail = BuildUrl(x, true),
+                    ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(x, FixedThumbnailHeight),
+                    ThumbnailHeight = FixedThumbnailHeight
+                }).ToList()
+            };
+        }
+
+        private PhotoDto GetFirstPhotoInDirectory(string path)
+        {
+            var firstFile = Directory.GetFiles(path).FirstOrDefault();
+            if (firstFile == null)
+                return null;
+
+            return new PhotoDto()
+            {
+                Thumbnail = BuildUrl(firstFile, true),
+                ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(firstFile, FixedThumbnailHeight),
+                ThumbnailHeight = FixedThumbnailHeight
             };
         }
     }
