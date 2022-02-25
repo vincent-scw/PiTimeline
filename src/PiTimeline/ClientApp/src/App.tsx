@@ -5,6 +5,7 @@ import Home from './components/Home';
 import { TimelineList } from './components/timeline-list/TimelineList';
 import { Timeline } from './components/timeline/Timeline';
 import { TGallery } from './components/gallery/TGallery';
+import { NoContent } from './components/NoContent';
 
 import './styles/main.scss'
 
@@ -15,5 +16,6 @@ export default () => (
         <Route path='/t/:tid' component={Timeline} />
         <Route exact path='/g' component={TGallery} />
         <Route path='/g/*' component={TGallery} />
+        {/* <Route exact path='*' component={NoContent} /> */}
     </Layout>
 );
