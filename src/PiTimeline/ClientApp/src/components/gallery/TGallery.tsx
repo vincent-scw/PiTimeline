@@ -61,7 +61,7 @@ export const TGallery: React.FC = () => {
       </div>
       <hr />
       <div className="gallery-container">
-        <Gallery images={photos} isSelectable={false} />
+        <Gallery images={photos} />
       </div>
       <ActionPanel />
     </React.Fragment>
