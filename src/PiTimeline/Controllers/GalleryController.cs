@@ -90,7 +90,7 @@ namespace PiTimeline.Controllers
         {
             return new DirectoryDto()
             {
-                Directories = Directory.GetDirectories(absolutePath).Select(x =>
+                SubDirectories = Directory.GetDirectories(absolutePath).Select(x =>
                 {
                     var firstFile = GetFirstPhotoInDirectory(x);
                     return new DirectoryDto
@@ -102,7 +102,7 @@ namespace PiTimeline.Controllers
                         ThumbnailWidth = firstFile?.ThumbnailWidth,
                     };
                 }).ToList(),
-                Photos = Directory.GetFiles(absolutePath).Select(x => new PhotoDto
+                Items = Directory.GetFiles(absolutePath).Select(x => new PhotoDto
                 {
                     Src = BuildApiUrl(x, false),
                     Thumbnail = BuildApiUrl(x, true),

@@ -1,35 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
-import Gallery from 'react-grid-gallery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages } from '@fortawesome/free-solid-svg-icons';
 import { ActionPanel } from "./ActionPanel";
-import * as Svc from '../../services';
+import { GalleryCtl } from "../controls";
 
-export const TGallery: React.FC = () => {
+export const Gallery: React.FC = () => {
   const history = useHistory();
 
-  const [directories, setDirectories] = useState([]);
-  const [photos, setPhotos] = useState([]);
+  const [directory, setDirectory] = useState<string>();
   const [pathSegments, setPathSegments] = useState([]);
 
   const path = useParams<any>();
 
   useEffect(() => {
-    if (path[0])
-      setPathSegments(path[0].split('/'));
-
-    Svc.GallerySvc.get(path[0])
-      .then(res => {
-        const data = res.data;
-
-        setDirectories(data.directories);
-        setPhotos(data.photos);
-      })
+    setPathSegments(path[0]?.split('/'));
+    setDirectory(path[0] ?? '');
   }, [path])
 
-  const directoryClicked = (index: number) => {
-    history.push(`/g/${directories[index].src}`);
+  const directorySelected = (directory: string) => {
+    history.push(`/g/${directory}`);
   }
 
   return (
@@ -54,15 +44,8 @@ export const TGallery: React.FC = () => {
         </ul>
       </nav>
 
-      <div className="gallery-container">
-        <Gallery images={directories} enableLightbox={false}
-          onClickThumbnail={directoryClicked} isSelectable={false} 
-          rowHeight={120} />
-      </div>
-      <hr />
-      <div className="gallery-container">
-        <Gallery images={photos} />
-      </div>
+      <GalleryCtl directorySelected={directorySelected} directorySrc={directory} />
+
       <ActionPanel />
     </React.Fragment>
   );

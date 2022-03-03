@@ -12,3 +12,12 @@ export interface Timeline {
   snapshot?: string;
   moments?: Moment[];
 }
+
+export interface ItemInfo {
+  src: string;
+}
+
+export interface DirectoryInfo extends ItemInfo {
+  subDirectories?: DirectoryInfo[];
+  items?: ItemInfo[];
+}
