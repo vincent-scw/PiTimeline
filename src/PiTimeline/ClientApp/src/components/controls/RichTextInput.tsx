@@ -53,11 +53,11 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
         <option value="#d0d1d2"></option>
         <option value="black" selected></option>
       </select>
-      <Popup trigger={<button className="ql-image"></button>} position="bottom center">
+      <Popup trigger={<button className="ql-image"></button>} nested position="bottom center">
         <GalleryCtl />
       </Popup>
-      <Popup trigger={<button className="ql-video"></button>} position="bottom center">
-        <GalleryCtl />
+      <Popup trigger={<button className="ql-video"></button>} nested position="bottom center">
+        {close => <GalleryCtl itemSelected={() => close()} />}
       </Popup>
     </div>
   )

@@ -8,10 +8,10 @@ export default class NavMenu extends React.PureComponent<{}> {
           <div className="container">
             <div className="navbar-brand">
               <Link className="navbar-item" to="/">
-                <img src="../assets/favicon.png"></img>
+                <img src="../assets/favicon.png" alt=""></img>
               </Link>
               <Link className="navbar-item" to="/">
-                <img src="../assets/logo.png"></img>
+                <img src="../assets/logo.png" alt=""></img>
               </Link>
             </div>
           </div>
