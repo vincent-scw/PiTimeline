@@ -68,13 +68,14 @@ export const Timeline: React.FC = () => {
                     <div className="level is-mobile">
                       <div className="level-left"></div>
                       <div className="level-right">
-                        <Popup position="center center" modal={true} trigger={
-                          <a className="level-item" >
-                            <span className="icon has-text-info">
-                              <FontAwesomeIcon icon={faEdit} />
-                            </span>
-                          </a>
-                        }>
+                        <Popup position="center center" modal={true} closeOnDocumentClick={false}
+                          trigger={
+                            <a className="level-item" >
+                              <span className="icon has-text-info">
+                                <FontAwesomeIcon icon={faEdit} />
+                              </span>
+                            </a>
+                          }>
                           {close => <MomentEditor saved={(t) => { close(); refresh(); }} moment={m} />}
                         </Popup>
 

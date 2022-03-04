@@ -17,8 +17,8 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     toolbar: {
       container: "#toolbar",
       handlers: {
-        image: () => insert('photo'),
-        video: () => insert('video')
+        image: () => { },
+        video: () => { }
       }
     },
     clipboard: {
@@ -26,8 +26,8 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     }
   }
 
-  const insert = (filter: string) => {
-    const content = 'a';
+  const itemSelected = (item: string) => {
+    const content = item;
 
     if (content) {
       const editor = quill.current.getEditor();
@@ -44,20 +44,11 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     <div id="toolbar">
       <button className="ql-bold"></button>
       <button className="ql-italic"></button>
-      <select className="ql-color">
-        <option value="red"></option>
-        <option value="green"></option>
-        <option value="blue"></option>
-        <option value="orange"></option>
-        <option value="violet"></option>
-        <option value="#d0d1d2"></option>
-        <option value="black" selected></option>
-      </select>
       <Popup trigger={<button className="ql-image"></button>} nested position="bottom center">
-        <GalleryCtl />
+        {close => <GalleryCtl itemSelected={(item) => { itemSelected(item); close(); }} />}
       </Popup>
       <Popup trigger={<button className="ql-video"></button>} nested position="bottom center">
-        {close => <GalleryCtl itemSelected={() => close()} />}
+        {close => <GalleryCtl itemSelected={(item) => { itemSelected(item); close(); }} />}
       </Popup>
     </div>
   )

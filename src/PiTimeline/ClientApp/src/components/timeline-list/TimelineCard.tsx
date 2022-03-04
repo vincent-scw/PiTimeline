@@ -36,7 +36,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
               </div>
             </div>
             <div className="level-right">
-              <Popup position="top center"
+              <Popup position="top center" closeOnDocumentClick={false}
                 trigger={<a>
                   <span className="icon has-text-info">
                     <FontAwesomeIcon icon={faEdit} />

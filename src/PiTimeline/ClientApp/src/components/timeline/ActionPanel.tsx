@@ -18,7 +18,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   return (
     <div className="panel left-dockbg">
       <p className="panel-block dock-img-block">
-        <Popup position="center center" modal={true}
+        <Popup position="center center" modal={true} closeOnDocumentClick={false}
           trigger={<a>
             <span className="icon has-text-success">
               <FontAwesomeIcon icon={faPlus} />
