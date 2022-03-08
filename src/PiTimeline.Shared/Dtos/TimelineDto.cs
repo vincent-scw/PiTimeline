@@ -9,6 +9,6 @@ namespace PiTimeline.Shared.Dtos
         public DateTime? Since { get; set; }
         public DateTime? LastUpdatedDateTime { get; set; }
 
-        public IList<MomentDto> Moments { get; set; }
+        public IList<MomentDto>? Moments { get; set; }
     }
 }

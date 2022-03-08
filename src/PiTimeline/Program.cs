@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -19,8 +20,16 @@ namespace PiTimeline
                     webBuilder.UseStartup<Startup>()
                         .ConfigureAppConfiguration(builder =>
                         {
-                            var varPath = Environment.GetEnvironmentVariable("VARIABLE_PATH");
-                            if (varPath == null) return;
+                            var varPath = Environment.GetEnvironmentVariable("CONFIG_PATH");
+                            if (varPath == null && OperatingSystem.IsLinux())
+                            {
+                                var path = "/var/PiTimeline/config.json";
+                                if (File.Exists(path))
+                                    varPath = path;
+                            }
+                            if (varPath == null)
+                                return;
+                            
                             builder.AddJsonFile(varPath, false, true);
                         });
                 });
