@@ -78,7 +78,7 @@ namespace PiTimeline.Controllers
             return Ok(result);
         }
 
-        [HttpPost("{lineId}/moments/{momentId}")]
+        [HttpPut("{lineId}/moments/{momentId}")]
         public async Task<IActionResult> UpdateMoment(string lineId, string momentId, [FromBody] MomentDto dto)
         {
             // Check timeline

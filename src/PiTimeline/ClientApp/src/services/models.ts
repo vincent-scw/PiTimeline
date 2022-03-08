@@ -15,6 +15,7 @@ export interface Timeline {
 
 export interface ItemInfo {
   src: string;
+  thumbnail?: string;
 }
 
 export interface DirectoryInfo extends ItemInfo {

@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Popup from "reactjs-popup";
 import { GalleryCtl } from "./GalleryCtl";
+import * as Svc from '../../services';
 
 export interface RichTextInputProps {
   value?: string;
@@ -26,13 +27,24 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     }
   }
 
-  const itemSelected = (item: string) => {
-    const content = item;
+  const photoSelected = (item: Svc.ItemInfo) => {
+    const content = item.thumbnail;
 
     if (content) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
-      editor.insertText(cursorPosition, content);
+      editor.insertEmbed(cursorPosition, 'image', content);
+      editor.setSelection(cursorPosition + content.length);
+    }
+  }
+
+  const videoSelected = (item: Svc.ItemInfo) => {
+    const content = item.thumbnail;
+
+    if (content) {
+      const editor = quill.current.getEditor();
+      const cursorPosition = editor.getSelection().index;
+      editor.insertEmbed(cursorPosition, content);
       editor.setSelection(cursorPosition + content.length);
     }
   }
@@ -45,10 +57,10 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
       <button className="ql-bold"></button>
       <button className="ql-italic"></button>
       <Popup trigger={<button className="ql-image"></button>} nested position="bottom center">
-        {close => <GalleryCtl itemSelected={(item) => { itemSelected(item); close(); }} />}
+        {close => <GalleryCtl itemSelected={(item) => { photoSelected(item); close(); }} />}
       </Popup>
       <Popup trigger={<button className="ql-video"></button>} nested position="bottom center">
-        {close => <GalleryCtl itemSelected={(item) => { itemSelected(item); close(); }} />}
+        {close => <GalleryCtl itemSelected={(item) => { videoSelected(item); close(); }} />}
       </Popup>
     </div>
   )
