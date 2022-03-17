@@ -21,7 +21,7 @@ namespace PiTimeline.Controllers
         public GalleryController(IOptions<GalleryConfiguration> options)
         {
             if (!Directory.Exists(options.Value.PhotoRoot))
-                throw new DirectoryNotFoundException("Root path not found.");
+                throw new DirectoryNotFoundException($"Root path not found {options.Value.PhotoRoot}.");
 
             _configuration = options.Value;
         }
