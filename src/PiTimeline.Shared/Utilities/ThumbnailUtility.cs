@@ -11,7 +11,12 @@ namespace PiTimeline.Shared.Utilities
             if (!File.Exists(imgPath))
                 throw new FileNotFoundException(imgPath);
 
+            if (File.Exists(outputPath)) // Already created
+                return;
+
             using var bitmap = SKBitmap.Decode(imgPath);
+            if (bitmap == null)
+                return;
 
             var resizeFactor = bitmap.Height > MaxHeight ? (float)MaxHeight / bitmap.Height : 1f;
 
@@ -28,7 +33,7 @@ namespace PiTimeline.Shared.Utilities
             using var image = SKImage.FromBitmap(toBitmap);
             using var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
 
-            var directory =Path.GetDirectoryName(outputPath);
+            var directory = Path.GetDirectoryName(outputPath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
@@ -44,6 +49,8 @@ namespace PiTimeline.Shared.Utilities
                 throw new FileNotFoundException(imgPath);
 
             using var bitmap = SKBitmap.Decode(imgPath);
+            if (bitmap == null)
+                return 4 * fixedHeight / 3;
 
             var rate = (float) fixedHeight / bitmap.Height;
             return (int) (bitmap.Width * rate);

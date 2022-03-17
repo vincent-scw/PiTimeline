@@ -114,7 +114,7 @@ namespace PiTimeline.Controllers
 
         private PhotoDto GetFirstPhotoInDirectory(string path)
         {
-            var firstFile = Directory.GetFiles(path).FirstOrDefault();
+            var firstFile = GetFirstPhotoRecursively(path);
             if (firstFile == null)
                 return null;
 
@@ -124,6 +124,23 @@ namespace PiTimeline.Controllers
                 ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(firstFile, FixedDirectoryThumbnailHeight),
                 ThumbnailHeight = FixedDirectoryThumbnailHeight
             };
+        }
+
+        private string GetFirstPhotoRecursively(string path)
+        {
+            var firstFile = Directory.GetFiles(path).FirstOrDefault();
+            if (firstFile != null)
+                return firstFile;
+
+            var subDirs = Directory.GetDirectories(path);
+            foreach (var dir in subDirs)
+            {
+                var file = GetFirstPhotoRecursively(dir);
+                if (file != null)
+                    return file;
+            }
+
+            return null;
         }
     }
 }
