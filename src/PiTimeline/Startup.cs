@@ -40,6 +40,7 @@ namespace PiTimeline
             services.AddScoped<ITimelineRepository, TimelineRepository>();
             services.AddScoped<IMomentRepository, MomentRepository>();
             services.AddScoped<TimelineQueries>();
+            services.AddScoped<ThumbnailIndexBuilder>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
