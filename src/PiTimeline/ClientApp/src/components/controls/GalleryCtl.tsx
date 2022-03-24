@@ -29,9 +29,9 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   const directoryClicked = (index: number) => {
     const directory = directoryInfo?.subDirectories[index];
     if (directorySelected)
-      directorySelected(directory.src);
+      directorySelected(directory.path);
 
-    refreshDirectory(directory.src);
+    refreshDirectory(directory.path);
   }
 
   return (

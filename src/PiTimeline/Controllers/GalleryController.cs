@@ -5,6 +5,7 @@ using PiTimeline.Shared.Dtos;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Utilities;
 
 namespace PiTimeline.Controllers
@@ -14,24 +15,23 @@ namespace PiTimeline.Controllers
     public class GalleryController : ControllerBase
     {
         private const string ThumbnailPrefix = "Thumbnail";
-        private const int FixedThumbnailHeight = 200;
-        private const int FixedDirectoryThumbnailHeight = 120;
         private readonly GalleryConfiguration _configuration;
+        private readonly ThumbnailIndexBuilder _indexBuilder;
 
-        public GalleryController(IOptions<GalleryConfiguration> options)
+        public GalleryController(
+            IOptions<GalleryConfiguration> options,
+            ThumbnailIndexBuilder indexBuilder)
         {
-            if (!Directory.Exists(options.Value.PhotoRoot))
-                throw new DirectoryNotFoundException($"Root path not found {options.Value.PhotoRoot}.");
-
             _configuration = options.Value;
+            _indexBuilder = indexBuilder;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var dto = BuildDirectoryDto(_configuration.PhotoRoot);
+            var dto = _indexBuilder.BuildIndex(_configuration.PhotoRoot);
 
-            return Ok(dto);
+            return Ok(Map(string.Empty, dto));
         }
 
         [HttpGet("{path}")]
@@ -41,9 +41,9 @@ namespace PiTimeline.Controllers
 
             if (Directory.Exists(absolutePath))
             {
-                var dto = BuildDirectoryDto(absolutePath);
+                var dto = _indexBuilder.BuildIndex(absolutePath);
 
-                return Ok(dto);
+                return Ok(Map(path, dto));
             }
 
             if (isThumbnail && !System.IO.File.Exists(absolutePath))
@@ -64,16 +64,54 @@ namespace PiTimeline.Controllers
             return NotFound(path);
         }
 
-        private string BuildUrl(string absolutePath, bool isThumbnail)
+        private DirectoryDto Map(string path, IndexDto index)
         {
-            var relative = Path.GetRelativePath(_configuration.PhotoRoot, absolutePath)
-                .Replace(Path.DirectorySeparatorChar, '/');
+            var dir = new DirectoryDto
+            {
+                Items = index.Items.Select(x => new ItemDto
+                {
+                    Src = BuildApiUrl(Path.Combine(path, x.Name), false),
+                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Name), true),
+                    ThumbnailHeight = x.ThumbnailHeight,
+                    ThumbnailWidth = x.ThumbnailWidth
+                }).ToList(),
+                SubDirectories = index.SubDirectories.Select(x => new DirectoryDto()
+                {
+                    ThumbnailCaption = x.Name,
+                    Src = BuildApiUrl(Path.Combine(path, x.Name), false),
+                    Path = BuildUrl(Path.Combine(path, x.Name), false), // Path is used for UI route
+                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Thumbnail), true),
+                    ThumbnailHeight = x.ThumbnailHeight,
+                    ThumbnailWidth = x.ThumbnailWidth
+                }).ToList(),
+            };
+
+            return dir;
+        }
+
+        /// <summary>
+        /// Build url for file/directory
+        /// </summary>
+        /// <param name="absolutePath"></param>
+        /// <param name="isThumbnail"></param>
+        /// <returns></returns>
+        private string BuildUrl(string path, bool isThumbnail)
+        {
+            var relative = path.Replace(Path.DirectorySeparatorChar, '/');
+            if (relative == ".")
+                relative = string.Empty;
             return isThumbnail ? $"{ThumbnailPrefix}/{relative}" : relative;
         }
 
-        private string BuildApiUrl(string absolutePath, bool isThumbnail)
+        /// <summary>
+        /// Append api url
+        /// </summary>
+        /// <param name="absolutePath"></param>
+        /// <param name="isThumbnail"></param>
+        /// <returns></returns>
+        private string BuildApiUrl(string path, bool isThumbnail)
         {
-            return $"api/Gallery/{BuildUrl(absolutePath, isThumbnail)}";
+            return $"api/Gallery/{BuildUrl(path, isThumbnail)}";
         }
 
         private string UrlToLocal(string path, out bool isThumbnail)
@@ -84,63 +122,6 @@ namespace PiTimeline.Controllers
                 isThumbnail ? path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar) : path);
 
             return absolutePath;
-        }
-
-        private DirectoryDto BuildDirectoryDto(string absolutePath)
-        {
-            return new DirectoryDto()
-            {
-                SubDirectories = Directory.GetDirectories(absolutePath).Select(x =>
-                {
-                    var firstFile = GetFirstPhotoInDirectory(x);
-                    return new DirectoryDto
-                    {
-                        ThumbnailCaption = Path.GetFileName(x),
-                        Src = BuildUrl(x, false),
-                        Thumbnail = firstFile?.Thumbnail,
-                        ThumbnailHeight = firstFile?.ThumbnailHeight,
-                        ThumbnailWidth = firstFile?.ThumbnailWidth,
-                    };
-                }).ToList(),
-                Items = Directory.GetFiles(absolutePath).Select(x => new PhotoDto
-                {
-                    Src = BuildApiUrl(x, false),
-                    Thumbnail = BuildApiUrl(x, true),
-                    ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(x, FixedThumbnailHeight),
-                    ThumbnailHeight = FixedThumbnailHeight
-                }).ToList()
-            };
-        }
-
-        private PhotoDto GetFirstPhotoInDirectory(string path)
-        {
-            var firstFile = GetFirstPhotoRecursively(path);
-            if (firstFile == null)
-                return null;
-
-            return new PhotoDto()
-            {
-                Thumbnail = BuildApiUrl(firstFile, true),
-                ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(firstFile, FixedDirectoryThumbnailHeight),
-                ThumbnailHeight = FixedDirectoryThumbnailHeight
-            };
-        }
-
-        private string GetFirstPhotoRecursively(string path)
-        {
-            var firstFile = Directory.GetFiles(path).FirstOrDefault();
-            if (firstFile != null)
-                return firstFile;
-
-            var subDirs = Directory.GetDirectories(path);
-            foreach (var dir in subDirs)
-            {
-                var file = GetFirstPhotoRecursively(dir);
-                if (file != null)
-                    return file;
-            }
-
-            return null;
         }
     }
 }
