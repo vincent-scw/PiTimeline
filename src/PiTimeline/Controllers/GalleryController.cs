@@ -78,7 +78,8 @@ namespace PiTimeline.Controllers
                 SubDirectories = index.SubDirectories.Select(x => new DirectoryDto()
                 {
                     ThumbnailCaption = x.Name,
-                    Src = BuildUrl(Path.Combine(path, x.Name), false),
+                    Src = BuildApiUrl(Path.Combine(path, x.Name), false),
+                    Path = BuildUrl(Path.Combine(path, x.Name), false),
                     Thumbnail = BuildApiUrl(Path.Combine(path, x.Thumbnail), true),
                     ThumbnailHeight = x.ThumbnailHeight,
                     ThumbnailWidth = x.ThumbnailWidth
