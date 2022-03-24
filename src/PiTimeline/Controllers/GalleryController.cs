@@ -31,7 +31,7 @@ namespace PiTimeline.Controllers
         {
             var dto = _indexBuilder.BuildIndex(_configuration.PhotoRoot);
 
-            return Ok(dto);
+            return Ok(Map(string.Empty, dto));
         }
 
         [HttpGet("{path}")]
@@ -43,7 +43,7 @@ namespace PiTimeline.Controllers
             {
                 var dto = _indexBuilder.BuildIndex(absolutePath);
 
-                return Ok(dto);
+                return Ok(Map(path, dto));
             }
 
             if (isThumbnail && !System.IO.File.Exists(absolutePath))
@@ -63,7 +63,56 @@ namespace PiTimeline.Controllers
 
             return NotFound(path);
         }
-        
+
+        private DirectoryDto Map(string path, IndexDto index)
+        {
+            var dir = new DirectoryDto
+            {
+                Items = index.Items.Select(x => new ItemDto
+                {
+                    Src = BuildApiUrl(Path.Combine(path, x.Name), false),
+                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Name), true),
+                    ThumbnailHeight = x.ThumbnailHeight,
+                    ThumbnailWidth = x.ThumbnailWidth
+                }).ToList(),
+                SubDirectories = index.SubDirectories.Select(x => new DirectoryDto()
+                {
+                    ThumbnailCaption = x.Name,
+                    Src = BuildUrl(Path.Combine(path, x.Name), false),
+                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Thumbnail), true),
+                    ThumbnailHeight = x.ThumbnailHeight,
+                    ThumbnailWidth = x.ThumbnailWidth
+                }).ToList(),
+            };
+
+            return dir;
+        }
+
+        /// <summary>
+        /// Build url for file/directory
+        /// </summary>
+        /// <param name="absolutePath"></param>
+        /// <param name="isThumbnail"></param>
+        /// <returns></returns>
+        private string BuildUrl(string path, bool isThumbnail)
+        {
+            var relative = path.Replace(Path.DirectorySeparatorChar, '/');
+            if (relative == ".")
+                relative = string.Empty;
+            return isThumbnail ? $"{ThumbnailPrefix}/{relative}" : relative;
+        }
+
+        /// <summary>
+        /// Append api url
+        /// </summary>
+        /// <param name="absolutePath"></param>
+        /// <param name="isThumbnail"></param>
+        /// <returns></returns>
+        private string BuildApiUrl(string path, bool isThumbnail)
+        {
+            return $"api/Gallery/{BuildUrl(path, isThumbnail)}";
+        }
+
         private string UrlToLocal(string path, out bool isThumbnail)
         {
             isThumbnail = path.StartsWith(ThumbnailPrefix);

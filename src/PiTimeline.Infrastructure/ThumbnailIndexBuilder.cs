@@ -4,6 +4,8 @@ using PiTimeline.Shared.Dtos;
 using PiTimeline.Shared.Utilities;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PiTimeline.Infrastructure
 {
@@ -12,6 +14,7 @@ namespace PiTimeline.Infrastructure
         private const string ThumbnailPrefix = "Thumbnail";
         private const int FixedThumbnailHeight = 200;
         private const int FixedDirectoryThumbnailHeight = 120;
+        private const string IndexFileName = "index.json";
         private readonly GalleryConfiguration _configuration;
 
         public ThumbnailIndexBuilder(IOptions<GalleryConfiguration> options)
@@ -22,80 +25,107 @@ namespace PiTimeline.Infrastructure
             _configuration = options.Value;
         }
 
-        public DirectoryDto BuildIndex(string dirPath)
+        public IndexDto BuildIndex(string dirPath)
         {
+            // try get existing index
+            if (TryGetExistingIndex(dirPath, out IndexDto dto))
+            {
+                return dto;
+            }
+
             var allFiles = Directory.GetFiles(dirPath);
             var allHandlingExtensions = $"{_configuration.ImageExtensions}|{_configuration.VideoExtensionss}";
             var needToHandle = allFiles.Where(x => allHandlingExtensions.Contains(Path.GetExtension(x)));
 
-            var items = needToHandle.Select(x => new ItemDto(x)).ToList();
-            items.AsParallel().ForAll(BuildItem);
+            var items = needToHandle.Select(x => new IndexItemDto(Path.GetFileName(x))).ToList();
+            items.AsParallel().ForAll(x => BuildItem(dirPath, x));
 
             var subDirs = Directory.GetDirectories(dirPath);
-            var dirs = subDirs.Select(x => new DirectoryDto(x)).ToList();
-            dirs.AsParallel().ForAll(BuildDirectory);
+            var dirs = subDirs.Select(x => new IndexItemDto(Path.GetFileName(x))).ToList();
+            dirs.AsParallel().ForAll(x => BuildDirectory(dirPath, x));
 
-            var dto = new DirectoryDto(dirPath)
+            dto = new IndexDto
             {
                 SubDirectories = dirs,
                 Items = items
             };
 
+            StoreAsIndexFile(dirPath, dto);
+
             return dto;
         }
 
-        private void BuildItem(ItemDto item)
+        private bool TryGetExistingIndex(string dirPath, out IndexDto dto)
         {
-            item.Src = BuildApiUrl(item.Path, false);
-            item.Thumbnail = BuildApiUrl(item.Path, true);
-            item.ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(item.Path, FixedThumbnailHeight);
+            var indexFile = Path.Combine(ToThumbnailPath(dirPath), IndexFileName);
+            if (!File.Exists(indexFile))
+            {
+                dto = null;
+                return false;
+            }
+
+            try
+            {
+                using FileStream fs = new FileStream(indexFile, FileMode.Open);
+                dto = JsonSerializer.Deserialize<IndexDto>(fs, new JsonSerializerOptions());
+                return true;
+            }
+            catch
+            {
+                dto = null;
+                return false;
+            }
+        }
+
+        private void StoreAsIndexFile(string dirPath, IndexDto dto)
+        {
+            var indexFile = Path.Combine(ToThumbnailPath(dirPath), IndexFileName);
+
+            try
+            {
+                using FileStream fs = new FileStream(indexFile, FileMode.OpenOrCreate);
+                JsonSerializer.Serialize(fs, dto,
+                    new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+            }
+            catch{}
+        }
+
+        private void BuildItem(string path, IndexItemDto item)
+        {
+            var filePath = Path.Combine(path, item.Name);
+            item.ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(filePath, FixedThumbnailHeight);
             item.ThumbnailHeight = FixedThumbnailHeight;
         }
 
-        private void BuildDirectory(DirectoryDto dir)
+        private void BuildDirectory(string path, IndexItemDto dir)
         {
-            var firstFile = GetFirstPhotoInDirectory(dir.Path);
+            var firstFile = GetFirstPhotoInDirectory(Path.Combine(path, dir.Name));
 
-            dir.ThumbnailCaption = Path.GetFileName(dir.Path);
-            dir.Src = BuildUrl(dir.Path, false);
-            dir.Thumbnail = firstFile?.Thumbnail;
-            dir.ThumbnailHeight = firstFile?.ThumbnailHeight;
-            dir.ThumbnailWidth = firstFile?.ThumbnailWidth;
+            if (firstFile == null)
+                return;
+
+            dir.Thumbnail = Path.Combine(dir.Name, firstFile.Thumbnail);
+            dir.ThumbnailHeight = firstFile.ThumbnailHeight;
+            dir.ThumbnailWidth = firstFile.ThumbnailWidth;
         }
 
-        /// <summary>
-        /// Build url for file/directory
-        /// </summary>
-        /// <param name="absolutePath"></param>
-        /// <param name="isThumbnail"></param>
-        /// <returns></returns>
-        private string BuildUrl(string absolutePath, bool isThumbnail)
+        private string ToThumbnailPath(string absolutePath)
         {
-            var relative = Path.GetRelativePath(_configuration.PhotoRoot, absolutePath)
-                .Replace(Path.DirectorySeparatorChar, '/');
-            return isThumbnail ? $"{ThumbnailPrefix}/{relative}" : relative;
+            var relative = Path.GetRelativePath(_configuration.PhotoRoot, absolutePath);
+            if (relative == ".")
+                relative = string.Empty;
+            return Path.Combine(_configuration.ThumbnailRoot, relative);
         }
 
-        /// <summary>
-        /// Append api url
-        /// </summary>
-        /// <param name="absolutePath"></param>
-        /// <param name="isThumbnail"></param>
-        /// <returns></returns>
-        private string BuildApiUrl(string absolutePath, bool isThumbnail)
-        {
-            return $"api/Gallery/{BuildUrl(absolutePath, isThumbnail)}";
-        }
-
-        private ItemDto GetFirstPhotoInDirectory(string path)
+        private IndexItemDto GetFirstPhotoInDirectory(string path)
         {
             var firstFile = GetFirstItemRecursively(path);
             if (firstFile == null)
                 return null;
 
-            return new ItemDto(firstFile)
+            return new IndexItemDto(firstFile)
             {
-                Thumbnail = BuildApiUrl(firstFile, true),
+                Thumbnail = Path.GetRelativePath(path, firstFile),
                 ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(firstFile, FixedDirectoryThumbnailHeight),
                 ThumbnailHeight = FixedDirectoryThumbnailHeight
             };
