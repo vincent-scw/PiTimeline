@@ -79,7 +79,7 @@ namespace PiTimeline.Controllers
                 {
                     ThumbnailCaption = x.Name,
                     Src = BuildApiUrl(Path.Combine(path, x.Name), false),
-                    Path = BuildUrl(Path.Combine(path, x.Name), false),
+                    Path = BuildUrl(Path.Combine(path, x.Name), false), // Path is used for UI route
                     Thumbnail = BuildApiUrl(Path.Combine(path, x.Thumbnail), true),
                     ThumbnailHeight = x.ThumbnailHeight,
                     ThumbnailWidth = x.ThumbnailWidth
