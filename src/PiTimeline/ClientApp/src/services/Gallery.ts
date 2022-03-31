@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { setupInterceptorsTo } from './Interceptors';
-setupInterceptorsTo(axios);
 
 const instance = axios.create({
   baseURL: '',
@@ -8,6 +7,8 @@ const instance = axios.create({
     'content-type': 'application/json'
   }
 })
+
+setupInterceptorsTo(instance);
 
 export const GallerySvc = {
   get: (path?: string) => instance({
