@@ -1,15 +1,5 @@
-import axios from 'axios';
 import { Timeline } from '.';
-import { setupInterceptorsTo } from './Interceptors';
-
-const instance = axios.create({
-  baseURL: '',
-  headers: {
-    'content-type': 'application/json'
-  }
-})
-
-setupInterceptorsTo(instance);
+import instance from './axios-instance';
 
 export const TimelineSvc = {
   fetchTimelines: () => instance({
