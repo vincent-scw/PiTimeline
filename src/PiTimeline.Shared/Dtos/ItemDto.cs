@@ -1,6 +1,8 @@
-﻿namespace PiTimeline.Shared.Dtos
+﻿using System.Text.Json.Serialization;
+
+namespace PiTimeline.Shared.Dtos
 {
-    public class PhotoDto
+    public class ItemDto
     {
         public string? Src { get; set; }
         public string? Thumbnail { get; set; }
