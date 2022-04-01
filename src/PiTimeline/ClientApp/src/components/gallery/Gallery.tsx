@@ -14,8 +14,8 @@ export const Gallery: React.FC = () => {
   const path = useParams<any>();
 
   useEffect(() => {
-    setPathSegments(path[0]?.split('/'));
-    setDirectory(path[0] ?? '');
+    setPathSegments(path["*"]?.split('/'));
+    setDirectory(path["*"] ?? '');
   }, [path])
 
   const directorySelected = (directory: string) => {

@@ -19,6 +19,7 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   }, [directorySrc])
 
   const refreshDirectory = (directory: string) => {
+    console.log('dir', directory)
     Svc.GallerySvc.get(directory)
       .then(res => {
         const data = res.data;
@@ -29,9 +30,9 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   const directoryClicked = (index: number) => {
     const directory = directoryInfo?.subDirectories[index];
     if (directorySelected)
-      directorySelected(directory.path);
+      directorySelected(directory.src);
 
-    refreshDirectory(directory.path);
+    refreshDirectory(directory.src);
   }
 
   return (
