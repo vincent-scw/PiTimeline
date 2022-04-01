@@ -4,7 +4,7 @@ import { ActionPanel } from "./ActionPanel";
 import { toast } from "react-toastify";
 import { TimelineCard } from './TimelineCard';
 
-export const TimelineList: React.FC = () => {
+const TimelineList: React.FC = () => {
   const columnsInLine = 4;
 
   const [timelines, setTimelines] = useState<Svc.Timeline[]>([]);
@@ -65,3 +65,5 @@ export const TimelineList: React.FC = () => {
     </div>
   );
 }
+
+export default TimelineList;

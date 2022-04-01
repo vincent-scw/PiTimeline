@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Background: React.FC = () => {
+const Background: React.FC = () => {
   return (
     <div className="area">
       <ul className="circles">
@@ -18,3 +18,5 @@ export const Background: React.FC = () => {
     </div>
   );
 }
+
+export default Background;

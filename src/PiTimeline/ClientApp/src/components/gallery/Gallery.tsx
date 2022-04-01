@@ -5,7 +5,7 @@ import { faImages } from '@fortawesome/free-solid-svg-icons';
 import { ActionPanel } from "./ActionPanel";
 import { GalleryCtl } from "../controls";
 
-export const Gallery: React.FC = () => {
+const Gallery: React.FC = () => {
   const navigate = useNavigate();
 
   const [directory, setDirectory] = useState<string>();
@@ -50,3 +50,5 @@ export const Gallery: React.FC = () => {
     </React.Fragment>
   );
 }
+
+export default Gallery;

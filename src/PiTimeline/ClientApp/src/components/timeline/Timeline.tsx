@@ -12,7 +12,7 @@ import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Popup from "reactjs-popup";
 import { MomentEditor } from "./MomentEditor";
 
-export const Timeline: React.FC = () => {
+const Timeline: React.FC = () => {
   const { tid } = useParams<any>();
   const [timeline, setTimeline] = useState<Svc.Timeline>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -103,3 +103,5 @@ export const Timeline: React.FC = () => {
     </div>
   );
 }
+
+export default Timeline;

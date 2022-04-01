@@ -4,11 +4,12 @@ import { useSelector } from 'react-redux';
 import LoadingBar from 'react-top-loading-bar';
 import { Container } from 'reactstrap';
 import Home from './components/Home';
-import { TimelineList } from './components/timeline-list/TimelineList';
-import { Timeline } from './components/timeline/Timeline';
-import { Gallery } from './components/gallery/Gallery';
-import { NoContent } from './components/NoContent';
+import TimelineList from './components/timeline-list/TimelineList';
+import Timeline from './components/timeline/Timeline';
+import Gallery from './components/gallery/Gallery';
+import NoContent from './components/NoContent';
 import NavMenu from './components/nav/NavMenu';
+import Background from './components/Background';
 import store from './store';
 import { setProgress } from './services';
 
@@ -33,6 +34,7 @@ export default () => {
           <Route path='*' element={<NoContent />} />
         </Routes>
       </Container>
+      <Background />
     </div>
   );
 };
