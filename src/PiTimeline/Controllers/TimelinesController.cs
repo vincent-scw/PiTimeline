@@ -32,6 +32,7 @@ namespace PiTimeline.Controllers
         [HttpGet]
         public async Task<IActionResult> FetchLines()
         {
+            System.Threading.Thread.Sleep(5000);
             var result = await _queries.FetchLinesAsync();
             return Ok(result);
         }

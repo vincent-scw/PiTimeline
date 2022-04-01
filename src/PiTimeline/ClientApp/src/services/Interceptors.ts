@@ -1,19 +1,19 @@
 import { AxiosInstance } from "axios";
 import { toast } from 'react-toastify';
 import store from '../store';
-import { setLoadingBarProgress } from './loading-reducer';
+import { setProgress } from './loading-slice';
 
 export const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance => {
   axiosInstance.interceptors.request.use(
     config => {
       const i = Math.floor(Math.random() * 40) + 10;
-      store.dispatch(setLoadingBarProgress(i));
+      store.dispatch(setProgress(i));
       return config;
     })
 
   axiosInstance.interceptors.response.use(
     config => {
-      store.dispatch(setLoadingBarProgress(100));
+      store.dispatch(setProgress(100));
       return config
     },
     error => {

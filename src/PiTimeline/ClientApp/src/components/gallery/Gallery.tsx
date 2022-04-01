@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useHistory } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages } from '@fortawesome/free-solid-svg-icons';
 import { ActionPanel } from "./ActionPanel";
 import { GalleryCtl } from "../controls";
 
 export const Gallery: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [directory, setDirectory] = useState<string>();
   const [pathSegments, setPathSegments] = useState([]);
@@ -19,7 +19,7 @@ export const Gallery: React.FC = () => {
   }, [path])
 
   const directorySelected = (directory: string) => {
-    history.push(`/g/${directory}`);
+    navigate(`/g/${directory}`);
   }
 
   return (

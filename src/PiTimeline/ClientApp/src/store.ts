@@ -1,6 +1,8 @@
-import { combineReducers, createStore } from 'redux';
-import { loadingReducer } from './services';
+import { configureStore } from '@reduxjs/toolkit';
+import loadingReducer from './services/loading-slice';
 
-const store = createStore(combineReducers({ loadingReducer }));
-
-export default store;
+export default configureStore({
+  reducer: {
+    loading: loadingReducer
+  }
+})
