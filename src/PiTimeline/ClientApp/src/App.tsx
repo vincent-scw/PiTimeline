@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import LoadingBar from 'react-top-loading-bar';
 import { Container } from 'reactstrap';
 import Home from './components/Home';
@@ -14,12 +15,12 @@ import { setProgress } from './services';
 import './styles/main.scss'
 
 export default () => {
-  const { loading } = store.getState();
-  
+  const progress = useSelector<any, number>(state => state.loading.progress)
+
   return (
     <div>
       <LoadingBar
-        progress={loading.progress}
+        progress={progress}
         onLoaderFinished={() => store.dispatch(setProgress(0))} />
       <NavMenu />
       <Container>
