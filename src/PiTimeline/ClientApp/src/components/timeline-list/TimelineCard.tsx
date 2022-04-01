@@ -26,7 +26,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
       <div className="card-content">
         <div className="content">
           <div className="title is-4">
-            <Link to={`t/${data.id}`}>{data.title}</Link>
+            <Link to={`/t/${data.id}`}>{data.title}</Link>
           </div>
           <div className="level">
             <div className="level-left">

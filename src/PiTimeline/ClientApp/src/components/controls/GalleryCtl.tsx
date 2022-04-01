@@ -19,7 +19,6 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   }, [directorySrc])
 
   const refreshDirectory = (directory: string) => {
-    console.log('dir', directory)
     Svc.GallerySvc.get(directory)
       .then(res => {
         const data = res.data;
