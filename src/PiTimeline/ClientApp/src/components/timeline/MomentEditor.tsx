@@ -11,7 +11,7 @@ export interface MomentEditorProps {
 
 export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
   const dispatch = useDispatch();
-  const [moment, setMoment] = useState<Svc.Moment>(props.moment || {});
+  const [moment, setMoment] = useState<Svc.Moment>(props.moment || { takePlaceAtDateTime: new Date() });
 
   const stateChanged = (prop: string, v: any) => {
     let newEntity = { ...moment, [prop]: v };
@@ -24,7 +24,7 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
     } else {
       dispatch(createMoment(moment));
     }
-    
+
     if (props.saved)
       props.saved();
   }

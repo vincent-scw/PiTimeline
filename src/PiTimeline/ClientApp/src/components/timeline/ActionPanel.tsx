@@ -12,7 +12,7 @@ export interface ActionPanelProps {
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const { timeline } = props;
-  const newMoment: Moment = { timelineId: timeline.id, content: '' };
+  const newMoment: Moment = { timelineId: timeline.id, content: '', takePlaceAtDateTime: new Date() };
 
   return (
     <div className="panel left-dockbg">
