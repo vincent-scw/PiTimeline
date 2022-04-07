@@ -23,3 +23,8 @@ export interface DirectoryInfo extends ItemInfo {
   subDirectories?: DirectoryInfo[];
   items?: ItemInfo[];
 }
+
+export type GroupedMoments = {
+  group: string;
+  moments: Moment[];
+}

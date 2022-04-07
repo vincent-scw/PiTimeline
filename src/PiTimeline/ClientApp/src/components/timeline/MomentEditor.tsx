@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { RichTextInput, TDatePicker } from "../controls";
-import { toast } from "react-toastify";
 import * as Svc from '../../services';
+import { useDispatch } from "react-redux";
+import { createMoment, updateMoment } from "../../services";
 
 export interface MomentEditorProps {
   moment?: Svc.Moment;
@@ -9,6 +10,7 @@ export interface MomentEditorProps {
 }
 
 export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
+  const dispatch = useDispatch();
   const [moment, setMoment] = useState<Svc.Moment>(props.moment || {});
 
   const stateChanged = (prop: string, v: any) => {
@@ -18,18 +20,13 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
 
   const saveMoment = () => {
     if (moment.id) {
-      Svc.MomentSvc.updateMoment(moment)
-        .then(t => {
-          toast.info(`${t.data.name} has been updated.`)
-          if (props.saved) props.saved(t.data);
-        });
+      dispatch(updateMoment(moment));
     } else {
-      Svc.MomentSvc.createMoment(moment)
-        .then(t => {
-          toast.info(`${t.data.name} has been created.`)
-          if (props.saved) props.saved(t.data);
-        });
+      dispatch(createMoment(moment));
     }
+    
+    if (props.saved)
+      props.saved();
   }
 
   return (

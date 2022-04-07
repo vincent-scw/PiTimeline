@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, SliceCaseReducers } from "@reduxjs/toolkit";
 import { Timeline } from ".";
 import instance from './axios-instance';
 
@@ -30,7 +30,7 @@ export const updateTimeline = createAsyncThunk(
 export const deleteTimeline = createAsyncThunk(
   'timeline/deleteTimeline',
   async (timelineId: string) => {
-    const response = await instance({
+    await instance({
       method: 'DELETE',
       url: `api/timelines/${timelineId}`
     });
@@ -52,13 +52,22 @@ export const createTimeline = createAsyncThunk(
   }
 )
 
-export const timelineListSlice = createSlice({
+export interface TimelineListInitialState {
+  timelines: Timeline[],
+  status: 'idle' | 'loading' | 'succeeded' | 'failed',
+  error: string | null
+}
+
+export const timelineListSlice = createSlice<TimelineListInitialState, SliceCaseReducers<TimelineListInitialState>>({
   name: 'timelineList',
-  initialState: { timelines: [] },
-  reducers: {},
+  initialState: { timelines: [], status: 'idle', error: null },
+  reducers: {
+  },
   extraReducers: (builder) => {
+    builder.addCase(fetchTimelines.pending, (state) => {state.status = 'loading'});
     builder.addCase(fetchTimelines.fulfilled, (state, action) => {
       state.timelines = action.payload;
+      state.status = 'idle';
     });
     builder.addCase(createTimeline.fulfilled, (state, action) => {
       state.timelines = [action.payload, ...state.timelines];
@@ -81,4 +90,5 @@ export const timelineListSlice = createSlice({
 })
 
 export const selectTimelines = state => state.timelineList.timelines;
+export const selectTimelineListIsLoading = state => state.timelineList.status === 'loading';
 export default timelineListSlice.reducer;

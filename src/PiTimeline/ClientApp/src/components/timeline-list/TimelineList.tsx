@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import * as Svc from '../../services';
 import { ActionPanel } from "./ActionPanel";
 import { TimelineCard } from './TimelineCard';
-import { fetchTimelines, selectTimelines, deleteTimeline } from "../../services";
+import { fetchTimelines, selectTimelines, deleteTimeline, selectTimelineListIsLoading } from "../../services";
 
 const TimelineList: React.FC = () => {
   const columnsInLine = 4;
 
   const dispatch = useDispatch();
   const timelineList = useSelector(selectTimelines);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isLoading = useSelector(selectTimelineListIsLoading);
 
   useEffect(() => {
     dispatch(fetchTimelines());

@@ -24,6 +24,9 @@ export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
     } else {
       dispatch(createTimeline(timeline));
     }
+    
+    if (props.saved)
+      props.saved();
   }
 
   return (

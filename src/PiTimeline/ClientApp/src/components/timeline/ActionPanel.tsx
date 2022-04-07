@@ -7,12 +7,11 @@ import { MomentEditor } from './MomentEditor';
 import { Moment, Timeline } from "../../services";
 
 export interface ActionPanelProps {
-  saved?: Function;
   timeline: Timeline;
 }
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
-  const { saved, timeline } = props;
+  const { timeline } = props;
   const newMoment: Moment = { timelineId: timeline.id, content: '' };
 
   return (
@@ -24,7 +23,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
               <FontAwesomeIcon icon={faPlus} />
             </span>
           </a>}>
-          {close => <MomentEditor saved={(t) => { close(); saved(t); }} moment={newMoment} />
+          {close => <MomentEditor saved={(t) => { close(); }} moment={newMoment} />
           }
         </Popup>
       </p>
