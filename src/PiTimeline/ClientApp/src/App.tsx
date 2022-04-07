@@ -11,18 +11,18 @@ import NoContent from './components/NoContent';
 import NavMenu from './components/nav/NavMenu';
 import Background from './components/Background';
 import store from './store';
-import { setProgress } from './services';
+import { setLoadingProgress, selectLoadingProgress } from './services';
 
 import './styles/main.scss'
 
 export default () => {
-  const progress = useSelector<any, number>(state => state.loading.progress)
+  const progress = useSelector(selectLoadingProgress);
 
   return (
     <div>
       <LoadingBar
         progress={progress}
-        onLoaderFinished={() => store.dispatch(setProgress(0))} />
+        onLoaderFinished={() => store.dispatch(setLoadingProgress(0))} />
       <NavMenu />
       <Container>
         <Routes>

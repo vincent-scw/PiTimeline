@@ -4,11 +4,12 @@ export const loadingSlice = createSlice({
   name: 'loading',
   initialState: { progress: 0 },
   reducers: {
-    setProgress: (state, action) => {
+    setLoadingProgress: (state, action) => {
       state.progress = action.payload;
     }
   }
 })
 
-export const { setProgress } = loadingSlice.actions;
+export const selectLoadingProgress = state => state.loading.progress;
+export const { setLoadingProgress } = loadingSlice.actions;
 export default loadingSlice.reducer;

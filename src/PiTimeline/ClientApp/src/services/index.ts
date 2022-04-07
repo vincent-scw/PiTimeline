@@ -1,5 +1,5 @@
 export * from './models';
 export * from './Timeline';
 export * from './Moment';
-export * from './Gallery';
 export * from './loading-slice';
+export * from './gallery-slice';
