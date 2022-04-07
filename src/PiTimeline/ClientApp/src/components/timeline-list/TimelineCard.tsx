@@ -9,7 +9,7 @@ import * as Svc from '../../services';
 
 export interface TimelineCardProps {
   data: Svc.Timeline;
-  updateTimeline: Function;
+  updateTimeline?: Function;
   deleteTimeline: Function;
 }
 

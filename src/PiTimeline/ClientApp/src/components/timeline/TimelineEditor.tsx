@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { TextInput } from "../controls";
-import { toast } from "react-toastify";
 import * as Svc from '../../services';
+import { createTimeline, updateTimeline } from "../../services";
 
 export interface TimelineEditorProps {
   timeline?: Svc.Timeline;
@@ -9,8 +10,7 @@ export interface TimelineEditorProps {
 }
 
 export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
-  const { saved } = props;
-
+  const dispatch = useDispatch();
   const [timeline, setTimeline] = useState<Svc.Timeline>(props.timeline || {});
 
   const stateChanged = (prop: string, v: any) => {
@@ -20,17 +20,9 @@ export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
 
   const saveTimeline = () => {
     if (timeline.id) {
-      Svc.TimelineSvc.updateTimeline(timeline)
-        .then(t => {
-          toast.info(`${t.data.name} has been updated.`)
-          if (saved) saved(t.data);
-        });
+      dispatch(updateTimeline(timeline));
     } else {
-      Svc.TimelineSvc.createTimeline(timeline)
-        .then(t => {
-          toast.info(`${t.data.name} has been created.`)
-          if (saved) saved(t.data);
-        });
+      dispatch(createTimeline(timeline));
     }
   }
 

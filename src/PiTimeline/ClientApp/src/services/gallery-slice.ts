@@ -25,5 +25,5 @@ export const gallerySlice = createSlice({
   }
 })
 
-export const selectDirectoryInfo = state => state.gallery.directoryInfo
+export const selectDirectoryInfo = state => state.gallery.directoryInfo;
 export default gallerySlice.reducer;
