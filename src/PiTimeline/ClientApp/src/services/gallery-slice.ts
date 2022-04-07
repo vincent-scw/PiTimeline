@@ -3,7 +3,7 @@ import instance from './axios-instance';
 
 export const fetchDir = createAsyncThunk(
   'gallery/fetchDir',
-  async (path: string, thunkAPI) => {
+  async (path: string) => {
     const response = await instance({
       method: 'GET',
       url: path ? `api/gallery/${path}` : `api/gallery/`
