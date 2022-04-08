@@ -23,7 +23,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
               <FontAwesomeIcon icon={faPlus} />
             </span>
           </a>}>
-          {close => <MomentEditor saved={(t) => { close(); }} moment={newMoment} />
+          {close => <MomentEditor done={close} moment={newMoment} />
           }
         </Popup>
       </p>

@@ -11,6 +11,7 @@ $menu-item-active-background-color: $primary;
 @import "./layouts/_navbar";
 @import "./layouts/_footer";
 
+@import "./modules/timeline-list";
 @import "./modules/_timeline";
 @import "./modules/_moment-editor";
 @import "./modules/_gallery";
@@ -54,4 +55,14 @@ code {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
+}
+
+.panel-block:not(:last-child) {
+  border-bottom: 1px solid #aaa !important;
+}
+
+.popup-content>.delete {
+  right: 0.5rem;
+  position: absolute;
+  top: 0.5rem;
 }

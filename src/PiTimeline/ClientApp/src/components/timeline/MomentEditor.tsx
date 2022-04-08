@@ -6,7 +6,7 @@ import { createMoment, updateMoment } from "../../services";
 
 export interface MomentEditorProps {
   moment?: Svc.Moment;
-  saved?: Function;
+  done?: Function;
 }
 
 export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
@@ -25,12 +25,13 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
       dispatch(createMoment(moment));
     }
 
-    if (props.saved)
-      props.saved();
+    if (props.done)
+      props.done();
   }
 
   return (
     <React.Fragment>
+      <button className="delete" onClick={() => props.done()}></button>
       <section>
         <p className="subtitle">
           Moment Editor

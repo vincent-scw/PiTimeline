@@ -33,7 +33,7 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   }
 
   return (
-    <React.Fragment>
+    <div className="gallery-ctl">
       <div className="gallery-container">
         <Gallery images={cloneItems(directoryInfo.subDirectories)} enableLightbox={false}
           onClickThumbnail={directoryClicked} isSelectable={false}
@@ -43,6 +43,6 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
       <div className="gallery-container">
         <Gallery images={cloneItems(directoryInfo.items)} onSelectImage={(i) => itemSelected(directoryInfo.items[i])} />
       </div>
-    </React.Fragment>
+    </div>
   );
 }

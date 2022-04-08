@@ -31,7 +31,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
           <div className="level">
             <div className="level-left">
               <div className="level-items tags has-addons">
-                <span className="tag">Since</span>
+                <span className="tag is-dark">Since</span>
                 <span className="tag is-info"><time>1 Jan 2016</time></span>
               </div>
             </div>
