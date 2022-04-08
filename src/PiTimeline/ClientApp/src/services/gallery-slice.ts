@@ -21,9 +21,9 @@ export const gallerySlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchDir.fulfilled, (state, action) => {
       state.directoryInfo = action.payload;
-    })
+    });
   }
 })
 
 export const selectDirectoryInfo = state => state.gallery.directoryInfo;
-export default gallerySlice.reducer;
+export const galleryReducer = gallerySlice.reducer;

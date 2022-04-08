@@ -9,7 +9,7 @@ export const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance
       const i = Math.floor(Math.random() * 40) + 10;
       store.dispatch(setLoadingProgress(i));
       return config;
-    })
+    });
 
   axiosInstance.interceptors.response.use(
     config => {
@@ -23,5 +23,6 @@ export const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance
 
       return Promise.reject(error);
     });
+
   return axiosInstance;
 }

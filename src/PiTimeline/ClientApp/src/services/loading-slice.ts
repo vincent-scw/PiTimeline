@@ -12,4 +12,4 @@ export const loadingSlice = createSlice({
 
 export const selectLoadingProgress = state => state.loading.progress;
 export const { setLoadingProgress } = loadingSlice.actions;
-export default loadingSlice.reducer;
+export const loadingReducer = loadingSlice.reducer;
