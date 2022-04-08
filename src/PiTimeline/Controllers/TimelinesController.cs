@@ -55,7 +55,7 @@ namespace PiTimeline.Controllers
         public async Task<IActionResult> UpdateLine(string id, [FromBody] TimelineDto dto)
         {
             var timeline = await _timelineRepository.GetByIdAsync(id);
-            timeline.Update(dto.Title);
+            timeline.Update(dto.Title, dto.CoverPatternUrl);
 
             timeline = await _timelineRepository.UpdateAsync(timeline);
             return Ok(timeline);

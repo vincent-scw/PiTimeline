@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,8 @@ namespace PiTimeline
 
             services.Configure<GalleryConfiguration>(Configuration.GetSection("Gallery"));
             services.AddAutoMapper(typeof(MappingProfile));
+
+            services.AddMediatR(typeof(Timeline).Assembly, typeof(Startup).Assembly);
 
             services.AddSingleton<GalleryValueTransformer>();
 
