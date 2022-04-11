@@ -31,7 +31,7 @@ const TimelineList: React.FC = () => {
 
     return (
       result.map((r, i) =>
-        <div className="columns" key={`c${i}`}>
+        <div className="columns timeline-columns" key={`c${i}`}>
           {r.map(entity =>
             <div className="column is-3" key={entity.title}>
               <TimelineCard data={entity} deleteTimeline={delTimeline} />

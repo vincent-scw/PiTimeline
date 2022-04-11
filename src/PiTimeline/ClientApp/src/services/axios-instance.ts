@@ -3,7 +3,7 @@ import moment from 'moment';
 
 const dateTransformer: AxiosRequestTransformer = data => {
   if (data instanceof Date) {
-    return moment(data).format('yyyy-MM-DD')
+    return moment(data).format('YYYY-MM-DD')
   }
   if (Array.isArray(data)) {
     return data.map(val => dateTransformer(val))
