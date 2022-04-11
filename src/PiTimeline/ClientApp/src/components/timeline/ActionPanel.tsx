@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from "react-router-dom";
-import { faPlus, faImages } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faImages, faClock } from '@fortawesome/free-solid-svg-icons';
 import { Popup } from "reactjs-popup";
 import { MomentEditor } from './MomentEditor';
 import { Moment, Timeline } from "../../services";
@@ -26,6 +26,11 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
           {close => <MomentEditor done={close} moment={newMoment} />
           }
         </Popup>
+      </p>
+      <p className="panel-block dock-img-block">
+        <Link to={'/t'}>
+          <FontAwesomeIcon icon={faClock} />
+        </Link>
       </p>
       <p className="panel-block dock-img-block">
         <Link to={'/g'}>

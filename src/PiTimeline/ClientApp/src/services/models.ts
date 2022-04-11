@@ -10,6 +10,7 @@ export interface Timeline {
   title?: string;
   description?: string;
   snapshot?: string;
+  since?: Date;
   moments?: Moment[];
 }
 

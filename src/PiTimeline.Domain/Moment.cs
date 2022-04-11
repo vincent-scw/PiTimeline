@@ -1,4 +1,5 @@
-﻿using PiTimeline.Domain.SeedWork;
+﻿using PiTimeline.Domain.Events;
+using PiTimeline.Domain.SeedWork;
 using PiTimeline.Shared.Utilities;
 using System;
 
@@ -22,6 +23,8 @@ namespace PiTimeline.Domain
             TimelineId = timelineId;
             Content = content;
             TakePlaceAtDateTime = takePlaceAt;
+
+            AddDomainEvent(new MomentChangedEvent(this));
         }
 
         public string TimelineId { get; }
@@ -36,6 +39,8 @@ namespace PiTimeline.Domain
             TakePlaceAtDateTime = takePlaceAt;
 
             UpdatedDateTime = DateTime.Now;
+
+            AddDomainEvent(new MomentChangedEvent(this));
         }
     }
 }

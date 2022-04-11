@@ -26,14 +26,14 @@ namespace PiTimeline.Infrastructure
         public async Task<T> AddAsync(T entity)
         {
             var t = DbContext.Set<T>().Add(entity).Entity;
-            await DbContext.SaveChangesAsync();
+            await DbContext.SaveEntitiesAsync();
             return t;
         }
 
         public async Task<T> UpdateAsync(T entity)
         {
             DbContext.Entry(entity).State = EntityState.Modified;
-            await DbContext.SaveChangesAsync();
+            await DbContext.SaveEntitiesAsync();
             return entity;
         }
 
@@ -49,7 +49,7 @@ namespace PiTimeline.Infrastructure
                 DbContext.Entry(entity).State = EntityState.Modified;
             }
 
-            await DbContext.SaveChangesAsync();
+            await DbContext.SaveEntitiesAsync();
         }
     }
 }

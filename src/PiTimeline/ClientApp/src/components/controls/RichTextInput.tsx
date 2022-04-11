@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Popup from "reactjs-popup";
@@ -14,7 +14,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
   const { value, valueChanged } = props;
   const quill = useRef(null);
 
-  const modules = {
+  const modules = useMemo(() => ({
     toolbar: {
       container: "#toolbar",
       handlers: {
@@ -25,7 +25,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     clipboard: {
       matchVisual: false,
     }
-  }
+  }), []);
 
   const photoSelected = (item: Svc.ItemInfo) => {
     const content = item.thumbnail;
@@ -48,7 +48,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
       editor.setSelection(cursorPosition + content.length);
     }
   }
-
+  
   const handleValueChanged = newValue =>
     setTimeout(() => valueChanged(newValue))
 

@@ -35,7 +35,7 @@ namespace PiTimeline.Domain
 
         public bool CalculateSince(DateTime newDate)
         {
-            if (Since > newDate)
+            if (Since == default || Since > newDate)
             {
                 Since = newDate;
                 return true;

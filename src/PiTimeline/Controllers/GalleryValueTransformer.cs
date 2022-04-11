@@ -7,15 +7,15 @@ namespace PiTimeline.Controllers
 {
     public class GalleryValueTransformer : DynamicRouteValueTransformer
     {
-        public override async ValueTask<RouteValueDictionary> TransformAsync(HttpContext httpContext, RouteValueDictionary values)
+        public override ValueTask<RouteValueDictionary> TransformAsync(HttpContext httpContext, RouteValueDictionary values)
         {
             if (!values.ContainsKey("path") || values["path"] == null)
-                return values;
+                return ValueTask.FromResult(values);
 
             values["controller"] = "Gallery";
             values["action"] = "HandlePath";
             
-            return values;
+            return ValueTask.FromResult(values);
         }
     }
 }

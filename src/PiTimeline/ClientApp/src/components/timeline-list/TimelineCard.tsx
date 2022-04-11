@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Popup } from "reactjs-popup";
 import 'reactjs-popup/dist/index.css';
+import moment from "moment";
 import { TimelineEditor } from '../timeline/TimelineEditor';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -32,7 +33,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
             <div className="level-left">
               <div className="level-items tags has-addons">
                 <span className="tag is-dark">Since</span>
-                <span className="tag is-info"><time>1 Jan 2016</time></span>
+                <span className="tag is-info"><time>{moment(data.since).format('DD MMM YYYY')}</time></span>
               </div>
             </div>
             <div className="level-right">

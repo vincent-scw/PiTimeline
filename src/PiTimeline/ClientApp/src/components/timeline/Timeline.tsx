@@ -66,7 +66,7 @@ const Timeline: React.FC = () => {
                               </span>
                             </a>
                           }>
-                          {close => <MomentEditor saved={(t) => { close(); }} moment={m} />}
+                          {close => <MomentEditor done={close} moment={m} />}
                         </Popup>
 
                         <a onClick={() => delMoment(m)}>
