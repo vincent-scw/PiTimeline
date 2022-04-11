@@ -32,12 +32,11 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
   return (
     <React.Fragment>
       <button className="delete" onClick={() => props.done()}></button>
-      <section>
+      <section className="popup-title">
         <p className="subtitle">
           Moment Editor
         </p>
       </section>
-      <hr />
       <form>
         <TDatePicker name="Date"
           value={moment.takePlaceAtDateTime}

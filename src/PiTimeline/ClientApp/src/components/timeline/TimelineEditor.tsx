@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { TextInput } from "../controls";
+import Popup from "reactjs-popup";
+import { GalleryCtl, TextInput } from "../controls";
 import * as Svc from '../../services';
 import { createTimeline, updateTimeline } from "../../services";
 
 export interface TimelineEditorProps {
   timeline?: Svc.Timeline;
-  saved?: Function;
+  done?: Function;
 }
 
 export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
@@ -24,18 +25,36 @@ export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
     } else {
       dispatch(createTimeline(timeline));
     }
-    
-    if (props.saved)
-      props.saved();
+
+    if (props.done)
+      props.done();
   }
 
   return (
     <React.Fragment>
+      <button className="delete" onClick={() => props.done()}></button>
+      <section className="popup-title">
+        <p className="subtitle">
+          Timeline Editor
+        </p>
+      </section>
+
       <form>
         <TextInput
           valueChanged={(v) => stateChanged('title', v)}
           value={timeline.title}
           placeholder="Input timeline title here" />
+
+        <Popup trigger={
+          <a className="button is-primary is-light">Choose Cover Pattern</a>} nested position="right center">
+          {close => <GalleryCtl itemSelected={(item) => {
+            stateChanged('coverPatternUrl', item.thumbnail); close();
+          }} />}
+        </Popup>
+
+        <div>
+          <img src={timeline.coverPatternUrl} className="timeline-editor-pic" />
+        </div>
 
         <div className="field">
           <div className="control">

@@ -17,44 +17,44 @@ $menu-item-active-background-color: $primary;
 @import "./modules/_gallery";
 
 .has-navbar-fixed-top {
-    padding-top: 4rem !important;
+  padding-top: 4rem !important;
 }
 
 .main {
-    background-color: white;
-    height: 100%;
-    padding: 0 1rem;
+  background-color: white;
+  height: 100%;
+  padding: 0 1rem;
 }
 
 .is-fullwidth {
-    width: 100%;
+  width: 100%;
 }
 
 .editor-container {
-    min-width: 400px;
+  min-width: 400px;
 }
 
 .mat-radio-button {
-    margin: 0 12px;
+  margin: 0 12px;
 }
 
 .mat-hint {
-    font-size: small;
+  font-size: small;
 }
 
 /* Provide sufficient contrast against white background */
 a {
-    color: #0366d6;
+  color: #0366d6;
 }
 
 code {
-    color: #e01a76;
+  color: #e01a76;
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
 }
 
 .panel-block:not(:last-child) {
@@ -65,4 +65,8 @@ code {
   right: 0.5rem;
   position: absolute;
   top: 0.5rem;
+}
+
+.popup-title {
+  margin: 1.5rem 5px;
 }

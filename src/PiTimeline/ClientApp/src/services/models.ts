@@ -9,7 +9,7 @@ export interface Timeline {
   id?: string;
   title?: string;
   description?: string;
-  snapshot?: string;
+  coverPatternUrl?: string;
   since?: Date;
   moments?: Moment[];
 }

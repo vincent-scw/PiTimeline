@@ -10,18 +10,17 @@ import * as Svc from '../../services';
 
 export interface TimelineCardProps {
   data: Svc.Timeline;
-  updateTimeline?: Function;
   deleteTimeline: Function;
 }
 
 export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
-  const { data, updateTimeline, deleteTimeline } = props;
+  const { data, deleteTimeline } = props;
 
   return (
     <div className="card">
       <div className="card-image">
         <figure className="image is-4by3">
-          <img src="https://bulma.io/images/placeholders/1280x960.png" alt="" />
+          <img src={data.coverPatternUrl ?? 'assets/favicon.png'} alt="" className="timeline-default-cover"/>
         </figure>
       </div>
       <div className="card-content">
@@ -37,7 +36,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
               </div>
             </div>
             <div className="level-right">
-              <Popup position="top center" closeOnDocumentClick={false}
+              <Popup position="center center" modal={true} closeOnDocumentClick={false}
                 trigger={<a>
                   <span className="icon has-text-info">
                     <FontAwesomeIcon icon={faEdit} />
@@ -46,7 +45,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
                 }>
                 {close => <TimelineEditor
                   timeline={data}
-                  saved={(t) => { close(); updateTimeline(t); }} />}
+                  done={close} />}
               </Popup>
 
               <a onClick={() => deleteTimeline(data)}>

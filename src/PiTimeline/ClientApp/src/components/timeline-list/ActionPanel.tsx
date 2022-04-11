@@ -10,13 +10,13 @@ export const ActionPanel: React.FC = () => {
   return (
     <div className="panel left-dockbg">
       <p className="panel-block dock-img-block">
-        <Popup position="right center"
+        <Popup position="center center" modal={true} closeOnDocumentClick={false}
           trigger={<a>
             <span className="icon has-text-success">
               <FontAwesomeIcon icon={faPlus} />
             </span>
           </a>}>
-          {close => <TimelineEditor saved={close} />
+          {close => <TimelineEditor done={close} />
           }
         </Popup>
       </p>
