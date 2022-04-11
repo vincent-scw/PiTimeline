@@ -31,7 +31,7 @@ const Timeline: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="t-details">
       {isLoading && <div>Loading...</div>}
       {timeline &&
         <div>
