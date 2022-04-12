@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
+using PiTimeline.Shared.Utilities;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using PiTimeline.Infrastructure;
-using PiTimeline.Shared.Utilities;
 
 namespace PiTimeline.Controllers
 {
@@ -26,6 +27,7 @@ namespace PiTimeline.Controllers
             _indexBuilder = indexBuilder;
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {

@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PiTimeline.Domain;
 using PiTimeline.Infrastructure;
-using System.Threading.Tasks;
-using AutoMapper;
 using PiTimeline.Shared.Dtos;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace PiTimeline.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TimelinesController : ControllerBase

@@ -18,7 +18,7 @@ const dateTransformer: AxiosRequestTransformer = data => {
 const instance = axios.create({
   baseURL: '',
   headers: {
-    'content-type': 'application/json'
+    'content-type': 'application/json',
   },
   transformRequest: [dateTransformer].concat(axios.defaults.transformRequest)
 })
