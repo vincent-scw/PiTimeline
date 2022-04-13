@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace PiTimeline.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GalleryController : ControllerBase
@@ -27,7 +28,6 @@ namespace PiTimeline.Controllers
             _indexBuilder = indexBuilder;
         }
 
-        [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {

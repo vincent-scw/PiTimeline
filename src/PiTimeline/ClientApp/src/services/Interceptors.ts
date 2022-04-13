@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css' 
 import store from '../store';
 import { setLoadingProgress } from './loading-slice';
 
@@ -15,6 +16,7 @@ export const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance
       return config;
     },
     error => {
+      store.dispatch(setLoadingProgress(100));
       return Promise.reject(error);
     });
 
@@ -26,8 +28,8 @@ export const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance
     error => {
       console.log(error)
 
-      toast.error(error.response.message)
-
+      toast.error(error.response.message, { position: 'bottom-center' });
+      store.dispatch(setLoadingProgress(100));
       return Promise.reject(error);
     });
 

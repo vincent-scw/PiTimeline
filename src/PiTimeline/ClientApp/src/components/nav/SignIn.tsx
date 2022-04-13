@@ -1,16 +1,24 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { TextInput } from "../controls";
-import * as Svc from '../../services';
+import { useDispatch, useSelector } from "react-redux";
+import { Credentials, login, selectAuthenticated } from "../../services";
 
 export interface SignInProps {
   done?: Function;
 }
 
 export const SignIn: React.FC<SignInProps> = (props) => {
-  const [credentials, setCredentials] = useState<Svc.Credentials>({username: ''});
+  const dispatch = useDispatch();
+  const [credentials, setCredentials] = useState<Credentials>({username: ''});
+  const authenticated = useSelector(selectAuthenticated);
 
-  const login = () => {
+  useEffect(() => {
+    if (authenticated && props.done)
+    props.done();
+  }, [authenticated])
 
+  const doLogin = () => {
+    dispatch(login(credentials));
   }
 
   const stateChanged = (prop: string, v: any) => {
@@ -27,12 +35,12 @@ export const SignIn: React.FC<SignInProps> = (props) => {
         </p>
       </section>
       <form>
-        <TextInput valueChanged={(v) => stateChanged('username', v)} placeholder="Username"/>
-        <TextInput valueChanged={(v) => stateChanged('password', v)} type={'password'} placeholder="Password"/>
+        <TextInput value={credentials.username} valueChanged={(v) => stateChanged('username', v)} placeholder="Username"/>
+        <TextInput value={credentials.password} valueChanged={(v) => stateChanged('password', v)} type={'password'} placeholder="Password"/>
         <div className="field">
           <div className="control">
             <a className="button is-primary is-fullwidth"
-              onClick={login}>
+              onClick={doLogin}>
               Sign In
             </a>
           </div>
