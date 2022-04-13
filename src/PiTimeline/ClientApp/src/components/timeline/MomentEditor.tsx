@@ -44,7 +44,7 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
         <RichTextInput value={moment.content} valueChanged={(c) => stateChanged('content', c)} />
         <div className="field">
           <div className="control">
-            <a className="button is-primary is-small is-fullwidth"
+            <a className="button is-primary is-fullwidth"
               onClick={saveMoment}>
               Save
             </a>

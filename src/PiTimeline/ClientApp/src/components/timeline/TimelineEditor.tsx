@@ -58,7 +58,7 @@ export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
 
         <div className="field">
           <div className="control">
-            <a className="button is-primary is-small is-fullwidth"
+            <a className="button is-primary is-fullwidth"
               onClick={saveTimeline}>
               Save
             </a>

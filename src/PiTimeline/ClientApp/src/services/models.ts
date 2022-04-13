@@ -29,3 +29,8 @@ export type GroupedMoments = {
   group: string;
   moments: Moment[];
 }
+
+export type Credentials = {
+  username: string;
+  password?: string;
+}
