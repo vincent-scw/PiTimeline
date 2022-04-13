@@ -9,8 +9,10 @@ const dateTransformer: AxiosRequestTransformer = data => {
     return data.map(val => dateTransformer(val))
   }
   if (typeof data === "object" && data !== null) {
-    return Object.fromEntries(Object.entries(data).map(([ key, val ]) =>
-      [ key, dateTransformer(val) ]))
+    return Object.entries(data).reduce((acc, [ key, val ]) => {
+      acc[key] = dateTransformer(val);
+      return acc;
+    }, {});
   }
   return data
 }
