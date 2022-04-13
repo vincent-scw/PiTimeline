@@ -9,7 +9,8 @@ export interface Timeline {
   id?: string;
   title?: string;
   description?: string;
-  snapshot?: string;
+  coverPatternUrl?: string;
+  since?: Date;
   moments?: Moment[];
 }
 
@@ -22,4 +23,14 @@ export interface DirectoryInfo extends ItemInfo {
   path?: string;
   subDirectories?: DirectoryInfo[];
   items?: ItemInfo[];
+}
+
+export type GroupedMoments = {
+  group: string;
+  moments: Moment[];
+}
+
+export type Credentials = {
+  username: string;
+  password?: string;
 }

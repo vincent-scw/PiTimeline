@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { TextInput } from "../controls";
-import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import Popup from "reactjs-popup";
+import { GalleryCtl, TextInput } from "../controls";
 import * as Svc from '../../services';
+import { createTimeline, updateTimeline } from "../../services";
 
 export interface TimelineEditorProps {
   timeline?: Svc.Timeline;
-  saved?: Function;
+  done?: Function;
 }
 
 export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
-  const { saved } = props;
-
+  const dispatch = useDispatch();
   const [timeline, setTimeline] = useState<Svc.Timeline>(props.timeline || {});
 
   const stateChanged = (prop: string, v: any) => {
@@ -20,31 +21,44 @@ export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
 
   const saveTimeline = () => {
     if (timeline.id) {
-      Svc.TimelineSvc.updateTimeline(timeline)
-        .then(t => {
-          toast.info(`${t.data.name} has been updated.`)
-          if (saved) saved(t.data);
-        });
+      dispatch(updateTimeline(timeline));
     } else {
-      Svc.TimelineSvc.createTimeline(timeline)
-        .then(t => {
-          toast.info(`${t.data.name} has been created.`)
-          if (saved) saved(t.data);
-        });
+      dispatch(createTimeline(timeline));
     }
+
+    if (props.done)
+      props.done();
   }
 
   return (
     <React.Fragment>
+      <button className="delete" onClick={() => props.done()}></button>
+      <section className="popup-title">
+        <p className="subtitle">
+          Timeline Editor
+        </p>
+      </section>
+
       <form>
         <TextInput
           valueChanged={(v) => stateChanged('title', v)}
           value={timeline.title}
           placeholder="Input timeline title here" />
 
+        <Popup trigger={
+          <a className="button is-primary is-light">Choose Cover Pattern</a>} nested position="right center">
+          {close => <GalleryCtl itemSelected={(item) => {
+            stateChanged('coverPatternUrl', item.thumbnail); close();
+          }} />}
+        </Popup>
+
+        <div>
+          <img src={timeline.coverPatternUrl} className="timeline-editor-pic" />
+        </div>
+
         <div className="field">
           <div className="control">
-            <a className="button is-primary is-small is-fullwidth"
+            <a className="button is-primary is-fullwidth"
               onClick={saveTimeline}>
               Save
             </a>

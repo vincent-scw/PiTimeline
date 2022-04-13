@@ -1,9 +1,59 @@
-import React, { useRef } from "react";
-import ReactQuill from 'react-quill';
+import React, { useRef, useMemo } from "react";
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Popup from "reactjs-popup";
 import { GalleryCtl } from "./GalleryCtl";
 import * as Svc from '../../services';
+
+const BlockEmbed = Quill.import('blots/block/embed');
+class ImgEmbed extends BlockEmbed {
+  static create(value) {
+    let node = super.create(value);
+    node.setAttribute('src', value.src);
+    node.setAttribute('class', value.className);
+
+    node.onclick = function(e) {
+      console.log('click:' + value.src);
+    }
+    return node;
+  }
+
+  static value(node) {
+    return {
+      src: node.getAttribute('src'),
+      className: node.getAttribute('class')
+    };
+  }
+}
+
+ImgEmbed.blotName = 'mImage';
+ImgEmbed.tagName = 'img';
+Quill.register(ImgEmbed);
+
+class VideoEmbed extends BlockEmbed {
+  static create(value) {
+    let node = super.create(value);
+    node.setAttribute('src', value.src)
+    node.setAttribute('controls', value.controls)
+    node.setAttribute('class', value.className)
+    node.setAttribute('webkit-playsinline', true)
+    node.setAttribute('playsinline', true)
+    node.setAttribute('x5-playsinline', true)
+    return node;
+  }
+
+  static value (node) {
+    return {
+      src: node.getAttribute('src'),
+      controls: node.getAttribute('controls'),
+      className: node.getAttribute('class')
+    };
+  }
+}
+
+VideoEmbed.blotName = 'mVideo';
+VideoEmbed.tagName = 'video';
+Quill.register(VideoEmbed);
 
 export interface RichTextInputProps {
   value?: string;
@@ -14,7 +64,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
   const { value, valueChanged } = props;
   const quill = useRef(null);
 
-  const modules = {
+  const modules = useMemo(() => ({
     toolbar: {
       container: "#toolbar",
       handlers: {
@@ -25,30 +75,26 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     clipboard: {
       matchVisual: false,
     }
-  }
+  }), []);
 
   const photoSelected = (item: Svc.ItemInfo) => {
-    const content = item.thumbnail;
-
-    if (content) {
+    if (item) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
-      editor.insertEmbed(cursorPosition, 'image', content);
-      editor.setSelection(cursorPosition + content.length);
+      editor.insertEmbed(cursorPosition, 'mImage', { src: item.thumbnail, className: 'moment-image' });
+      editor.setSelection(cursorPosition + 1);
     }
   }
 
   const videoSelected = (item: Svc.ItemInfo) => {
-    const content = item.thumbnail;
-
-    if (content) {
+    if (item) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
-      editor.insertEmbed(cursorPosition, content);
-      editor.setSelection(cursorPosition + content.length);
+      editor.insertEmbed(cursorPosition, 'mVideo', { src: item.thumbnail, clasName: 'moment-video' });
+      editor.setSelection(cursorPosition + 1);
     }
   }
-
+  
   const handleValueChanged = newValue =>
     setTimeout(() => valueChanged(newValue))
 

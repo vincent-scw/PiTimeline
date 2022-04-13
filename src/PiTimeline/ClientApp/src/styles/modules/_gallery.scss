@@ -5,3 +5,11 @@
   border: "1px solid #ddd";
   overflow: auto;
 }
+
+.gallery-ctl {
+  min-width: 50vw;
+}
+
+[role=tooltip].popup-content {
+  width: auto !important;
+}

@@ -35,7 +35,7 @@ namespace PiTimeline.Infrastructure
 
             var allFiles = Directory.GetFiles(dirPath);
             var allHandlingExtensions = $"{_configuration.ImageExtensions}|{_configuration.VideoExtensionss}";
-            var needToHandle = allFiles.Where(x => allHandlingExtensions.Contains(Path.GetExtension(x)));
+            var needToHandle = allFiles.Where(x => allHandlingExtensions.Contains(Path.GetExtension(x).ToLower()));
 
             var items = needToHandle.Select(x => new IndexItemDto(Path.GetFileName(x))).ToList();
             items.AsParallel().ForAll(x => BuildItem(dirPath, x));
@@ -57,8 +57,9 @@ namespace PiTimeline.Infrastructure
 
         private bool TryGetExistingIndex(string dirPath, out IndexDto dto)
         {
-            var indexFile = Path.Combine(ToThumbnailPath(dirPath), IndexFileName);
-            if (!File.Exists(indexFile))
+            var indexFile = new FileInfo(Path.Combine(ToThumbnailPath(dirPath), IndexFileName));
+            var dirInfo = new DirectoryInfo(dirPath);
+            if (!indexFile.Exists || dirInfo.LastWriteTime > indexFile.LastWriteTime)
             {
                 dto = null;
                 return false;
@@ -66,7 +67,8 @@ namespace PiTimeline.Infrastructure
 
             try
             {
-                using FileStream fs = new FileStream(indexFile, FileMode.Open);
+                using var fs = indexFile.OpenRead();
+                
                 dto = JsonSerializer.Deserialize<IndexDto>(fs, new JsonSerializerOptions());
                 return true;
             }

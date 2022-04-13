@@ -1,19 +1,18 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from "react-router-dom";
-import { faPlus, faImages } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faImages, faClock } from '@fortawesome/free-solid-svg-icons';
 import { Popup } from "reactjs-popup";
 import { MomentEditor } from './MomentEditor';
 import { Moment, Timeline } from "../../services";
 
 export interface ActionPanelProps {
-  saved?: Function;
   timeline: Timeline;
 }
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
-  const { saved, timeline } = props;
-  const newMoment: Moment = { timelineId: timeline.id, content: '' };
+  const { timeline } = props;
+  const newMoment: Moment = { timelineId: timeline.id, content: '', takePlaceAtDateTime: new Date() };
 
   return (
     <div className="panel left-dockbg">
@@ -24,9 +23,14 @@ export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
               <FontAwesomeIcon icon={faPlus} />
             </span>
           </a>}>
-          {close => <MomentEditor saved={(t) => { close(); saved(t); }} moment={newMoment} />
+          {close => <MomentEditor done={close} moment={newMoment} />
           }
         </Popup>
+      </p>
+      <p className="panel-block dock-img-block">
+        <Link to={'/t'}>
+          <FontAwesomeIcon icon={faClock} />
+        </Link>
       </p>
       <p className="panel-block dock-img-block">
         <Link to={'/g'}>

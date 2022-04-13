@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import Gallery from 'react-grid-gallery';
-import * as Svc from '../../services';
+import { fetchDir, selectDirectoryInfo } from "../../services";
 
 export interface GalleryCtlProps {
   directorySrc?: string;
@@ -8,43 +9,40 @@ export interface GalleryCtlProps {
   directorySelected?: (directory: string) => void;
 }
 
-const defaultDirectoryInfo: Svc.DirectoryInfo = { src: '', subDirectories: [], items: [] };
-
 export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   const { directorySrc, itemSelected, directorySelected } = props;
-  const [directoryInfo, setDirectoryInfo] = useState<Svc.DirectoryInfo>(defaultDirectoryInfo);
+  const dispatch = useDispatch();
+  const directoryInfo = useSelector(selectDirectoryInfo);
 
   useEffect(() => {
-    refreshDirectory(directorySrc ?? defaultDirectoryInfo.src);
-  }, [directorySrc])
-
-  const refreshDirectory = (directory: string) => {
-    Svc.GallerySvc.get(directory)
-      .then(res => {
-        const data = res.data;
-        setDirectoryInfo(data);
-      })
-  }
+    dispatch(fetchDir(directorySrc));
+  }, [directorySrc, dispatch])
 
   const directoryClicked = (index: number) => {
     const directory = directoryInfo?.subDirectories[index];
     if (directorySelected)
       directorySelected(directory.path);
 
-    refreshDirectory(directory.path);
+    dispatch(fetchDir(directory.path));
+  }
+
+  const cloneItems = (items: any[]) => {
+    // Gallery will mutate the object, so need to cloned a new one
+    const clonedObj = JSON.parse(JSON.stringify(items));
+    return clonedObj;
   }
 
   return (
-    <React.Fragment>
+    <div className="gallery-ctl">
       <div className="gallery-container">
-        <Gallery images={directoryInfo.subDirectories} enableLightbox={false}
+        <Gallery images={cloneItems(directoryInfo.subDirectories)} enableLightbox={false}
           onClickThumbnail={directoryClicked} isSelectable={false}
           rowHeight={120} />
       </div>
       <hr />
       <div className="gallery-container">
-        <Gallery images={directoryInfo.items} onSelectImage={(i) => itemSelected(directoryInfo.items[i])} />
+        <Gallery images={cloneItems(directoryInfo.items)} onSelectImage={(i) => itemSelected(directoryInfo.items[i])} />
       </div>
-    </React.Fragment>
+    </div>
   );
 }

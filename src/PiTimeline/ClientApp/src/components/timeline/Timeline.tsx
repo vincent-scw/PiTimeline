@@ -1,47 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Moment from 'react-moment';
 import { ActionPanel } from './ActionPanel';
-import * as Svc from '../../services';
-import {
-  GroupedMoments,
-  MomentsGroupingHandler as MGHandler
-} from './MomentsGroupingHandler';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Popup from "reactjs-popup";
 import { MomentEditor } from "./MomentEditor";
+import { useSelector, useDispatch } from "react-redux";
+import { 
+  getTimelineDetail, 
+  deleteMoment,
+  selectGroupedMoments, 
+  selectTimeline, 
+  selectTimelineIsLoading } from "../../services";
 
-export const Timeline: React.FC = () => {
+const Timeline: React.FC = () => {
   const { tid } = useParams<any>();
-  const [timeline, setTimeline] = useState<Svc.Timeline>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [groupedMoments, setGroupedMoments] = useState<GroupedMoments[]>([]);
+
+  const dispatch = useDispatch();
+  const timeline = useSelector(selectTimeline);
+  const isLoading = useSelector(selectTimelineIsLoading);
+  const groupedMoments = useSelector(selectGroupedMoments);
 
   useEffect(() => {
-    refresh();
-  }, [tid])
+    dispatch(getTimelineDetail(tid));
+  }, [tid, dispatch])
 
-  const refresh = () => {
-    setIsLoading(true);
-    Svc.TimelineSvc.getTimeline(tid)
-      .then(res => {
-        if (res.data.moments) {
-          const grouped = MGHandler.groupMoments(res.data.moments);
-          setGroupedMoments(grouped);
-        }
-
-        setTimeline(res.data);
-        setIsLoading(false);
-      });
-  }
-
-  const deleteMoment = (moment: Svc.Moment) => {
-
+  const delMoment = (moment) => {
+    dispatch(deleteMoment(moment));
   }
 
   return (
-    <div>
+    <div className="t-details">
       {isLoading && <div>Loading...</div>}
       {timeline &&
         <div>
@@ -76,10 +66,10 @@ export const Timeline: React.FC = () => {
                               </span>
                             </a>
                           }>
-                          {close => <MomentEditor saved={(t) => { close(); refresh(); }} moment={m} />}
+                          {close => <MomentEditor done={close} moment={m} />}
                         </Popup>
 
-                        <a onClick={() => deleteMoment(m)}>
+                        <a onClick={() => delMoment(m)}>
                           <span className="icon has-text-grey-light">
                             <FontAwesomeIcon icon={faTrashAlt} />
                           </span>
@@ -97,9 +87,11 @@ export const Timeline: React.FC = () => {
               <span className="tag is-medium is-primary"><img src="../assets/favicon.png"></img></span>
             </div>
           </div>
-          <ActionPanel saved={refresh} timeline={timeline} />
+          <ActionPanel timeline={timeline} />
         </div>
       }
     </div>
   );
 }
+
+export default Timeline;

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { RichTextInput, TDatePicker } from "../controls";
-import { toast } from "react-toastify";
 import * as Svc from '../../services';
+import { useDispatch } from "react-redux";
+import { createMoment, updateMoment } from "../../services";
 
 export interface MomentEditorProps {
   moment?: Svc.Moment;
-  saved?: Function;
+  done?: Function;
 }
 
 export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
-  const [moment, setMoment] = useState<Svc.Moment>(props.moment || {});
+  const dispatch = useDispatch();
+  const [moment, setMoment] = useState<Svc.Moment>(props.moment || { takePlaceAtDateTime: new Date() });
 
   const stateChanged = (prop: string, v: any) => {
     let newEntity = { ...moment, [prop]: v };
@@ -18,28 +20,23 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
 
   const saveMoment = () => {
     if (moment.id) {
-      Svc.MomentSvc.updateMoment(moment)
-        .then(t => {
-          toast.info(`${t.data.name} has been updated.`)
-          if (props.saved) props.saved(t.data);
-        });
+      dispatch(updateMoment(moment));
     } else {
-      Svc.MomentSvc.createMoment(moment)
-        .then(t => {
-          toast.info(`${t.data.name} has been created.`)
-          if (props.saved) props.saved(t.data);
-        });
+      dispatch(createMoment(moment));
     }
+
+    if (props.done)
+      props.done();
   }
 
   return (
     <React.Fragment>
-      <section>
+      <button className="delete" onClick={() => props.done()}></button>
+      <section className="popup-title">
         <p className="subtitle">
           Moment Editor
         </p>
       </section>
-      <hr />
       <form>
         <TDatePicker name="Date"
           value={moment.takePlaceAtDateTime}
@@ -47,7 +44,7 @@ export const MomentEditor: React.FC<MomentEditorProps> = (props) => {
         <RichTextInput value={moment.content} valueChanged={(c) => stateChanged('content', c)} />
         <div className="field">
           <div className="control">
-            <a className="button is-primary is-small is-fullwidth"
+            <a className="button is-primary is-fullwidth"
               onClick={saveMoment}>
               Save
             </a>

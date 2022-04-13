@@ -1,45 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import * as Svc from '../../services';
 import { ActionPanel } from "./ActionPanel";
-import { toast } from "react-toastify";
 import { TimelineCard } from './TimelineCard';
+import { fetchTimelines, selectTimelines, deleteTimeline, selectTimelineListIsLoading } from "../../services";
 
-export const TimelineList: React.FC = () => {
+const TimelineList: React.FC = () => {
   const columnsInLine = 4;
 
-  const [timelines, setTimelines] = useState<Svc.Timeline[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
+  const timelineList = useSelector(selectTimelines);
+  const isLoading = useSelector(selectTimelineListIsLoading);
 
   useEffect(() => {
-    refresh();
-  }, []);
+    dispatch(fetchTimelines());
+  }, [dispatch]);
 
-  const refresh = () => {
-    setIsLoading(true);
-    Svc.TimelineSvc.fetchTimelines()
-      .then(res => {
-        setTimelines(res.data);
-        setIsLoading(false);
-      });
-  }
-
-  const deleteTimeline = (timeline: Svc.Timeline) => {
+  const delTimeline = (timeline: Svc.Timeline) => {
     if (window.confirm('Are you sure you wish to delete this item?'))
-      Svc.TimelineSvc.deleteTimeline(timeline.id).then(_ => {
-        toast.info(`Timeline ${timeline.title} has been deleted`);
-        refresh();
-      });
-  }
-
-  const timelineUpdated = (timeline: Svc.Timeline) => {
-    let newList = [...timelines];
-    const updatedIndex = newList.findIndex(x => x.id === timeline.id);
-    newList[updatedIndex] = timeline;
-    setTimelines(newList);
+      dispatch(deleteTimeline(timeline.id));
   }
 
   const buildCard = () => {
-    const data = timelines;
+    const data = timelineList;
 
     var result = [];
     for (var i = 0; i < data.length; i += columnsInLine) {
@@ -48,10 +31,10 @@ export const TimelineList: React.FC = () => {
 
     return (
       result.map((r, i) =>
-        <div className="columns" key={`c${i}`}>
+        <div className="columns timeline-columns" key={`c${i}`}>
           {r.map(entity =>
             <div className="column is-3" key={entity.title}>
-              <TimelineCard data={entity} updateTimeline={timelineUpdated} deleteTimeline={deleteTimeline} />
+              <TimelineCard data={entity} deleteTimeline={delTimeline} />
             </div>)}
         </div>)
     );
@@ -60,8 +43,10 @@ export const TimelineList: React.FC = () => {
   return (
     <div>
       {isLoading && <span>Loading...</span>}
-      {timelines && buildCard()}
-      <ActionPanel saved={(t) => setTimelines([t, ...timelines])} />
+      {timelineList && buildCard()}
+      <ActionPanel />
     </div>
   );
 }
+
+export default TimelineList;

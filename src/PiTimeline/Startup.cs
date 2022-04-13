@@ -1,18 +1,23 @@
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using PiTimeline.Controllers;
 using PiTimeline.Domain;
 using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
+using System.Text;
 
 namespace PiTimeline
 {
@@ -31,8 +36,26 @@ namespace PiTimeline
             services.AddControllersWithViews();
             services.AddSwaggerGen();
 
+            services.Configure<AuthConfiguration>(Configuration.GetSection("Auth"));
             services.Configure<GalleryConfiguration>(Configuration.GetSection("Gallery"));
             services.AddAutoMapper(typeof(MappingProfile));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration.GetValue<string>("Auth:Issuer"),
+                        ValidAudience = Configuration.GetValue<string>("Auth:Audience"),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:Secret"] + "0123456789abcdef"))
+                    };
+                });
+
+            services.AddMediatR(typeof(Timeline).Assembly, typeof(Startup).Assembly);
 
             services.AddSingleton<GalleryValueTransformer>();
 
@@ -70,6 +93,9 @@ namespace PiTimeline
             app.UseSpaStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

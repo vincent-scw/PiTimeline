@@ -5,10 +5,11 @@ export interface TextInputProps {
   value?: any;
   valueChanged: Function;
   placeholder?: string;
+  type?: string;
 }
 
 export const TextInput: React.FC<TextInputProps> = (props) => {
-  const { name, value, valueChanged, placeholder } = props;
+  const { name, value, valueChanged, placeholder, type } = props;
 
   return (
     <React.Fragment>
@@ -21,7 +22,7 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
         <div className="field-body">
           <div className="field">
             <div className="control">
-              <input className="input" type="text"
+              <input className="input" type={type ?? 'text'}
                 placeholder={placeholder} value={value || ''} onChange={(e) => valueChanged(e.target.value)} />
             </div>
           </div>
