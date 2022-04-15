@@ -2,7 +2,7 @@ import React, { useRef, useMemo } from "react";
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Popup from "reactjs-popup";
-import { GalleryCtl } from "./GalleryCtl";
+import { PopupGallery } from "./PopupGallery";
 import * as Svc from '../../services';
 
 const BlockEmbed = Quill.import('blots/block/embed');
@@ -78,6 +78,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
   }), []);
 
   const photoSelected = (item: Svc.ItemInfo) => {
+    quill.current.focus();
     if (item) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
@@ -87,6 +88,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
   }
 
   const videoSelected = (item: Svc.ItemInfo) => {
+    quill.current.focus();
     if (item) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
@@ -102,11 +104,11 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     <div id="toolbar">
       <button className="ql-bold"></button>
       <button className="ql-italic"></button>
-      <Popup trigger={<button className="ql-image"></button>} nested position="bottom center">
-        {close => <GalleryCtl itemSelected={(item) => { photoSelected(item); close(); }} />}
+      <Popup trigger={<button className="ql-image"></button>} modal nested position="center center">
+        {close => <PopupGallery itemSelected={(item) => { photoSelected(item); close(); }} />}
       </Popup>
-      <Popup trigger={<button className="ql-video"></button>} nested position="bottom center">
-        {close => <GalleryCtl itemSelected={(item) => { videoSelected(item); close(); }} />}
+      <Popup trigger={<button className="ql-video"></button>} modal nested position="center center">
+        {close => <PopupGallery itemSelected={(item) => { videoSelected(item); close(); }} />}
       </Popup>
     </div>
   )

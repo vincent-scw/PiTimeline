@@ -11,10 +11,11 @@ export interface GalleryCtlProps {
   directorySrc?: string;
   itemSelected?: (item: any) => void;
   directorySelected?: (directory: string) => void;
+  selectable?: boolean;
 }
 
 export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
-  const { directorySrc, itemSelected, directorySelected } = props;
+  const { directorySrc, itemSelected, directorySelected, selectable } = props;
   const dispatch = useDispatch();
   const directoryInfo = useSelector(selectDirectoryInfo);
   const [isLightxoxOpen, setIsLightxoxOpen] = useState<boolean>(false);
@@ -40,27 +41,14 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
     setIsLightxoxOpen(true);
   }
 
-  const buildDirectories = (dirs: DirectoryInfo[]) => {
-    const chunkSize = 6;
-    const maxLength = Math.ceil(dirs.length / chunkSize);
-    let newDirs = [...dirs];
-    let chunk = Array.from({ length: maxLength }, () => newDirs.splice(0, chunkSize));
-
-    return chunk.map(c => (
-      <div className="columns">
-        {
-          c.map(ele => (
-            <GalleryDirItem ele={ele} directoryClicked={() => directoryClicked(ele)} key={ele.src} />
-          ))
-        }
-      </div>
-    ));
-  }
-
   return (
     <div className="gallery-ctl">
-      <div className="gallery-container">
-        {buildDirectories(directoryInfo.subDirectories)}
+      <div className="gallery-container dir-container">
+        <div className="columns">
+          {directoryInfo.subDirectories.map(ele => (
+            <GalleryDirItem ele={ele} directoryClicked={() => directoryClicked(ele)} key={ele.src} />
+          ))}
+        </div>
       </div>
       <hr />
       <div className="gallery-container">
@@ -69,7 +57,7 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
           options={masonryOptions}>
           {
             directoryInfo.items.map((ele, index) => (
-              <GalleryItem key={ele.src} ele={ele} itemClicked={() => itemClicked(index)} selectable={true} />
+              <GalleryItem key={ele.src} ele={ele} itemClicked={() => itemClicked(index)} selectable={selectable} itemSelected={itemSelected} />
             ))
           }
         </Masonry>

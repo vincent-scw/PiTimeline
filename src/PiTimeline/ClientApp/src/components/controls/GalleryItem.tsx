@@ -24,7 +24,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
       {selectable && hover &&
-        <a onClick={() => itemSelected} style={{ opacity: hover ? 1 : 0, position: 'absolute', height: '36px', width: '100%' }}>
+        <a onClick={() => itemSelected(ele)} style={{ opacity: hover ? 1 : 0, position: 'absolute', height: '36px', width: '100%' }}>
           <span className="icon is-large has-text-success fa-lg">
             <FontAwesomeIcon icon={faCheckCircle} />
           </span>

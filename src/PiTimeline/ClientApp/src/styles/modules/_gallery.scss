@@ -4,6 +4,11 @@
   border: "1px solid #ddd";
 }
 
+.dir-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .gallery-ctl {
   min-width: 50vw;
 }

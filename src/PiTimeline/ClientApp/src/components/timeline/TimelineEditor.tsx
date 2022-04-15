@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import Popup from "reactjs-popup";
-import { GalleryCtl, TextInput } from "../controls";
+import { PopupGallery, TextInput } from "../controls";
 import * as Svc from '../../services';
 import { createTimeline, updateTimeline } from "../../services";
 
@@ -46,10 +46,11 @@ export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
           placeholder="Input timeline title here" />
 
         <Popup trigger={
-          <a className="button is-primary is-light">Choose Cover Pattern</a>} nested position="right center">
-          {close => <GalleryCtl itemSelected={(item) => {
-            stateChanged('coverPatternUrl', item.thumbnail); close();
-          }} />}
+          <a className="button is-primary is-light">Choose Cover Pattern</a>} modal nested position="center center">
+          {close =>
+            <PopupGallery itemSelected={(item) => {
+              stateChanged('coverPatternUrl', item.thumbnail); close();
+            }} />}
         </Popup>
 
         <div>
