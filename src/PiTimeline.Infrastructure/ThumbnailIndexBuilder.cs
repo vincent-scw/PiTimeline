@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
-using PiTimeline.Shared.Utilities;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -11,9 +10,6 @@ namespace PiTimeline.Infrastructure
 {
     public class ThumbnailIndexBuilder
     {
-        private const string ThumbnailPrefix = "Thumbnail";
-        private const int FixedThumbnailHeight = 200;
-        private const int FixedDirectoryThumbnailHeight = 120;
         private const string IndexFileName = "index.json";
         private readonly GalleryConfiguration _configuration;
 
@@ -38,7 +34,6 @@ namespace PiTimeline.Infrastructure
             var needToHandle = allFiles.Where(x => allHandlingExtensions.Contains(Path.GetExtension(x).ToLower()));
 
             var items = needToHandle.Select(x => new IndexItemDto(Path.GetFileName(x))).ToList();
-            items.AsParallel().ForAll(x => BuildItem(dirPath, x));
 
             var subDirs = Directory.GetDirectories(dirPath);
             var dirs = subDirs.Select(x => new IndexItemDto(Path.GetFileName(x))).ToList();
@@ -92,13 +87,6 @@ namespace PiTimeline.Infrastructure
             catch{}
         }
 
-        private void BuildItem(string path, IndexItemDto item)
-        {
-            var filePath = Path.Combine(path, item.Name);
-            item.ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(filePath, FixedThumbnailHeight);
-            item.ThumbnailHeight = FixedThumbnailHeight;
-        }
-
         private void BuildDirectory(string path, IndexItemDto dir)
         {
             var firstFile = GetFirstPhotoInDirectory(Path.Combine(path, dir.Name));
@@ -127,9 +115,7 @@ namespace PiTimeline.Infrastructure
 
             return new IndexItemDto(firstFile)
             {
-                Thumbnail = Path.GetRelativePath(path, firstFile),
-                ThumbnailWidth = ThumbnailUtility.GetWidthForFixedHeight(firstFile, FixedDirectoryThumbnailHeight),
-                ThumbnailHeight = FixedDirectoryThumbnailHeight
+                Thumbnail = Path.GetRelativePath(path, firstFile)
             };
         }
 

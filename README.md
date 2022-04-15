@@ -1,5 +1,7 @@
-# timeline
+# PiTimeline
+***PiTimeline*** is a web application contains timeline editor and photo gallery. It targets to be hosted in Raspberry Pi.
 
 ```
-docker run -d -p 6070:80 -v /mnt/sda1/etc/pitimeline/:/var/PiTimeline/ -v /mnt/sda1/Photos/:/Home/Photos/ --name pitimeline edentidus/pitimeline
+docker pull edentidus/pitimeline:latest
+docker run -d -p {expose_port}:80 -v {timeline_folder_path}:/var/PiTimeline/ -v {photo_folder_path}:/Home/Photos/ --name pitimeline edentidus/pitimeline
 ```
