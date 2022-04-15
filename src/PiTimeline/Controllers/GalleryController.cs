@@ -73,18 +73,14 @@ namespace PiTimeline.Controllers
                 Items = index.Items.Select(x => new ItemDto
                 {
                     Src = BuildApiUrl(Path.Combine(path, x.Name), false),
-                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Name), true),
-                    ThumbnailHeight = x.ThumbnailHeight,
-                    ThumbnailWidth = x.ThumbnailWidth
+                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Name), true)
                 }).ToList(),
                 SubDirectories = index.SubDirectories.Select(x => new DirectoryDto()
                 {
                     ThumbnailCaption = x.Name,
                     Src = BuildApiUrl(Path.Combine(path, x.Name), false),
                     Path = BuildUrl(Path.Combine(path, x.Name), false), // Path is used for UI route
-                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Thumbnail), true),
-                    ThumbnailHeight = x.ThumbnailHeight,
-                    ThumbnailWidth = x.ThumbnailWidth
+                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Thumbnail), true)
                 }).ToList(),
             };
 

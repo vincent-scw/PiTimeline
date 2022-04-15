@@ -4,7 +4,7 @@ namespace PiTimeline.Shared.Utilities
 {
     public static class ThumbnailUtility
     {
-        private const int MaxHeight = 720;
+        private const int MaxHeight = 600;
 
         public static void CreateThumbnail(string imgPath, string outputPath)
         {
@@ -41,19 +41,6 @@ namespace PiTimeline.Shared.Utilities
 
             using var stream = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
             data.SaveTo(stream);
-        }
-
-        public static int GetWidthForFixedHeight(string imgPath, int fixedHeight)
-        {
-            if (!File.Exists(imgPath))
-                throw new FileNotFoundException(imgPath);
-
-            using var bitmap = SKBitmap.Decode(imgPath);
-            if (bitmap == null)
-                return 4 * fixedHeight / 3;
-
-            var rate = (float) fixedHeight / bitmap.Height;
-            return (int) (bitmap.Width * rate);
         }
     }
 }
