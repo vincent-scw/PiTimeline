@@ -48,7 +48,7 @@ namespace PiTimeline.Controllers
                 return Ok(Map(path, dto));
             }
 
-            if (isThumbnail && !System.IO.File.Exists(absolutePath))
+            if (isThumbnail)
             {
                 // When thumbnail doesn't exist, create it
                 var photoPath = Path.Combine(
