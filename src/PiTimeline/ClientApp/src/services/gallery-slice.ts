@@ -9,21 +9,26 @@ export const fetchDir = createAsyncThunk(
       url: path ? `api/gallery/${path}` : `api/gallery/`
     });
     
-    return response.data;
+    return { data: response.data, latestDir: path };
   }
 )
 
 export const gallerySlice = createSlice({
   name: 'gallery',
-  initialState: { directoryInfo: { src: '', subDirectories: [], items: [] } },
+  initialState: { 
+    directoryInfo: { src: '', subDirectories: [], items: [] },
+    latestDir: ''
+  },
   reducers: {
   },
   extraReducers: (builder) => {
     builder.addCase(fetchDir.fulfilled, (state, action) => {
-      state.directoryInfo = action.payload;
+      state.directoryInfo = action.payload.data;
+      state.latestDir = action.payload.latestDir;
     });
   }
 })
 
 export const selectDirectoryInfo = state => state.gallery.directoryInfo;
+export const selectLatestDir = state => state.gallery.latestDir;
 export const galleryReducer = gallerySlice.reducer;
