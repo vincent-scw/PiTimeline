@@ -12,19 +12,22 @@ import {
   deleteMoment,
   selectGroupedMoments, 
   selectTimeline, 
-  selectTimelineIsLoading } from "../../services";
+  selectTimelineIsLoading,
+  selectAuthenticated
+} from "../../services";
 
 const Timeline: React.FC = () => {
   const { tid } = useParams<any>();
 
   const dispatch = useDispatch();
+  const authenticated = useSelector(selectAuthenticated);
   const timeline = useSelector(selectTimeline);
   const isLoading = useSelector(selectTimelineIsLoading);
   const groupedMoments = useSelector(selectGroupedMoments);
 
   useEffect(() => {
     dispatch(getTimelineDetail(tid));
-  }, [tid, dispatch])
+  }, [tid, dispatch, authenticated])
 
   const delMoment = (moment) => {
     dispatch(deleteMoment(moment));
