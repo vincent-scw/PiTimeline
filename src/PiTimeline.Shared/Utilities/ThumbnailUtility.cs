@@ -20,7 +20,9 @@ namespace PiTimeline.Shared.Utilities
                 return;
             }
 
-            using var codec = SKCodec.Create(imgPath);
+            using var codec = SKCodec.Create(imgPath, out SKCodecResult result);
+            if (codec == null)
+                throw new ApplicationException($"Read {imgPath} error: {result}");
 
             using var originBitmap = SKBitmap.Decode(codec);
             if (originBitmap == null)

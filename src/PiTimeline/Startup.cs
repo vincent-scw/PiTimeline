@@ -97,24 +97,6 @@ namespace PiTimeline
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapDynamicControllerRoute<GalleryValueTransformer>("api/gallery/{*path}");
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-            });
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
-
             app.UseExceptionHandler(builder =>
             {
                 builder.Use(async (ctx, next) =>
@@ -135,6 +117,24 @@ namespace PiTimeline
                             break;
                     }
                 });
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDynamicControllerRoute<GalleryValueTransformer>("api/gallery/{*path}");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
         }
     }
