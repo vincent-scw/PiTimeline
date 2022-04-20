@@ -75,13 +75,16 @@ export const deleteMoment = createAsyncThunk(
 export interface TimelineInitialState {
   details: any,
   groupedMoments: any[],
-  status: 'idle' | 'loading' | 'succeeded' | 'failed',
-  error: string | null
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+}
+
+const initialState: TimelineInitialState = {
+  details: {}, groupedMoments: [], status: 'idle'
 }
 
 export const timelineSlice = createSlice<TimelineInitialState, SliceCaseReducers<TimelineInitialState>>({
   name: 'timeline',
-  initialState: { details: {}, groupedMoments: [], status: 'idle', error: null },
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getTimelineDetail.pending, (state) => { state.status = 'loading' });
@@ -90,22 +93,23 @@ export const timelineSlice = createSlice<TimelineInitialState, SliceCaseReducers
       state.groupedMoments = groupMoments(action.payload.moments);
       state.status = 'idle';
     });
+    builder.addCase(getTimelineDetail.rejected, (state) => state = initialState);
     builder.addCase(createMoment.fulfilled, (state, action) => {
-      state.details = {...state.details, moments: [...state.details.moments, action.payload]};
+      state.details = { ...state.details, moments: [...state.details.moments, action.payload] };
       state.groupedMoments = groupMoments(state.details.moments);
     });
     builder.addCase(updateMoment.fulfilled, (state, action) => {
       let newList = [...state.details.moments];
       const foundIndex = state.details.moments.findIndex(x => x.id === action.payload.id);
       newList[foundIndex] = action.payload;
-      state.details = {...state.details, moments: newList};
+      state.details = { ...state.details, moments: newList };
       state.groupedMoments = groupMoments(state.details.moments);
     });
     builder.addCase(deleteMoment.fulfilled, (state, action) => {
       const foundIndex = state.details.moments.findIndex(x => x.id === action.payload);
       let newList = [...state.details.moments];
       newList.splice(foundIndex, 1);
-      state.details = {...state.details, moments: newList};
+      state.details = { ...state.details, moments: newList };
       state.groupedMoments = groupMoments(state.details.moments);
     })
   }

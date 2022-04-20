@@ -54,21 +54,25 @@ export const createTimeline = createAsyncThunk(
 
 export interface TimelineListInitialState {
   timelines: Timeline[],
-  status: 'idle' | 'loading' | 'succeeded' | 'failed',
-  error: string | null
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+}
+
+const initialState: TimelineListInitialState = {
+  timelines: [], status: 'idle'
 }
 
 export const timelineListSlice = createSlice<TimelineListInitialState, SliceCaseReducers<TimelineListInitialState>>({
   name: 'timelineList',
-  initialState: { timelines: [], status: 'idle', error: null },
+  initialState: initialState,
   reducers: {
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchTimelines.pending, (state) => {state.status = 'loading'});
+    builder.addCase(fetchTimelines.pending, (state) => { state.status = 'loading' });
     builder.addCase(fetchTimelines.fulfilled, (state, action) => {
       state.timelines = action.payload;
       state.status = 'idle';
     });
+    builder.addCase(fetchTimelines.rejected, (state) => state = initialState);
     builder.addCase(createTimeline.fulfilled, (state, action) => {
       state.timelines = [action.payload, ...state.timelines];
     });

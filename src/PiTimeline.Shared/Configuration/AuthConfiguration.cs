@@ -7,5 +7,6 @@
         public string Audience { get; set; }
         public string DefaultAdmin { get; set; }
         public string DefaultAdminPassword { get; set; }
+        public int TokenExpiresOnDays { get; set; }
     }
 }

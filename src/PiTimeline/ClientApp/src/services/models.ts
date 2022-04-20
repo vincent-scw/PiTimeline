@@ -21,6 +21,7 @@ export interface ItemInfo {
 
 export interface DirectoryInfo extends ItemInfo {
   path?: string;
+  caption?: string;
   subDirectories?: DirectoryInfo[];
   items?: ItemInfo[];
 }

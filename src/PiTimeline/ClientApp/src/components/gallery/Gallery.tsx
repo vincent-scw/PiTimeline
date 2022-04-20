@@ -4,22 +4,42 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImages } from '@fortawesome/free-solid-svg-icons';
 import { ActionPanel } from "./ActionPanel";
 import { GalleryCtl } from "../controls";
+import { useSelector } from "react-redux";
+import { selectLatestDir, selectAuthenticated } from "../../services";
 
 const Gallery: React.FC = () => {
   const navigate = useNavigate();
-
+  const authenticated = useSelector(selectAuthenticated);
+  const latestDir = useSelector(selectLatestDir);
   const [directory, setDirectory] = useState<string>();
-  const [pathSegments, setPathSegments] = useState([]);
 
   const path = useParams<any>();
 
   useEffect(() => {
-    setPathSegments(path["*"]?.split('/'));
     setDirectory(path["*"] ?? '');
-  }, [path])
+  }, [path, authenticated])
 
   const directorySelected = (directory: string) => {
     navigate(`/g/${directory}`);
+  }
+
+  const buildRoute = () => {
+    const segments = latestDir.split('/');
+    const segObj = segments.reduce((x, y) => {
+      const last = x.at(-1);
+      if (last) {
+        x.push(`${last}/${y}`);
+      } else {
+        x.push(y);
+      }
+      return x;
+    }, []);
+
+    return segments.map((ps, index) => (
+      <li key={ps}>
+        <Link to={`/g/${segObj[index]}`}>{ps}</Link>
+      </li>
+    ));
   }
 
   return (
@@ -34,13 +54,7 @@ const Gallery: React.FC = () => {
               <span>Gallery</span>
             </Link>
           </li>
-          {pathSegments &&
-            pathSegments.map(ps => (
-              <li key={ps}>
-                <Link to={`/g/${ps}`}>{ps}</Link>
-              </li>
-            ))
-          }
+          {latestDir && buildRoute()}
         </ul>
       </nav>
 

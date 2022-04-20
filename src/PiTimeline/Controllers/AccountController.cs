@@ -54,7 +54,7 @@ namespace PiTimeline.Controllers
                 _configuration.Issuer,
                 _configuration.Audience,
                 claims,
-                expires: DateTime.Now.AddDays(3),
+                expires: DateTime.Now.AddDays(_configuration.TokenExpiresOnDays),
                 signingCredentials: credentails
             );
 

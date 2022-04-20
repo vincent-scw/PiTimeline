@@ -48,7 +48,7 @@ namespace PiTimeline.Controllers
                 return Ok(Map(path, dto));
             }
 
-            if (isThumbnail && !System.IO.File.Exists(absolutePath))
+            if (isThumbnail)
             {
                 // When thumbnail doesn't exist, create it
                 var photoPath = Path.Combine(
@@ -77,7 +77,7 @@ namespace PiTimeline.Controllers
                 }).ToList(),
                 SubDirectories = index.SubDirectories.Select(x => new DirectoryDto()
                 {
-                    ThumbnailCaption = x.Name,
+                    Caption = x.Name,
                     Src = BuildApiUrl(Path.Combine(path, x.Name), false),
                     Path = BuildUrl(Path.Combine(path, x.Name), false), // Path is used for UI route
                     Thumbnail = BuildApiUrl(Path.Combine(path, x.Thumbnail), true)

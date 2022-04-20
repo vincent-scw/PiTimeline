@@ -3,18 +3,25 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as Svc from '../../services';
 import { ActionPanel } from "./ActionPanel";
 import { TimelineCard } from './TimelineCard';
-import { fetchTimelines, selectTimelines, deleteTimeline, selectTimelineListIsLoading } from "../../services";
+import { 
+  fetchTimelines, 
+  selectTimelines, 
+  deleteTimeline, 
+  selectTimelineListIsLoading, 
+  selectAuthenticated
+} from "../../services";
 
 const TimelineList: React.FC = () => {
   const columnsInLine = 4;
 
   const dispatch = useDispatch();
+  const authenticated = useSelector(selectAuthenticated);
   const timelineList = useSelector(selectTimelines);
   const isLoading = useSelector(selectTimelineListIsLoading);
 
   useEffect(() => {
     dispatch(fetchTimelines());
-  }, [dispatch]);
+  }, [dispatch, authenticated]);
 
   const delTimeline = (timeline: Svc.Timeline) => {
     if (window.confirm('Are you sure you wish to delete this item?'))
