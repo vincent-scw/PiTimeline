@@ -5,10 +5,11 @@ import { faImages } from '@fortawesome/free-solid-svg-icons';
 import { ActionPanel } from "./ActionPanel";
 import { GalleryCtl } from "../controls";
 import { useSelector } from "react-redux";
-import { selectLatestDir } from "../../services";
+import { selectLatestDir, selectAuthenticated } from "../../services";
 
 const Gallery: React.FC = () => {
   const navigate = useNavigate();
+  const authenticated = useSelector(selectAuthenticated);
   const latestDir = useSelector(selectLatestDir);
   const [directory, setDirectory] = useState<string>();
 
@@ -16,7 +17,7 @@ const Gallery: React.FC = () => {
 
   useEffect(() => {
     setDirectory(path["*"] ?? '');
-  }, [path])
+  }, [path, authenticated])
 
   const directorySelected = (directory: string) => {
     navigate(`/g/${directory}`);

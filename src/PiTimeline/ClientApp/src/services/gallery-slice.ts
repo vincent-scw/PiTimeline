@@ -8,17 +8,19 @@ export const fetchDir = createAsyncThunk(
       method: 'GET',
       url: path ? `api/gallery/${path}` : `api/gallery/`
     });
-    
+
     return { data: response.data, latestDir: path };
   }
 )
 
+const initialState = {
+  directoryInfo: { src: '', subDirectories: [], items: [] },
+  latestDir: ''
+}
+
 export const gallerySlice = createSlice({
   name: 'gallery',
-  initialState: { 
-    directoryInfo: { src: '', subDirectories: [], items: [] },
-    latestDir: ''
-  },
+  initialState: initialState,
   reducers: {
   },
   extraReducers: (builder) => {
@@ -26,6 +28,7 @@ export const gallerySlice = createSlice({
       state.directoryInfo = action.payload.data;
       state.latestDir = action.payload.latestDir;
     });
+    builder.addCase(fetchDir.rejected, state => state = initialState);
   }
 })
 
