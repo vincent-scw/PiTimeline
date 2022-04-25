@@ -33,6 +33,8 @@ namespace PiTimeline
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            FFMpegCore.GlobalFFOptions.Configure(new FFMpegCore.FFOptions { BinaryFolder = "./bin" });
+
             services.AddControllersWithViews();
             services.AddSwaggerGen();
 
@@ -113,7 +115,7 @@ namespace PiTimeline
                             break;
                         default:
                             await ctx.Response.WriteAsJsonAsync(new ErrorResponse("Exception", exception.Message));
-                            logger.LogError(exception.StackTrace ?? exception.Message);
+                            logger.LogError(exception, exception.Message);
                             break;
                     }
                 });

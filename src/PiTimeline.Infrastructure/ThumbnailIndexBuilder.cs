@@ -12,6 +12,7 @@ namespace PiTimeline.Infrastructure
     {
         private const string IndexFileName = "index.json";
         private readonly GalleryConfiguration _configuration;
+        private readonly string _allHandlingExtensions;
 
         public ThumbnailIndexBuilder(IOptions<GalleryConfiguration> options)
         {
@@ -19,6 +20,7 @@ namespace PiTimeline.Infrastructure
                 throw new DirectoryNotFoundException($"Root path not found {options.Value.PhotoRoot}.");
 
             _configuration = options.Value;
+            _allHandlingExtensions = $"{_configuration.ImageExtensions}|{_configuration.VideoExtensions}";
         }
 
         public IndexDto BuildIndex(string dirPath)
@@ -30,8 +32,7 @@ namespace PiTimeline.Infrastructure
             }
 
             var allFiles = Directory.GetFiles(dirPath);
-            var allHandlingExtensions = $"{_configuration.ImageExtensions}|{_configuration.VideoExtensionss}";
-            var needToHandle = allFiles.Where(x => allHandlingExtensions.Contains(Path.GetExtension(x).ToLower()));
+            var needToHandle = allFiles.Where(x => _allHandlingExtensions.Contains(Path.GetExtension(x).ToLower()));
 
             var items = needToHandle.Select(x => new IndexItemDto(Path.GetFileName(x))).ToList();
 
@@ -95,8 +96,6 @@ namespace PiTimeline.Infrastructure
                 return;
 
             dir.Thumbnail = Path.Combine(dir.Name, firstFile.Thumbnail);
-            dir.ThumbnailHeight = firstFile.ThumbnailHeight;
-            dir.ThumbnailWidth = firstFile.ThumbnailWidth;
         }
 
         private string ToThumbnailPath(string absolutePath)
@@ -121,7 +120,10 @@ namespace PiTimeline.Infrastructure
 
         private string GetFirstItemRecursively(string path)
         {
-            var firstFile = Directory.GetFiles(path).FirstOrDefault();
+            var firstFile = Directory.GetFiles(path)
+                .Where(x => _allHandlingExtensions.Contains(Path.GetExtension(x).ToLower()))
+                .FirstOrDefault();
+
             if (firstFile != null)
                 return firstFile;
 

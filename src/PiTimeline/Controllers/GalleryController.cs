@@ -54,7 +54,7 @@ namespace PiTimeline.Controllers
                 var photoPath = Path.Combine(
                     _configuration.PhotoRoot, 
                     path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar));
-                await Task.Run(() => ThumbnailUtility.CreateThumbnail(photoPath, absolutePath));
+                await ThumbnailUtility.CreateThumbnailAsync(photoPath, absolutePath);
             }
 
             if (System.IO.File.Exists(absolutePath))

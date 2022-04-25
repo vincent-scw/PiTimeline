@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using FFMpegCore;
+using SkiaSharp;
 
 namespace PiTimeline.Shared.Utilities
 {
@@ -6,7 +7,7 @@ namespace PiTimeline.Shared.Utilities
     {
         private const int MaxHeight = 600;
 
-        public static void CreateThumbnail(string imgPath, string outputPath)
+        public static async Task CreateThumbnailAsync(string imgPath, string outputPath)
         {
             var originFile = new FileInfo(imgPath);
 
@@ -15,42 +16,47 @@ namespace PiTimeline.Shared.Utilities
 
             var destFile = new FileInfo(outputPath);
             if (destFile.Exists && originFile.LastWriteTime <= destFile.LastWriteTime)
-            { 
+            {
                 // Already created
                 return;
             }
 
             using var codec = SKCodec.Create(imgPath, out SKCodecResult result);
             if (codec == null)
-                throw new ApplicationException($"Read {imgPath} error: {result}");
+            {
+                // TODO: It might be a video, FF configuration not ready
+                if (await FFMpeg.SnapshotAsync(imgPath, outputPath))
+                    return;
 
+                throw new ApplicationException($"Read {imgPath} error: {result}");
+            }
+
+            await Task.Run(() => SaveImg(outputPath, codec));
+        }
+
+        private static void SaveImg(string outputPath, SKCodec codec)
+        {
             using var originBitmap = SKBitmap.Decode(codec);
             if (originBitmap == null)
                 return;
 
-            using var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
-
+            var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
             var resizeFactor = bitmap.Height > MaxHeight ? (float)MaxHeight / bitmap.Height : 1f;
-
-            using var toBitmap = new SKBitmap((int)Math.Round(bitmap.Width * resizeFactor), (int)Math.Round(bitmap.Height * resizeFactor), bitmap.ColorType, bitmap.AlphaType);
-
-            using var canvas = new SKCanvas(toBitmap);
+            var toBitmap = new SKBitmap((int)Math.Round(bitmap.Width * resizeFactor), (int)Math.Round(bitmap.Height * resizeFactor), bitmap.ColorType, bitmap.AlphaType);
+            var canvas = new SKCanvas(toBitmap);
             // Draw a bitmap rescaled
             canvas.SetMatrix(SKMatrix.CreateScale(resizeFactor, resizeFactor));
             canvas.DrawBitmap(bitmap, 0, 0);
             canvas.ResetMatrix();
 
             canvas.Flush();
-
-            using var image = SKImage.FromBitmap(toBitmap);
-            using var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
-
+            var image = SKImage.FromBitmap(toBitmap);
+            var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
             var directory = Path.GetDirectoryName(outputPath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
-
             using var stream = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
             data.SaveTo(stream);
         }

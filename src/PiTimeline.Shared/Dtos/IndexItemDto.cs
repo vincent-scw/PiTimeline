@@ -21,9 +21,5 @@ namespace PiTimeline.Shared.Dtos
         public string Name { get; set; }
         [JsonPropertyName("t")]
         public string? Thumbnail { get; set; }
-        [JsonPropertyName("h")]
-        public int? ThumbnailHeight { get; set; }
-        [JsonPropertyName("w")]
-        public int? ThumbnailWidth { get; set; }
     }
 }
