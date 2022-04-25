@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using PiTimeline.Background;
 using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
-using PiTimeline.Shared.Utilities;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,13 +18,19 @@ namespace PiTimeline.Controllers
         private const string ThumbnailPrefix = "Thumbnail";
         private readonly GalleryConfiguration _configuration;
         private readonly ThumbnailIndexBuilder _indexBuilder;
+        private readonly PhotoThumbnailService _photoService;
+        private readonly VideoThumbnailService _videoService;
 
         public GalleryController(
             IOptions<GalleryConfiguration> options,
-            ThumbnailIndexBuilder indexBuilder)
+            ThumbnailIndexBuilder indexBuilder,
+            PhotoThumbnailService photoService,
+            VideoThumbnailService videoService)
         {
             _configuration = options.Value;
             _indexBuilder = indexBuilder;
+            _photoService = photoService;
+            _videoService = videoService;
         }
 
         [Authorize]
@@ -51,10 +57,18 @@ namespace PiTimeline.Controllers
             if (isThumbnail)
             {
                 // When thumbnail doesn't exist, create it
-                var photoPath = Path.Combine(
+                var mediaPath = Path.Combine(
                     _configuration.PhotoRoot, 
                     path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar));
-                await ThumbnailUtility.CreateThumbnailAsync(photoPath, absolutePath);
+                var extension = Path.GetExtension(mediaPath);
+                if (_configuration.PhotoExtensions.Contains(extension, System.StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await _photoService.EnqueueAndWaitAsync(mediaPath, absolutePath);
+                }
+                else
+                {
+                    await _videoService.EnqueueAndWaitAsync(mediaPath, absolutePath);
+                }
             }
 
             if (System.IO.File.Exists(absolutePath))

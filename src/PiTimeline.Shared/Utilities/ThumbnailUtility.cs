@@ -3,11 +3,17 @@ using SkiaSharp;
 
 namespace PiTimeline.Shared.Utilities
 {
+    public enum MediaType
+    {
+        Photo,
+        Video
+    }
+
     public static class ThumbnailUtility
     {
         private const int MaxHeight = 600;
 
-        public static async Task CreateThumbnailAsync(string imgPath, string outputPath)
+        public static async Task CreateThumbnailAsync(string imgPath, string outputPath, MediaType mediaType)
         {
             var originFile = new FileInfo(imgPath);
 
@@ -21,20 +27,41 @@ namespace PiTimeline.Shared.Utilities
                 return;
             }
 
-            using var codec = SKCodec.Create(imgPath, out SKCodecResult result);
-            if (codec == null)
-            {
-                // TODO: It might be a video, FF configuration not ready
-                if (await FFMpeg.SnapshotAsync(imgPath, outputPath))
-                    return;
-
-                throw new ApplicationException($"Read {imgPath} error: {result}");
-            }
-
-            await Task.Run(() => SaveImg(outputPath, codec));
+            if (mediaType == MediaType.Photo)
+                await Task.Run(() => SavePhoto(imgPath, outputPath));
+            else
+                await SaveVideoAsync(imgPath, outputPath);
         }
 
-        private static void SaveImg(string outputPath, SKCodec codec)
+        private static void SavePhoto(string inputPath, string outputPath)
+        {
+            using var codec = SKCodec.Create(inputPath, out SKCodecResult result);
+            if (codec == null)
+                throw new ApplicationException($"Generate thumbnail for {inputPath} error: {result}");
+
+            SaveImg(codec, outputPath);
+        }
+
+        private static async Task SaveVideoAsync(string inputPath, string outputPath)
+        {
+            var bitmap = await FFMpeg.SnapshotAsync(inputPath);
+            if (bitmap == null)
+            {
+                throw new ApplicationException($"Read {inputPath} error.");
+            }
+
+            var stream = new MemoryStream();
+            bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            using var codec = SKCodec.Create(stream, out SKCodecResult result);
+            if (codec == null)
+                throw new ApplicationException($"Generate thumbnail for {inputPath} error: {result}");
+
+            SaveImg(codec, outputPath);
+        }
+
+        private static void SaveImg(SKCodec codec, string outputPath)
         {
             using var originBitmap = SKBitmap.Decode(codec);
             if (originBitmap == null)
@@ -59,6 +86,7 @@ namespace PiTimeline.Shared.Utilities
             }
             using var stream = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
             data.SaveTo(stream);
+            return;
         }
 
         private static SKBitmap AutoOrient(SKBitmap bitmap, SKEncodedOrigin origin)

@@ -20,7 +20,7 @@ namespace PiTimeline.Infrastructure
                 throw new DirectoryNotFoundException($"Root path not found {options.Value.PhotoRoot}.");
 
             _configuration = options.Value;
-            _allHandlingExtensions = $"{_configuration.ImageExtensions}|{_configuration.VideoExtensions}";
+            _allHandlingExtensions = $"{_configuration.PhotoExtensions}|{_configuration.VideoExtensions}";
         }
 
         public IndexDto BuildIndex(string dirPath)

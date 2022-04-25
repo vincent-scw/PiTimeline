@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using PiTimeline.Background;
 using PiTimeline.Controllers;
 using PiTimeline.Domain;
 using PiTimeline.Infrastructure;
@@ -66,6 +67,9 @@ namespace PiTimeline
             services.AddScoped<IMomentRepository, MomentRepository>();
             services.AddScoped<TimelineQueries>();
             services.AddScoped<ThumbnailIndexBuilder>();
+
+            services.AddSingleton<PhotoThumbnailService>();
+            services.AddSingleton<VideoThumbnailService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
