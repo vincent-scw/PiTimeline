@@ -1,5 +1,6 @@
 import React from 'react';
 import { DirectoryInfo } from '../../services';
+import { buildImgUrl } from './ImgUrlBuilder';
 
 const dirItemStyle: React.CSSProperties = {
   height: '150px'
@@ -14,11 +15,11 @@ export const GalleryDirItem: React.FC<GalleryDirItemProps> = (props) => {
   const { ele, directoryClicked } = props;
 
   return (
-    <div key={ele.src} className="column is-2">
+    <div key={ele.name} className="column is-2">
       <a onClick={() => directoryClicked()}>
         <figure>
-          <img src={ele.thumbnail} style={dirItemStyle} />
-          <figcaption>{ele.caption}</figcaption>
+          <img src={buildImgUrl(ele.path, 240)} style={dirItemStyle} />
+          <figcaption>{ele.name}</figcaption>
         </figure>
       </a>
     </div>

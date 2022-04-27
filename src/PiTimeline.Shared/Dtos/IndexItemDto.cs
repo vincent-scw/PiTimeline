@@ -4,8 +4,8 @@ namespace PiTimeline.Shared.Dtos
 {
     public class IndexDto
     {
-        [JsonPropertyName("items")]
-        public List<IndexItemDto> Items { get; set; }
+        [JsonPropertyName("media")]
+        public List<IndexItemDto> Media { get; set; }
         [JsonPropertyName("dirs")]
         public List<IndexItemDto> SubDirectories { get; set; }
     }

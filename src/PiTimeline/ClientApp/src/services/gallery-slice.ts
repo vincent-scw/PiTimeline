@@ -6,7 +6,7 @@ export const fetchDir = createAsyncThunk(
   async (path: string) => {
     const response = await instance({
       method: 'GET',
-      url: path ? `api/gallery/${path}` : `api/gallery/`
+      url: path ? `api/gallery/d/${path}` : `api/gallery/d/`
     });
 
     return { data: response.data, latestDir: path };

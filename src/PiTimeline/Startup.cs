@@ -58,16 +58,17 @@ namespace PiTimeline
                     };
                 });
 
-            services.AddMediatR(typeof(Timeline).Assembly, typeof(Startup).Assembly);
-
             services.AddSingleton<GalleryValueTransformer>();
+
+            services.AddMediatR(typeof(Timeline).Assembly, typeof(Startup).Assembly);
 
             services.AddDbContext<MyDbContext>(opt => opt.UseSqlite(Configuration.GetConnectionString("Sqlite")));
             services.AddScoped<ITimelineRepository, TimelineRepository>();
             services.AddScoped<IMomentRepository, MomentRepository>();
             services.AddScoped<TimelineQueries>();
-            services.AddScoped<ThumbnailIndexBuilder>();
+            services.AddScoped<DirectoryMetadataBuilder>();
 
+            services.AddSingleton<ThumbnailService>();
             services.AddSingleton<PhotoThumbnailService>();
             services.AddSingleton<VideoThumbnailService>();
 

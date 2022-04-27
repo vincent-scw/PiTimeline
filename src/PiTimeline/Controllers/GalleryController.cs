@@ -15,60 +15,46 @@ namespace PiTimeline.Controllers
     [ApiController]
     public class GalleryController : ControllerBase
     {
-        private const string ThumbnailPrefix = "Thumbnail";
         private readonly GalleryConfiguration _configuration;
-        private readonly ThumbnailIndexBuilder _indexBuilder;
-        private readonly PhotoThumbnailService _photoService;
-        private readonly VideoThumbnailService _videoService;
+        private readonly DirectoryMetadataBuilder _indexBuilder;
+        private readonly ThumbnailService _thumbnailService;
 
         public GalleryController(
             IOptions<GalleryConfiguration> options,
-            ThumbnailIndexBuilder indexBuilder,
-            PhotoThumbnailService photoService,
-            VideoThumbnailService videoService)
+            DirectoryMetadataBuilder indexBuilder,
+            ThumbnailService thumbnailService)
         {
             _configuration = options.Value;
             _indexBuilder = indexBuilder;
-            _photoService = photoService;
-            _videoService = videoService;
+            _thumbnailService = thumbnailService;
         }
 
         [Authorize]
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("d/{path}")]
+        public async Task<IActionResult> HandleDir(string path)
         {
-            var dto = _indexBuilder.BuildIndex(_configuration.PhotoRoot);
-
-            return Ok(Map(string.Empty, dto));
-        }
-
-        [HttpGet("{path}")]
-        public async Task<IActionResult> HandlePath(string path)
-        {
-            var absolutePath = UrlToLocal(path, out bool isThumbnail);
+            var p = path == null ? string.Empty : path;
+            var absolutePath = UrlToLocal(p, false);
 
             if (Directory.Exists(absolutePath))
             {
-                var dto = _indexBuilder.BuildIndex(absolutePath);
+                var dto = _indexBuilder.BuildMeta(absolutePath);
 
-                return Ok(Map(path, dto));
+                return Ok(Map(p, dto));
             }
 
-            if (isThumbnail)
+            return NotFound(p);
+        }
+
+        [HttpGet("f/{path}")]
+        public async Task<IActionResult> HandleFile(string path, [FromQuery] int res)
+        {
+            var thumbnail = res > 0;
+            var absolutePath = UrlToLocal(path, thumbnail);
+
+            if (thumbnail)
             {
-                // When thumbnail doesn't exist, create it
-                var mediaPath = Path.Combine(
-                    _configuration.PhotoRoot, 
-                    path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar));
-                var extension = Path.GetExtension(mediaPath);
-                if (_configuration.PhotoExtensions.Contains(extension, System.StringComparison.InvariantCultureIgnoreCase))
-                {
-                    await _photoService.EnqueueAndWaitAsync(mediaPath, absolutePath);
-                }
-                else
-                {
-                    await _videoService.EnqueueAndWaitAsync(mediaPath, absolutePath);
-                }
+                absolutePath = await _thumbnailService.GetThumbnailPathAsync(path, res);
             }
 
             if (System.IO.File.Exists(absolutePath))
@@ -84,54 +70,37 @@ namespace PiTimeline.Controllers
         {
             var dir = new DirectoryDto
             {
-                Items = index.Items.Select(x => new ItemDto
+                Path = path,
+                Media = index.Media.Select(x => new MediaDto
                 {
-                    Src = BuildApiUrl(Path.Combine(path, x.Name), false),
-                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Name), true)
+                    Name = x.Name,
+                    Path = Path.Combine(path, x.Name),
+                    Type = _configuration.PhotoExtensions.Contains(Path.GetExtension(x.Name), System.StringComparison.InvariantCultureIgnoreCase) 
+                        ? MediaType.Photo : MediaType.Video
                 }).ToList(),
                 SubDirectories = index.SubDirectories.Select(x => new DirectoryDto()
                 {
-                    Caption = x.Name,
-                    Src = BuildApiUrl(Path.Combine(path, x.Name), false),
-                    Path = BuildUrl(Path.Combine(path, x.Name), false), // Path is used for UI route
-                    Thumbnail = x.Thumbnail != null ? BuildApiUrl(Path.Combine(path, x.Thumbnail), true) : null
+                    Name = x.Name,
+                    Path = BuildUrl(Path.Combine(path, x.Name)), // Path is used for UI route
                 }).ToList(),
             };
 
             return dir;
         }
 
-        /// <summary>
-        /// Build url for file/directory
-        /// </summary>
-        /// <param name="absolutePath"></param>
-        /// <param name="isThumbnail"></param>
-        /// <returns></returns>
-        private string BuildUrl(string path, bool isThumbnail)
+        private string BuildUrl(string path)
         {
             var relative = path.Replace(Path.DirectorySeparatorChar, '/');
             if (relative == ".")
                 relative = string.Empty;
-            return isThumbnail ? $"{ThumbnailPrefix}/{relative}" : relative;
+            return relative;
         }
 
-        /// <summary>
-        /// Append api url
-        /// </summary>
-        /// <param name="absolutePath"></param>
-        /// <param name="isThumbnail"></param>
-        /// <returns></returns>
-        private string BuildApiUrl(string path, bool isThumbnail)
+        private string UrlToLocal(string path, bool isThumbnail)
         {
-            return $"api/Gallery/{BuildUrl(path, isThumbnail)}";
-        }
-
-        private string UrlToLocal(string path, out bool isThumbnail)
-        {
-            isThumbnail = path.StartsWith(ThumbnailPrefix);
             var absolutePath = Path.Combine(
                 isThumbnail ? _configuration.ThumbnailRoot : _configuration.PhotoRoot,
-                isThumbnail ? path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar) : path);
+                path.Replace('/', Path.DirectorySeparatorChar));
 
             return absolutePath;
         }

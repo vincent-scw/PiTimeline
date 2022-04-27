@@ -11,38 +11,28 @@ namespace PiTimeline.Shared.Utilities
 
     public static class ThumbnailUtility
     {
-        private const int MaxHeight = 600;
-
-        public static async Task CreateThumbnailAsync(string imgPath, string outputPath, MediaType mediaType)
+        public static async Task CreateThumbnailAsync(
+            string imgPath, 
+            string outputPath, 
+            int resolutionFactor,
+            MediaType mediaType)
         {
-            var originFile = new FileInfo(imgPath);
-
-            if (!originFile.Exists)
-                throw new FileNotFoundException(imgPath);
-
-            var destFile = new FileInfo(outputPath);
-            if (destFile.Exists && originFile.LastWriteTime <= destFile.LastWriteTime)
-            {
-                // Already created
-                return;
-            }
-
             if (mediaType == MediaType.Photo)
-                await Task.Run(() => SavePhoto(imgPath, outputPath));
+                await Task.Run(() => SavePhoto(imgPath, outputPath, resolutionFactor));
             else
-                await SaveVideoAsync(imgPath, outputPath);
+                await SaveVideoAsync(imgPath, outputPath, resolutionFactor);
         }
 
-        private static void SavePhoto(string inputPath, string outputPath)
+        private static void SavePhoto(string inputPath, string outputPath, int resolutionFactor)
         {
             using var codec = SKCodec.Create(inputPath, out SKCodecResult result);
             if (codec == null)
                 throw new ApplicationException($"Generate thumbnail for {inputPath} error: {result}");
 
-            SaveImg(codec, outputPath);
+            SaveImg(codec, outputPath, resolutionFactor);
         }
 
-        private static async Task SaveVideoAsync(string inputPath, string outputPath)
+        private static async Task SaveVideoAsync(string inputPath, string outputPath, int resolutionFactor)
         {
             var bitmap = await FFMpeg.SnapshotAsync(inputPath);
             if (bitmap == null)
@@ -58,17 +48,17 @@ namespace PiTimeline.Shared.Utilities
             if (codec == null)
                 throw new ApplicationException($"Generate thumbnail for {inputPath} error: {result}");
 
-            SaveImg(codec, outputPath);
+            SaveImg(codec, outputPath, resolutionFactor);
         }
 
-        private static void SaveImg(SKCodec codec, string outputPath)
+        private static void SaveImg(SKCodec codec, string outputPath, int resolutionFactor)
         {
             using var originBitmap = SKBitmap.Decode(codec);
             if (originBitmap == null)
                 return;
 
             var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
-            var resizeFactor = bitmap.Height > MaxHeight ? (float)MaxHeight / bitmap.Height : 1f;
+            var resizeFactor = bitmap.Height > resolutionFactor ? (float)resolutionFactor / bitmap.Height : 1f;
             var toBitmap = new SKBitmap((int)Math.Round(bitmap.Width * resizeFactor), (int)Math.Round(bitmap.Height * resizeFactor), bitmap.ColorType, bitmap.AlphaType);
             var canvas = new SKCanvas(toBitmap);
             // Draw a bitmap rescaled

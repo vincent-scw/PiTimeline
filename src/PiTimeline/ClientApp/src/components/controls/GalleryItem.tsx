@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ItemInfo } from "../../services";
+import { Media } from "../../services";
+import { buildImgUrl } from './ImgUrlBuilder';
 
 export interface GalleryItemProps {
-  ele: ItemInfo;
+  ele: Media;
   itemClicked: Function;
   selectable?: boolean;
   itemSelected?: Function;
@@ -32,7 +33,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
       }
 
       <a onClick={() => itemClicked()}>
-        <img src={ele.thumbnail} style={itemStyle} />
+        <img src={buildImgUrl(ele.path, 240)} style={itemStyle} />
       </a>
     </li>
   );

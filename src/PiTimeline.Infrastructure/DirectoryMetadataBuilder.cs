@@ -8,13 +8,13 @@ using System.Text.Json.Serialization;
 
 namespace PiTimeline.Infrastructure
 {
-    public class ThumbnailIndexBuilder
+    public class DirectoryMetadataBuilder
     {
         private const string IndexFileName = "index.json";
         private readonly GalleryConfiguration _configuration;
         private readonly string _allHandlingExtensions;
 
-        public ThumbnailIndexBuilder(IOptions<GalleryConfiguration> options)
+        public DirectoryMetadataBuilder(IOptions<GalleryConfiguration> options)
         {
             if (!Directory.Exists(options.Value.PhotoRoot))
                 throw new DirectoryNotFoundException($"Root path not found {options.Value.PhotoRoot}.");
@@ -23,13 +23,13 @@ namespace PiTimeline.Infrastructure
             _allHandlingExtensions = $"{_configuration.PhotoExtensions}|{_configuration.VideoExtensions}";
         }
 
-        public IndexDto BuildIndex(string dirPath)
+        public IndexDto BuildMeta(string dirPath)
         {
             // try get existing index
-            if (TryGetExistingIndex(dirPath, out IndexDto dto))
-            {
-                return dto;
-            }
+            //if (TryGetExistingIndex(dirPath, out IndexDto dto))
+            //{
+            //    return dto;
+            //}
 
             var allFiles = Directory.GetFiles(dirPath);
             var needToHandle = allFiles.Where(x => _allHandlingExtensions.Contains(Path.GetExtension(x).ToLower()));
@@ -38,15 +38,14 @@ namespace PiTimeline.Infrastructure
 
             var subDirs = Directory.GetDirectories(dirPath);
             var dirs = subDirs.Select(x => new IndexItemDto(Path.GetFileName(x))).ToList();
-            dirs.AsParallel().ForAll(x => BuildDirectory(dirPath, x));
 
-            dto = new IndexDto
+            var dto = new IndexDto
             {
                 SubDirectories = dirs,
-                Items = items
+                Media = items
             };
 
-            StoreAsIndexFile(dirPath, dto);
+            //StoreAsIndexFile(dirPath, dto);
 
             return dto;
         }
@@ -88,54 +87,12 @@ namespace PiTimeline.Infrastructure
             catch{}
         }
 
-        private void BuildDirectory(string path, IndexItemDto dir)
-        {
-            var firstFile = GetFirstPhotoInDirectory(Path.Combine(path, dir.Name));
-
-            if (firstFile == null)
-                return;
-
-            dir.Thumbnail = Path.Combine(dir.Name, firstFile.Thumbnail);
-        }
-
         private string ToThumbnailPath(string absolutePath)
         {
             var relative = Path.GetRelativePath(_configuration.PhotoRoot, absolutePath);
             if (relative == ".")
                 relative = string.Empty;
             return Path.Combine(_configuration.ThumbnailRoot, relative);
-        }
-
-        private IndexItemDto GetFirstPhotoInDirectory(string path)
-        {
-            var firstFile = GetFirstItemRecursively(path);
-            if (firstFile == null)
-                return null;
-
-            return new IndexItemDto(firstFile)
-            {
-                Thumbnail = Path.GetRelativePath(path, firstFile)
-            };
-        }
-
-        private string GetFirstItemRecursively(string path)
-        {
-            var firstFile = Directory.GetFiles(path)
-                .Where(x => _allHandlingExtensions.Contains(Path.GetExtension(x).ToLower()))
-                .FirstOrDefault();
-
-            if (firstFile != null)
-                return firstFile;
-
-            var subDirs = Directory.GetDirectories(path);
-            foreach (var dir in subDirs)
-            {
-                var file = GetFirstItemRecursively(dir);
-                if (file != null)
-                    return file;
-            }
-
-            return null;
         }
     }
 }
