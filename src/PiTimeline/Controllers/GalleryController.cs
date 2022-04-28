@@ -38,9 +38,9 @@ namespace PiTimeline.Controllers
 
             if (Directory.Exists(absolutePath))
             {
-                var dto = _indexBuilder.BuildMeta(absolutePath);
+                var dto = await _indexBuilder.BuildMetaAsync(absolutePath);
 
-                return Ok(Map(p, dto));
+                return Ok(dto);
             }
 
             return NotFound(p);
@@ -64,36 +64,6 @@ namespace PiTimeline.Controllers
             }
 
             return NotFound(path);
-        }
-
-        private DirectoryDto Map(string path, IndexDto index)
-        {
-            var dir = new DirectoryDto
-            {
-                Path = path,
-                Media = index.Media.Select(x => new MediaDto
-                {
-                    Name = x.Name,
-                    Path = Path.Combine(path, x.Name),
-                    Type = _configuration.PhotoExtensions.Contains(Path.GetExtension(x.Name), System.StringComparison.InvariantCultureIgnoreCase) 
-                        ? MediaType.Photo : MediaType.Video
-                }).ToList(),
-                SubDirectories = index.SubDirectories.Select(x => new DirectoryDto()
-                {
-                    Name = x.Name,
-                    Path = BuildUrl(Path.Combine(path, x.Name)), // Path is used for UI route
-                }).ToList(),
-            };
-
-            return dir;
-        }
-
-        private string BuildUrl(string path)
-        {
-            var relative = path.Replace(Path.DirectorySeparatorChar, '/');
-            if (relative == ".")
-                relative = string.Empty;
-            return relative;
         }
 
         private string UrlToLocal(string path, bool isThumbnail)

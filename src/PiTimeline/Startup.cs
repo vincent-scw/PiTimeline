@@ -68,6 +68,7 @@ namespace PiTimeline
             services.AddScoped<TimelineQueries>();
             services.AddScoped<DirectoryMetadataBuilder>();
 
+            services.AddSingleton<Shared.Utilities.MediaUtilities>();
             services.AddSingleton<ThumbnailService>();
             services.AddSingleton<PhotoThumbnailService>();
             services.AddSingleton<VideoThumbnailService>();

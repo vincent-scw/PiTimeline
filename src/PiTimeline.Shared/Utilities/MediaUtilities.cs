@@ -1,4 +1,7 @@
 ﻿using FFMpegCore;
+using Microsoft.Extensions.Options;
+using PiTimeline.Shared.Configuration;
+using PiTimeline.Shared.Dtos;
 using SkiaSharp;
 
 namespace PiTimeline.Shared.Utilities
@@ -9,18 +12,30 @@ namespace PiTimeline.Shared.Utilities
         Video
     }
 
-    public static class ThumbnailUtility
+    public class MediaUtilities
     {
-        public static async Task CreateThumbnailAsync(
-            string imgPath, 
-            string outputPath, 
-            int resolutionFactor,
-            MediaType mediaType)
+        private readonly GalleryConfiguration _configuration;
+        public MediaUtilities(IOptions<GalleryConfiguration> options)
         {
+            _configuration = options.Value;
+        }
+
+        public async Task CreateThumbnailAsync(
+            string originPath, 
+            string outputPath, 
+            int resolutionFactor)
+        {
+            var mediaType = GetMediaType(originPath);
             if (mediaType == MediaType.Photo)
-                await Task.Run(() => SavePhoto(imgPath, outputPath, resolutionFactor));
+                await Task.Run(() => SavePhoto(originPath, outputPath, resolutionFactor));
             else
-                await SaveVideoAsync(imgPath, outputPath, resolutionFactor);
+                await SaveVideoAsync(originPath, outputPath, resolutionFactor);
+        }
+
+        public MediaType GetMediaType(string path)
+        {
+            var extension = Path.GetExtension(path);
+            return _configuration.PhotoExtensions.Contains(extension, StringComparison.InvariantCultureIgnoreCase) ? MediaType.Photo : MediaType.Video;
         }
 
         private static void SavePhoto(string inputPath, string outputPath, int resolutionFactor)
@@ -57,7 +72,7 @@ namespace PiTimeline.Shared.Utilities
             if (originBitmap == null)
                 return;
 
-            var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
+            using var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
             var resizeFactor = bitmap.Height > resolutionFactor ? (float)resolutionFactor / bitmap.Height : 1f;
             var toBitmap = new SKBitmap((int)Math.Round(bitmap.Width * resizeFactor), (int)Math.Round(bitmap.Height * resizeFactor), bitmap.ColorType, bitmap.AlphaType);
             var canvas = new SKCanvas(toBitmap);
@@ -77,6 +92,41 @@ namespace PiTimeline.Shared.Utilities
             using var stream = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
             data.SaveTo(stream);
             return;
+        }
+
+        public MetadataDto GetMetadata(string path)
+        {
+            var mediaType = GetMediaType(path);
+            if (mediaType == MediaType.Photo)
+                return GetPhotoMetadata(path);
+            else
+                return GetVideoMetadata(path);
+        }
+
+        private static MetadataDto GetVideoMetadata(string path)
+        {
+            var fi = new FileInfo(path);
+            return new MetadataDto 
+            {
+                FileSize = fi.Length,
+                CreationTime = fi.CreationTime,
+                Type = MediaType.Video
+            };
+        }
+
+        private static MetadataDto GetPhotoMetadata(string path)
+        {
+            var fi = new FileInfo(path);
+            using var codec = SKCodec.Create(path);
+            using var originBitmap = SKBitmap.Decode(codec);
+            using var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
+            return new MetadataDto
+            {
+                Size = new SizeDto { Width = bitmap.Width, Height = bitmap.Height },
+                FileSize = fi.Length,
+                CreationTime = fi.CreationTime,
+                Type = MediaType.Photo
+            };
         }
 
         private static SKBitmap AutoOrient(SKBitmap bitmap, SKEncodedOrigin origin)

@@ -9,26 +9,28 @@ namespace PiTimeline.Background
     public abstract class ThumbnailCreationServiceBase
     {
         private readonly ILogger _logger;
+        private readonly MediaUtilities _mediaUtilities;
         private readonly SemaphoreSlim _semaphoreSlim;
-        public ThumbnailCreationServiceBase(ILogger logger)
+        public ThumbnailCreationServiceBase(MediaUtilities mediaUtilities, ILogger logger)
         {
+            _mediaUtilities = mediaUtilities;
             _logger = logger;
             _semaphoreSlim = new SemaphoreSlim(MaxConcurrentFactor);
         }
 
         protected abstract int MaxConcurrentFactor { get; }
 
-        public async Task EnqueueAndWaitAsync(string input, string output, int resolutionFactor, MediaType mediaType)
+        public async Task EnqueueAndWaitAsync(string input, string output, int resolutionFactor)
         {
             await _semaphoreSlim.WaitAsync();
 
             try
             {
-                await ThumbnailUtility.CreateThumbnailAsync(
+                await _mediaUtilities.CreateThumbnailAsync(
                     input,
                     output,
-                    resolutionFactor != 720 ? 240 : 720, // only support 240 or 720
-                    mediaType);
+                    resolutionFactor
+                );
             }
             catch (Exception ex)
             {

@@ -47,16 +47,8 @@ namespace PiTimeline.Background
                 return output;
             }
 
-            var extension = Path.GetExtension(origin);
-            if (_configuration.PhotoExtensions.Contains(extension, StringComparison.InvariantCultureIgnoreCase))
-            {
-                await _photoService.EnqueueAndWaitAsync(origin, output, resolutionFactor, MediaType.Photo);
-            }
-            else
-            {
-                await _videoService.EnqueueAndWaitAsync(origin, output, resolutionFactor, MediaType.Video);
-            }
-
+            await _photoService.EnqueueAndWaitAsync(origin, output, resolutionFactor);
+           
             return output;
         }
 
@@ -86,7 +78,7 @@ namespace PiTimeline.Background
         {
             var firstFile = GetFirstMediaRecursively(path);
             if (firstFile == null)
-                return null;
+                return String.Empty;
 
             return Path.GetRelativePath(path, firstFile);
         }

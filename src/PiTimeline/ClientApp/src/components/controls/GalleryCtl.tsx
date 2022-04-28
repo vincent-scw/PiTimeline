@@ -23,7 +23,12 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   const [itemIndex, setItemIndex] = useState<number>(0);
 
   const masonryOptions = {
-    transitionDuration: 0
+    // columnWidth: '.grid-sizer',
+    // itemSelector: '.grid-item',
+    gutter: 5,
+    horizontalOrder: true,
+    fitWidth: true
+    //transitionDuration: 0
   };
 
   useEffect(() => {

@@ -12,8 +12,7 @@ export interface GalleryItemProps {
 }
 
 const itemStyle: React.CSSProperties = {
-  maxWidth: '330px',
-  padding: '0 3px'
+
 }
 
 export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
