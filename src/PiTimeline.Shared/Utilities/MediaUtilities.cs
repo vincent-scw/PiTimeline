@@ -1,4 +1,9 @@
 ﻿using FFMpegCore;
+using MetadataExtractor;
+using MetadataExtractor.Formats.Jpeg;
+using MetadataExtractor.Formats.QuickTime;
+using MetadataExtractor.Formats.FileSystem;
+using MetadataExtractor.Formats.FileType;
 using Microsoft.Extensions.Options;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
@@ -85,9 +90,9 @@ namespace PiTimeline.Shared.Utilities
             var image = SKImage.FromBitmap(toBitmap);
             var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
             var directory = Path.GetDirectoryName(outputPath);
-            if (!Directory.Exists(directory))
+            if (!System.IO.Directory.Exists(directory))
             {
-                Directory.CreateDirectory(directory);
+                System.IO.Directory.CreateDirectory(directory);
             }
             using var stream = new FileStream(outputPath, FileMode.Create, FileAccess.Write);
             data.SaveTo(stream);
@@ -97,36 +102,35 @@ namespace PiTimeline.Shared.Utilities
         public MetadataDto GetMetadata(string path)
         {
             var mediaType = GetMediaType(path);
-            if (mediaType == MediaType.Photo)
-                return GetPhotoMetadata(path);
-            else
-                return GetVideoMetadata(path);
-        }
+            var directories = ImageMetadataReader.ReadMetadata(path);
+            var fileMetaDirectory = directories.OfType<FileMetadataDirectory>().FirstOrDefault();
 
-        private static MetadataDto GetVideoMetadata(string path)
-        {
-            var fi = new FileInfo(path);
-            return new MetadataDto 
+            var meta = new MetadataDto
             {
-                FileSize = fi.Length,
-                CreationTime = fi.CreationTime,
-                Type = MediaType.Video
+                Size = new SizeDto(),
+                FileSize = fileMetaDirectory?.GetInt64(FileMetadataDirectory.TagFileSize),
+                //CreationTime = fi.CreationTime,
+                Type = mediaType
             };
-        }
 
-        private static MetadataDto GetPhotoMetadata(string path)
-        {
-            var fi = new FileInfo(path);
-            using var codec = SKCodec.Create(path);
-            using var originBitmap = SKBitmap.Decode(codec);
-            using var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
-            return new MetadataDto
+            var fileTypeDirectory = directories.OfType<FileTypeDirectory>().FirstOrDefault();
+            var fileType = fileTypeDirectory?.GetString(FileTypeDirectory.TagDetectedFileTypeName)?.ToLower();
+
+            switch (fileType)
             {
-                Size = new SizeDto { Width = bitmap.Width, Height = bitmap.Height },
-                FileSize = fi.Length,
-                CreationTime = fi.CreationTime,
-                Type = MediaType.Photo
-            };
+                case "mp4":
+                    var qtTrackHeaderDirectory = directories.OfType<QuickTimeTrackHeaderDirectory>().FirstOrDefault(qt => qt.GetInt32(QuickTimeTrackHeaderDirectory.TagWidth) > 0);
+                    meta.Size.Width = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagWidth);
+                    meta.Size.Height = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagHeight);
+                    break;
+                case "jpeg":
+                    var jpegDirectory = directories.OfType<JpegDirectory>().FirstOrDefault();
+                    meta.Size.Width = jpegDirectory?.GetInt32(JpegDirectory.TagImageWidth);
+                    meta.Size.Height = jpegDirectory?.GetInt32(JpegDirectory.TagImageHeight);
+                    break;
+            }
+
+            return meta;
         }
 
         private static SKBitmap AutoOrient(SKBitmap bitmap, SKEncodedOrigin origin)

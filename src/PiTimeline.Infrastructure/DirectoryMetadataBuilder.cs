@@ -43,7 +43,7 @@ namespace PiTimeline.Infrastructure
             var items = needToHandle.Select(x => new MediaDto
             {
                 Name = Path.GetFileName(x),
-                //Metadata = _mediaUtilities.GetMetadata(Path.Combine(dirPath, x)),
+                Metadata = _mediaUtilities.GetMetadata(Path.Combine(dirPath, x)),
                 Path = Path.GetRelativePath(_configuration.PhotoRoot, x).Replace(Path.DirectorySeparatorChar, '/')
             }).ToList();
 

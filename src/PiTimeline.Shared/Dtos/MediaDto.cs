@@ -12,7 +12,7 @@ namespace PiTimeline.Shared.Dtos
     public class MetadataDto
     {
         public MediaType? Type { get; set; }
-        public DateTime? CreationTime { get; set; }
+        //public DateTime? CreationTime { get; set; }
         public long? FileSize { get; set; }
         public SizeDto? Size { get; set; }
     }
