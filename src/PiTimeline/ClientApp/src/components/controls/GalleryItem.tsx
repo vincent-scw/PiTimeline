@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Media } from "../../services";
 import { buildImgUrl } from './ImgUrlBuilder';
 
+const resolutionFactor = 240;
+
 export interface GalleryItemProps {
   ele: Media;
   itemClicked: Function;
@@ -11,16 +13,23 @@ export interface GalleryItemProps {
   itemSelected?: Function;
 }
 
-const itemStyle: React.CSSProperties = {
-
-}
-
 export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
   const { ele, itemClicked, selectable, itemSelected } = props;
   const [hover, setHover] = useState<boolean>(false);
 
+  const buildStyle = (): React.CSSProperties => {
+    let width = ele.metadata?.size?.width;
+    let height = ele.metadata?.size?.height;
+
+    let factor = height > resolutionFactor ? resolutionFactor / height : 1;
+    return {
+      width: width === null ? null : factor * width,
+      height: height === null ? null : factor * height,
+    }
+  }
+
   return (
-    <li
+    <li style={buildStyle()}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
       {selectable && hover &&
@@ -32,7 +41,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
       }
 
       <a onClick={() => itemClicked()}>
-        <img src={buildImgUrl(ele.path, 240)} style={itemStyle} />
+        <img src={buildImgUrl(ele.path, 240)} />
       </a>
     </li>
   );

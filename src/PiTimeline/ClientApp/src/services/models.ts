@@ -22,7 +22,18 @@ export enum MediaType {
 export interface Media {
   name: string;
   path?: string;
-  type?: MediaType;
+  metadata?: Metadata;
+}
+
+export interface Metadata {
+  size?: Size;
+  fileSize?: number;
+  type: MediaType
+}
+
+export interface Size {
+  width?: number;
+  height?: number;
 }
 
 export interface DirectoryInfo extends Media {
