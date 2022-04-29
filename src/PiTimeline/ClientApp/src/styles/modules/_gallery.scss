@@ -7,6 +7,17 @@
 .dir-container {
   overflow-x: auto;
   overflow-y: hidden;
+  display: flex;
+}
+
+.gallery-dir-item {
+  margin: 0 5px;
+  min-width: 110px;
+}
+
+.gallery-dir-img {
+  border-radius: 12px;
+  border: 2px solid $primary;
 }
 
 .gallery-ctl {

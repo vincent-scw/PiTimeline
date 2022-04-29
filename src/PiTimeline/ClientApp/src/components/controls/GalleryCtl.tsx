@@ -50,12 +50,10 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   return (
     <div className="gallery-ctl">
       <div className="gallery-container dir-container">
-        <div className="columns">
-          {directoryInfo.subDirectories &&
-            directoryInfo.subDirectories.map(ele => (
-              <GalleryDirItem ele={ele} directoryClicked={() => directoryClicked(ele)} key={ele.name} />
-            ))}
-        </div>
+        {directoryInfo.subDirectories &&
+          directoryInfo.subDirectories.map(ele => (
+            <GalleryDirItem ele={ele} directoryClicked={() => directoryClicked(ele)} key={ele.name} />
+          ))}
       </div>
       <hr />
       <div className="gallery-container">
