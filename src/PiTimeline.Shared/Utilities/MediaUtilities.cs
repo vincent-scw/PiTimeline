@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
 using SkiaSharp;
+using MetadataExtractor.Formats.Exif;
 
 namespace PiTimeline.Shared.Utilities
 {
@@ -125,8 +126,30 @@ namespace PiTimeline.Shared.Utilities
                     break;
                 case "jpeg":
                     var jpegDirectory = directories.OfType<JpegDirectory>().FirstOrDefault();
-                    meta.Size.Width = jpegDirectory?.GetInt32(JpegDirectory.TagImageWidth);
-                    meta.Size.Height = jpegDirectory?.GetInt32(JpegDirectory.TagImageHeight);
+                    var tagWidth = jpegDirectory?.GetInt32(JpegDirectory.TagImageWidth);
+                    var tagHeight = jpegDirectory?.GetInt32(JpegDirectory.TagImageHeight);
+
+                    var ifd0Directory = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
+                    int orientation = -1;
+                    if (ifd0Directory != null)
+                    {
+                        orientation = ifd0Directory.TryGetInt32(ExifDirectoryBase.TagOrientation, out int value) ? value : -1;
+                    }
+
+                    // Typically, you will only get flag 1, 8, 3, 6 for digital photos. Flag 2, 7, 4, 5 represent mirrored and rotated version of images.
+                    if (orientation > 4)
+                    {
+                        // Need to ratate
+                        meta.Size.Width = tagHeight;
+                        meta.Size.Height = tagWidth;
+                    }
+                    else
+                    {
+                        // Normal
+                        meta.Size.Width = tagWidth;
+                        meta.Size.Height = tagHeight;
+                    }
+
                     break;
             }
 

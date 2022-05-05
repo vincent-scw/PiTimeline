@@ -23,6 +23,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
     let height = ele.metadata?.size?.height;
 
     let factor = height > resolutionFactor ? resolutionFactor / height : 1;
+    
     return {
       width: width === null ? null : factor * width,
       height: height === null ? null : factor * height,
