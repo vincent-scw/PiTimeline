@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import Popup from "reactjs-popup";
 import { PopupGallery } from "./PopupGallery";
 import * as Svc from '../../services';
-import { buildImgUrl } from "./ImgUrlBuilder";
+import { buildImgUrl } from "../../utilities/ImgUrlBuilder";
 
 const BlockEmbed = Quill.import('blots/block/embed');
 class ImgEmbed extends BlockEmbed {

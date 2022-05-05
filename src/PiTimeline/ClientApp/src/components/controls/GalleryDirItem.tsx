@@ -1,6 +1,6 @@
 import React from 'react';
 import { DirectoryInfo } from '../../services';
-import { buildImgUrl } from './ImgUrlBuilder';
+import { buildImgUrl } from '../../utilities/ImgUrlBuilder';
 
 const dirItemStyle: React.CSSProperties = {
   height: '150px'

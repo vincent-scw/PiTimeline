@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Media } from "../../services";
-import { buildImgUrl } from './ImgUrlBuilder';
+import { buildImgUrl } from '../../utilities/ImgUrlBuilder';
 
 const resolutionFactor = 240;
 
@@ -41,7 +42,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
       }
 
       <a onClick={() => itemClicked()}>
-        <img src={buildImgUrl(ele.path, 240)} />
+        <LazyLoadImage src={buildImgUrl(ele.path, 240)} style={buildStyle()} />
       </a>
     </li>
   );

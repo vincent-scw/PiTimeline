@@ -6,7 +6,7 @@ import 'react-image-lightbox/style.css';
 import { DirectoryInfo, fetchDir, Media, selectDirectoryInfo } from "../../services";
 import { GalleryItem } from './GalleryItem';
 import { GalleryDirItem } from "./GalleryDirItem";
-import { buildImgUrl } from "./ImgUrlBuilder";
+import { buildImgUrl } from "../../utilities/ImgUrlBuilder";
 
 export interface GalleryCtlProps {
   directorySrc?: string;
@@ -57,15 +57,16 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
       </div>
       <hr />
       <div className="gallery-container">
-        <Masonry
-          elementType={'ul'}
-          options={masonryOptions}>
-          {directoryInfo.media &&
+        {directoryInfo.media &&
             directoryInfo.media.map((ele: Media, index) => (
               <GalleryItem key={ele.name} ele={ele} itemClicked={() => itemClicked(index)} selectable={selectable} itemSelected={itemSelected} />
             ))
           }
-        </Masonry>
+        {/* <Masonry
+          elementType={'ul'}
+          options={masonryOptions}>
+          
+        </Masonry> */}
       </div>
       {isLightxoxOpen &&
         <Lightbox
