@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Media, MediaType } from "../../services";
 import { buildImgUrl, ThumbnailSize } from '../../utilities/ImgUrlBuilder';
+import { GalleryItemLoading } from './GalleryItemLoading';
 
 const resolutionFactor = ThumbnailSize.small;
 
@@ -49,7 +50,10 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
       }
 
       <a onClick={() => itemClicked()}>
-        <LazyLoadImage src={buildImgUrl(ele.path, ThumbnailSize.small)} />
+        <LazyLoadImage
+          src={buildImgUrl(ele.path, ThumbnailSize.small)}
+          alt={ele.name}
+          placeholder={<GalleryItemLoading />} />
       </a>
     </li>
   );

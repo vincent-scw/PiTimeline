@@ -5,8 +5,10 @@ using PiTimeline.Background;
 using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
+using PiTimeline.Shared.Utilities;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace PiTimeline.Controllers
@@ -18,15 +20,18 @@ namespace PiTimeline.Controllers
         private readonly GalleryConfiguration _configuration;
         private readonly DirectoryMetadataBuilder _indexBuilder;
         private readonly ThumbnailService _thumbnailService;
+        private readonly MediaUtilities _mediaUtilities;
 
         public GalleryController(
             IOptions<GalleryConfiguration> options,
             DirectoryMetadataBuilder indexBuilder,
-            ThumbnailService thumbnailService)
+            ThumbnailService thumbnailService,
+            MediaUtilities mediaUtilities)
         {
             _configuration = options.Value;
             _indexBuilder = indexBuilder;
             _thumbnailService = thumbnailService;
+            _mediaUtilities = mediaUtilities;
         }
 
         [Authorize]
@@ -59,8 +64,21 @@ namespace PiTimeline.Controllers
 
             if (System.IO.File.Exists(absolutePath))
             {
-                var img = System.IO.File.OpenRead(absolutePath);
-                return File(img, "image/jpeg");
+                var mediaType = _mediaUtilities.GetMediaType(absolutePath);
+                if (mediaType == MediaType.Video && !thumbnail)
+                {
+                    var video = System.IO.File.OpenRead(absolutePath);
+                    return File(
+                        fileStream: video,
+                        contentType: new MediaTypeHeaderValue("video/mp4").MediaType,
+                        enableRangeProcessing: true //<-- enable range requests processing
+                    );
+                }
+                else
+                {
+                    var img = System.IO.File.OpenRead(absolutePath);
+                    return File(img, "image/jpeg");
+                }
             }
 
             return NotFound(path);

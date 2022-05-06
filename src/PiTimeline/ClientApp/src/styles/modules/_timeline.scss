@@ -755,8 +755,9 @@
   padding: .2rem .5rem !important;
 }
 
-.moment-image {
+.moment-image, .moment-video {
   max-width: 80vw;
+  max-height: 80vh;
   margin: 5px 0;
   box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 20%), 2px 2px 2px 2px rgb(10 10 10 / 20%);
 }

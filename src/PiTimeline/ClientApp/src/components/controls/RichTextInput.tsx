@@ -5,6 +5,7 @@ import Popup from "reactjs-popup";
 import { PopupGallery } from "./PopupGallery";
 import * as Svc from '../../services';
 import { buildImgUrl, ThumbnailSize } from "../../utilities/ImgUrlBuilder";
+import { MediaType } from "../../services";
 
 const BlockEmbed = Quill.import('blots/block/embed');
 class ImgEmbed extends BlockEmbed {
@@ -13,9 +14,6 @@ class ImgEmbed extends BlockEmbed {
     node.setAttribute('src', value.src);
     node.setAttribute('class', value.className);
 
-    node.onclick = function(e) {
-      console.log('click:' + value.src);
-    }
     return node;
   }
 
@@ -35,7 +33,7 @@ class VideoEmbed extends BlockEmbed {
   static create(value) {
     let node = super.create(value);
     node.setAttribute('src', value.src)
-    node.setAttribute('controls', value.controls)
+    node.setAttribute('controls', true)
     node.setAttribute('class', value.className)
     node.setAttribute('webkit-playsinline', true)
     node.setAttribute('playsinline', true)
@@ -78,22 +76,17 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     }
   }), []);
 
-  const photoSelected = (item: Svc.Media) => {
+  const mediaSelected = (item: Svc.Media) => {
     quill.current.focus();
-    if (item) {
+    if (item.metadata.type === MediaType.Photo) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
       editor.insertEmbed(cursorPosition, 'mImage', { src: buildImgUrl(item.path, ThumbnailSize.large), className: 'moment-image' });
       editor.setSelection(cursorPosition + 1);
-    }
-  }
-
-  const videoSelected = (item: Svc.Media) => {
-    quill.current.focus();
-    if (item) {
+    } else {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
-      editor.insertEmbed(cursorPosition, 'mVideo', { src: buildImgUrl(item.path, ThumbnailSize.large), clasName: 'moment-video' });
+      editor.insertEmbed(cursorPosition, 'mVideo', { src: buildImgUrl(item.path), className: 'moment-video' });
       editor.setSelection(cursorPosition + 1);
     }
   }
@@ -106,7 +99,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
       <button className="ql-bold"></button>
       <button className="ql-italic"></button>
       <Popup trigger={<button className="ql-image"></button>} modal nested position="center center">
-        {close => <PopupGallery itemSelected={(item) => { photoSelected(item); close(); }} />}
+        {close => <PopupGallery itemSelected={(item) => { mediaSelected(item); close(); }} />}
       </Popup>
       {/* <Popup trigger={<button className="ql-video"></button>} modal nested position="center center">
         {close => <PopupGallery itemSelected={(item) => { videoSelected(item); close(); }} />}
