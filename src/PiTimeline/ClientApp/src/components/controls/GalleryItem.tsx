@@ -3,9 +3,9 @@ import { faCheckCircle, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Media, MediaType } from "../../services";
-import { buildImgUrl } from '../../utilities/ImgUrlBuilder';
+import { buildImgUrl, ThumbnailSize } from '../../utilities/ImgUrlBuilder';
 
-const resolutionFactor = 320;
+const resolutionFactor = ThumbnailSize.small;
 
 export interface GalleryItemProps {
   ele: Media;
@@ -25,8 +25,8 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
     let factor = width > resolutionFactor ? resolutionFactor / width : 1;
 
     return {
-      width: width === null ? null : factor * width,
-      height: height === null ? null : factor * height,
+      width: resolutionFactor,
+      height: factor * height,
     }
   }
 
@@ -49,7 +49,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
       }
 
       <a onClick={() => itemClicked()}>
-        <LazyLoadImage src={buildImgUrl(ele.path, 320)} />
+        <LazyLoadImage src={buildImgUrl(ele.path, ThumbnailSize.small)} />
       </a>
     </li>
   );

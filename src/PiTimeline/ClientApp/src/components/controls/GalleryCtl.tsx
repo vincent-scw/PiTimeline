@@ -6,7 +6,7 @@ import 'react-image-lightbox/style.css';
 import { DirectoryInfo, fetchDir, Media, selectDirectoryInfo } from "../../services";
 import { GalleryItem } from './GalleryItem';
 import { GalleryDirItem } from "./GalleryDirItem";
-import { buildImgUrl } from "../../utilities/ImgUrlBuilder";
+import { buildImgUrl, ThumbnailSize } from "../../utilities/ImgUrlBuilder";
 
 export interface GalleryCtlProps {
   directorySrc?: string;
@@ -68,11 +68,11 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
       {isLightxoxOpen &&
         <Lightbox
           mainSrc={buildImgUrl(directoryInfo.media[itemIndex].path)}
-          mainSrcThumbnail={buildImgUrl(directoryInfo.media[itemIndex].path, 320)}
+          mainSrcThumbnail={buildImgUrl(directoryInfo.media[itemIndex].path, ThumbnailSize.small)}
           nextSrc={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path)}
-          nextSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path, 320)}
+          nextSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path, ThumbnailSize.small)}
           prevSrc={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path)}
-          prevSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path, 320)}
+          prevSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path, ThumbnailSize.small)}
           onCloseRequest={() => setIsLightxoxOpen(false)}
           onMovePrevRequest={() => setItemIndex((itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length)}
           onMoveNextRequest={() => setItemIndex((itemIndex + 1) % directoryInfo.media.length)}

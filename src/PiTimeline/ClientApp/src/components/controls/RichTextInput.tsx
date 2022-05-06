@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 import Popup from "reactjs-popup";
 import { PopupGallery } from "./PopupGallery";
 import * as Svc from '../../services';
-import { buildImgUrl } from "../../utilities/ImgUrlBuilder";
+import { buildImgUrl, ThumbnailSize } from "../../utilities/ImgUrlBuilder";
 
 const BlockEmbed = Quill.import('blots/block/embed');
 class ImgEmbed extends BlockEmbed {
@@ -83,7 +83,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     if (item) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
-      editor.insertEmbed(cursorPosition, 'mImage', { src: buildImgUrl(item.path, 800), className: 'moment-image' });
+      editor.insertEmbed(cursorPosition, 'mImage', { src: buildImgUrl(item.path, ThumbnailSize.large), className: 'moment-image' });
       editor.setSelection(cursorPosition + 1);
     }
   }
@@ -93,7 +93,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     if (item) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
-      editor.insertEmbed(cursorPosition, 'mVideo', { src: buildImgUrl(item.path, 800), clasName: 'moment-video' });
+      editor.insertEmbed(cursorPosition, 'mVideo', { src: buildImgUrl(item.path, ThumbnailSize.large), clasName: 'moment-video' });
       editor.setSelection(cursorPosition + 1);
     }
   }

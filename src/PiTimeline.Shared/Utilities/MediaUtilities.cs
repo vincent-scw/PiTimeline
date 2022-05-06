@@ -80,14 +80,10 @@ namespace PiTimeline.Shared.Utilities
 
             using var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
             var resizeFactor = bitmap.Width > resolutionFactor ? (float)resolutionFactor / bitmap.Width : 1f;
-            var toBitmap = new SKBitmap((int)Math.Round(bitmap.Width * resizeFactor), (int)Math.Round(bitmap.Height * resizeFactor), bitmap.ColorType, bitmap.AlphaType);
-            var canvas = new SKCanvas(toBitmap);
-            // Draw a bitmap rescaled
-            canvas.SetMatrix(SKMatrix.CreateScale(resizeFactor, resizeFactor));
-            canvas.DrawBitmap(bitmap, 0, 0);
-            canvas.ResetMatrix();
+            using var toBitmap = new SKBitmap((int)Math.Round(bitmap.Width * resizeFactor), (int)Math.Round(bitmap.Height * resizeFactor), bitmap.ColorType, bitmap.AlphaType);
 
-            canvas.Flush();
+            bitmap.ScalePixels(toBitmap, SKFilterQuality.High);
+            
             var image = SKImage.FromBitmap(toBitmap);
             var data = image.Encode(SKEncodedImageFormat.Jpeg, 100);
             var directory = Path.GetDirectoryName(outputPath);
@@ -121,8 +117,11 @@ namespace PiTimeline.Shared.Utilities
             {
                 case "mp4":
                     var qtTrackHeaderDirectory = directories.OfType<QuickTimeTrackHeaderDirectory>().FirstOrDefault(qt => qt.GetInt32(QuickTimeTrackHeaderDirectory.TagWidth) > 0);
-                    meta.Size.Width = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagWidth);
-                    meta.Size.Height = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagHeight);
+                    var rotation = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagRotation);
+                    var qtWidth = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagWidth);
+                    var qtHeight = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagHeight);
+                    meta.Size.Width = rotation == 0 ? qtWidth : qtHeight;
+                    meta.Size.Height = rotation == 0 ? qtHeight : qtWidth;
                     break;
                 case "jpeg":
                     var jpegDirectory = directories.OfType<JpegDirectory>().FirstOrDefault();
