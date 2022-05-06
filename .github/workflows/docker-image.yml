@@ -51,4 +51,4 @@ jobs:
         file: ./src/PiTimeline/Dockerfile 
         platforms: linux/arm/v7
         push: true
-        tags: edentidus/pitimeline:${{VERSION_NUMBER}},edentidus/pitimeline:latest
+        tags: edentidus/pitimeline:${{env.VERSION_NUMBER}},edentidus/pitimeline:latest
