@@ -3,9 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import Masonry from 'react-masonry-component';
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
-import { DirectoryInfo, fetchDir, selectDirectoryInfo } from "../../services";
+import { DirectoryInfo, fetchDir, Media, selectDirectoryInfo } from "../../services";
 import { GalleryItem } from './GalleryItem';
 import { GalleryDirItem } from "./GalleryDirItem";
+import { buildImgUrl, ThumbnailSize } from "../../utilities/ImgUrlBuilder";
 
 export interface GalleryCtlProps {
   directorySrc?: string;
@@ -22,11 +23,16 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   const [itemIndex, setItemIndex] = useState<number>(0);
 
   const masonryOptions = {
-    transitionDuration: 0
+    gutter: 5,
+    horizontalOrder: true,
+    fitWidth: true
+    //transitionDuration: 0
   };
 
   useEffect(() => {
-    dispatch(fetchDir(directorySrc));
+    if (directorySrc !== undefined) {
+      dispatch(fetchDir(directorySrc));
+    }
   }, [directorySrc, dispatch])
 
   const directoryClicked = (dir: DirectoryInfo) => {
@@ -44,35 +50,34 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   return (
     <div className="gallery-ctl">
       <div className="gallery-container dir-container">
-        <div className="columns">
-          {directoryInfo.subDirectories.map(ele => (
-            <GalleryDirItem ele={ele} directoryClicked={() => directoryClicked(ele)} key={ele.src} />
+        {directoryInfo.subDirectories &&
+          directoryInfo.subDirectories.map(ele => (
+            <GalleryDirItem ele={ele} directoryClicked={() => directoryClicked(ele)} key={ele.name} />
           ))}
-        </div>
       </div>
       <hr />
       <div className="gallery-container">
         <Masonry
           elementType={'ul'}
           options={masonryOptions}>
-          {
-            directoryInfo.items.map((ele, index) => (
-              <GalleryItem key={ele.src} ele={ele} itemClicked={() => itemClicked(index)} selectable={selectable} itemSelected={itemSelected} />
+          {directoryInfo.media &&
+            directoryInfo.media.map((ele: Media, index) => (
+              <GalleryItem key={ele.name} ele={ele} itemClicked={() => itemClicked(index)} selectable={selectable} itemSelected={itemSelected} />
             ))
           }
         </Masonry>
       </div>
       {isLightxoxOpen &&
         <Lightbox
-          mainSrc={directoryInfo.items[itemIndex].src}
-          mainSrcThumbnail={directoryInfo.items[itemIndex].thumbnail}
-          nextSrc={directoryInfo.items[(itemIndex + 1) % directoryInfo.items.length].src}
-          nextSrcThumbnail={directoryInfo.items[(itemIndex + 1) % directoryInfo.items.length].thumbnail}
-          prevSrc={directoryInfo.items[(itemIndex + directoryInfo.items.length - 1) % directoryInfo.items.length].src}
-          prevSrcThumbnail={directoryInfo.items[(itemIndex + directoryInfo.items.length - 1) % directoryInfo.items.length].thumbnail}
+          mainSrc={buildImgUrl(directoryInfo.media[itemIndex].path)}
+          mainSrcThumbnail={buildImgUrl(directoryInfo.media[itemIndex].path, ThumbnailSize.small)}
+          nextSrc={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path)}
+          nextSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path, ThumbnailSize.small)}
+          prevSrc={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path)}
+          prevSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path, ThumbnailSize.small)}
           onCloseRequest={() => setIsLightxoxOpen(false)}
-          onMovePrevRequest={() => setItemIndex((itemIndex + directoryInfo.items.length - 1) % directoryInfo.items.length)}
-          onMoveNextRequest={() => setItemIndex((itemIndex + 1) % directoryInfo.items.length)}
+          onMovePrevRequest={() => setItemIndex((itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length)}
+          onMoveNextRequest={() => setItemIndex((itemIndex + 1) % directoryInfo.media.length)}
         />
       }
     </div>

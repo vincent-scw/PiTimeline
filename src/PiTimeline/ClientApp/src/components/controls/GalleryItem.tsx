@@ -1,26 +1,38 @@
 import React, { useState } from 'react';
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ItemInfo } from "../../services";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { Media, MediaType } from "../../services";
+import { buildImgUrl, ThumbnailSize } from '../../utilities/ImgUrlBuilder';
+import { GalleryItemLoading } from './GalleryItemLoading';
+
+const resolutionFactor = ThumbnailSize.small;
 
 export interface GalleryItemProps {
-  ele: ItemInfo;
+  ele: Media;
   itemClicked: Function;
   selectable?: boolean;
   itemSelected?: Function;
-}
-
-const itemStyle: React.CSSProperties = {
-  maxWidth: '330px',
-  padding: '0 3px'
 }
 
 export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
   const { ele, itemClicked, selectable, itemSelected } = props;
   const [hover, setHover] = useState<boolean>(false);
 
+  const buildStyle = (): React.CSSProperties => {
+    let width = ele.metadata?.size?.width;
+    let height = ele.metadata?.size?.height;
+
+    let factor = width > resolutionFactor ? resolutionFactor / width : 1;
+
+    return {
+      width: resolutionFactor,
+      height: factor * height,
+    }
+  }
+
   return (
-    <li
+    <li style={buildStyle()} className="gallery-item"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
       {selectable && hover &&
@@ -31,8 +43,17 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
         </a>
       }
 
+      {ele.metadata.type === MediaType.Video &&
+        <span className='icon is-large has-text-info fa-lg gallery-item-video-tag'>
+          <FontAwesomeIcon icon={faVideo} />
+        </span>
+      }
+
       <a onClick={() => itemClicked()}>
-        <img src={ele.thumbnail} style={itemStyle} />
+        <LazyLoadImage
+          src={buildImgUrl(ele.path, ThumbnailSize.small)}
+          alt={ele.name}
+          placeholder={<GalleryItemLoading />} />
       </a>
     </li>
   );

@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using PiTimeline.Background;
 using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
 using PiTimeline.Shared.Utilities;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace PiTimeline.Controllers
@@ -15,109 +17,78 @@ namespace PiTimeline.Controllers
     [ApiController]
     public class GalleryController : ControllerBase
     {
-        private const string ThumbnailPrefix = "Thumbnail";
         private readonly GalleryConfiguration _configuration;
-        private readonly ThumbnailIndexBuilder _indexBuilder;
+        private readonly DirectoryMetadataBuilder _indexBuilder;
+        private readonly ThumbnailService _thumbnailService;
+        private readonly MediaUtilities _mediaUtilities;
 
         public GalleryController(
             IOptions<GalleryConfiguration> options,
-            ThumbnailIndexBuilder indexBuilder)
+            DirectoryMetadataBuilder indexBuilder,
+            ThumbnailService thumbnailService,
+            MediaUtilities mediaUtilities)
         {
             _configuration = options.Value;
             _indexBuilder = indexBuilder;
+            _thumbnailService = thumbnailService;
+            _mediaUtilities = mediaUtilities;
         }
 
         [Authorize]
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("d/{path}")]
+        public async Task<IActionResult> HandleDir(string path)
         {
-            var dto = _indexBuilder.BuildIndex(_configuration.PhotoRoot);
-
-            return Ok(Map(string.Empty, dto));
-        }
-
-        [HttpGet("{path}")]
-        public async Task<IActionResult> HandlePath(string path)
-        {
-            var absolutePath = UrlToLocal(path, out bool isThumbnail);
+            var p = path == null ? string.Empty : path;
+            var absolutePath = UrlToLocal(p, false);
 
             if (Directory.Exists(absolutePath))
             {
-                var dto = _indexBuilder.BuildIndex(absolutePath);
+                var dto = await _indexBuilder.BuildMetaAsync(absolutePath);
 
-                return Ok(Map(path, dto));
+                return Ok(dto);
             }
 
-            if (isThumbnail)
+            return NotFound(p);
+        }
+
+        [HttpGet("f/{path}")]
+        public async Task<IActionResult> HandleFile(string path, [FromQuery] int res)
+        {
+            var thumbnail = res > 0;
+            var absolutePath = UrlToLocal(path, thumbnail);
+
+            if (thumbnail)
             {
-                // When thumbnail doesn't exist, create it
-                var photoPath = Path.Combine(
-                    _configuration.PhotoRoot, 
-                    path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar));
-                await Task.Run(() => ThumbnailUtility.CreateThumbnail(photoPath, absolutePath));
+                absolutePath = await _thumbnailService.GetThumbnailPathAsync(path, res);
             }
 
             if (System.IO.File.Exists(absolutePath))
             {
-                var img = System.IO.File.OpenRead(absolutePath);
-                return File(img, "image/jpeg");
+                var mediaType = _mediaUtilities.GetMediaType(absolutePath);
+                if (mediaType == MediaType.Video && !thumbnail)
+                {
+                    var video = System.IO.File.OpenRead(absolutePath);
+                    return File(
+                        fileStream: video,
+                        contentType: new MediaTypeHeaderValue("video/mp4").MediaType,
+                        enableRangeProcessing: true //<-- enable range requests processing
+                    );
+                }
+                else
+                {
+                    var img = System.IO.File.OpenRead(absolutePath);
+                    return File(img, "image/jpeg");
+                }
             }
 
             return NotFound(path);
         }
 
-        private DirectoryDto Map(string path, IndexDto index)
+        private string UrlToLocal(string path, bool isThumbnail)
         {
-            var dir = new DirectoryDto
-            {
-                Items = index.Items.Select(x => new ItemDto
-                {
-                    Src = BuildApiUrl(Path.Combine(path, x.Name), false),
-                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Name), true)
-                }).ToList(),
-                SubDirectories = index.SubDirectories.Select(x => new DirectoryDto()
-                {
-                    Caption = x.Name,
-                    Src = BuildApiUrl(Path.Combine(path, x.Name), false),
-                    Path = BuildUrl(Path.Combine(path, x.Name), false), // Path is used for UI route
-                    Thumbnail = BuildApiUrl(Path.Combine(path, x.Thumbnail), true)
-                }).ToList(),
-            };
-
-            return dir;
-        }
-
-        /// <summary>
-        /// Build url for file/directory
-        /// </summary>
-        /// <param name="absolutePath"></param>
-        /// <param name="isThumbnail"></param>
-        /// <returns></returns>
-        private string BuildUrl(string path, bool isThumbnail)
-        {
-            var relative = path.Replace(Path.DirectorySeparatorChar, '/');
-            if (relative == ".")
-                relative = string.Empty;
-            return isThumbnail ? $"{ThumbnailPrefix}/{relative}" : relative;
-        }
-
-        /// <summary>
-        /// Append api url
-        /// </summary>
-        /// <param name="absolutePath"></param>
-        /// <param name="isThumbnail"></param>
-        /// <returns></returns>
-        private string BuildApiUrl(string path, bool isThumbnail)
-        {
-            return $"api/Gallery/{BuildUrl(path, isThumbnail)}";
-        }
-
-        private string UrlToLocal(string path, out bool isThumbnail)
-        {
-            isThumbnail = path.StartsWith(ThumbnailPrefix);
             var absolutePath = Path.Combine(
                 isThumbnail ? _configuration.ThumbnailRoot : _configuration.PhotoRoot,
-                isThumbnail ? path[(ThumbnailPrefix.Length + 1)..].Replace('/', Path.DirectorySeparatorChar) : path);
+                path.Replace('/', Path.DirectorySeparatorChar));
 
             return absolutePath;
         }

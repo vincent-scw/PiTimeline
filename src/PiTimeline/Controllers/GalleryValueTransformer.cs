@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
+using System;
 using System.Threading.Tasks;
 
 namespace PiTimeline.Controllers
@@ -13,8 +14,14 @@ namespace PiTimeline.Controllers
                 return ValueTask.FromResult(values);
 
             values["controller"] = "Gallery";
-            values["action"] = "HandlePath";
-            
+            var t = Convert.ToString(values["path"]).Substring(0, 2).ToLower();
+            if (t.Equals("f/"))
+                values["action"] = "HandleFile";
+            else
+                values["action"] = "HandleDir";
+
+            values["path"] = Convert.ToString(values["path"]).Substring(2);
+
             return ValueTask.FromResult(values);
         }
     }

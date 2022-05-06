@@ -26,6 +26,11 @@ RUN dotnet publish "PiTimeline.csproj" -c Release -o /app/publish
 
 FROM base AS final
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg libgdiplus \
+    && apt-get clean -q -y \
+    && rm -rf /var/lib/apt/lists/*
+	
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV CONFIG_PATH=/var/PiTimeline/config.json

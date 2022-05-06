@@ -14,16 +14,31 @@ export interface Timeline {
   moments?: Moment[];
 }
 
-export interface ItemInfo {
-  src: string;
-  thumbnail?: string;
+export enum MediaType {
+  Photo = 0,
+  Video = 1
 }
 
-export interface DirectoryInfo extends ItemInfo {
+export interface Media {
+  name: string;
   path?: string;
-  caption?: string;
+  metadata?: Metadata;
+}
+
+export interface Metadata {
+  size?: Size;
+  fileSize?: number;
+  type: MediaType
+}
+
+export interface Size {
+  width?: number;
+  height?: number;
+}
+
+export interface DirectoryInfo extends Media {
   subDirectories?: DirectoryInfo[];
-  items?: ItemInfo[];
+  media?: Media[];
 }
 
 export type GroupedMoments = {

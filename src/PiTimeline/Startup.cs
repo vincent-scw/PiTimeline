@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using PiTimeline.Background;
 using PiTimeline.Controllers;
 using PiTimeline.Domain;
 using PiTimeline.Infrastructure;
@@ -33,6 +34,8 @@ namespace PiTimeline
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            FFMpegCore.GlobalFFOptions.Configure(new FFMpegCore.FFOptions { BinaryFolder = Configuration.GetValue<string>("Gallery:FFMpegBin") });
+
             services.AddControllersWithViews();
             services.AddSwaggerGen();
 
@@ -55,15 +58,20 @@ namespace PiTimeline
                     };
                 });
 
-            services.AddMediatR(typeof(Timeline).Assembly, typeof(Startup).Assembly);
-
             services.AddSingleton<GalleryValueTransformer>();
+
+            services.AddMediatR(typeof(Timeline).Assembly, typeof(Startup).Assembly);
 
             services.AddDbContext<MyDbContext>(opt => opt.UseSqlite(Configuration.GetConnectionString("Sqlite")));
             services.AddScoped<ITimelineRepository, TimelineRepository>();
             services.AddScoped<IMomentRepository, MomentRepository>();
             services.AddScoped<TimelineQueries>();
-            services.AddScoped<ThumbnailIndexBuilder>();
+            services.AddScoped<DirectoryMetadataBuilder>();
+
+            services.AddSingleton<Shared.Utilities.MediaUtilities>();
+            services.AddSingleton<ThumbnailService>();
+            services.AddSingleton<PhotoThumbnailService>();
+            services.AddSingleton<VideoThumbnailService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -97,24 +105,6 @@ namespace PiTimeline
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapDynamicControllerRoute<GalleryValueTransformer>("api/gallery/{*path}");
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-            });
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
-
             app.UseExceptionHandler(builder =>
             {
                 builder.Use(async (ctx, next) =>
@@ -131,10 +121,28 @@ namespace PiTimeline
                             break;
                         default:
                             await ctx.Response.WriteAsJsonAsync(new ErrorResponse("Exception", exception.Message));
-                            logger.LogError(exception.StackTrace ?? exception.Message);
+                            logger.LogError(exception, exception.Message);
                             break;
                     }
                 });
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDynamicControllerRoute<GalleryValueTransformer>("api/gallery/{*path}");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
         }
     }

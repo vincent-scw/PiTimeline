@@ -25,24 +25,32 @@ const NavMenu: React.FC = () => {
           <Link className="navbar-item" to="/">
             <img src="../assets/logo.png" alt=""></img>
           </Link>
+
+          <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarContent">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
         </div>
-        <div className="navbar-end">
-          <div className="navbar-item">
-            <div className="buttons">
-              {authenticated && 
-                <a onClick={doSignout}>
-                  <span className="icon has-text-light"><FontAwesomeIcon icon={faSignOutAlt} /></span>
-                </a>
-              }
-              {!authenticated &&
-                <Popup position="center center" modal={true} closeOnDocumentClick={false}
-                  trigger={
-                    <a>
-                      <span className="icon has-text-light"><FontAwesomeIcon icon={faSignInAlt} /></span>
-                    </a>}>
-                  {close => <SignIn done={close} />}
-                </Popup>
-              }
+        <div id="navbarContent" className="navbar-menu">
+          <div className="navbar-end">
+            <div className="navbar-item">
+              <div className="buttons">
+                {authenticated &&
+                  <a onClick={doSignout}>
+                    <span className="icon has-text-light"><FontAwesomeIcon icon={faSignOutAlt} /></span>
+                  </a>
+                }
+                {!authenticated &&
+                  <Popup position="center center" modal={true} closeOnDocumentClick={false}
+                    trigger={
+                      <a>
+                        <span className="icon has-text-light"><FontAwesomeIcon icon={faSignInAlt} /></span>
+                      </a>}>
+                    {close => <SignIn done={close} />}
+                  </Popup>
+                }
+              </div>
             </div>
           </div>
         </div>
