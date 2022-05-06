@@ -30,7 +30,9 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   };
 
   useEffect(() => {
-    dispatch(fetchDir(directorySrc));
+    if (directorySrc !== undefined) {
+      dispatch(fetchDir(directorySrc));
+    }
   }, [directorySrc, dispatch])
 
   const directoryClicked = (dir: DirectoryInfo) => {

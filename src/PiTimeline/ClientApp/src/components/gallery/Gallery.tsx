@@ -5,12 +5,11 @@ import { faImages } from '@fortawesome/free-solid-svg-icons';
 import { ActionPanel } from "./ActionPanel";
 import { GalleryCtl } from "../controls";
 import { useSelector } from "react-redux";
-import { selectLatestDir, selectAuthenticated } from "../../services";
+import { selectAuthenticated } from "../../services";
 
 const Gallery: React.FC = () => {
   const navigate = useNavigate();
   const authenticated = useSelector(selectAuthenticated);
-  const latestDir = useSelector(selectLatestDir);
   const [directory, setDirectory] = useState<string>();
 
   const path = useParams<any>();
@@ -24,8 +23,8 @@ const Gallery: React.FC = () => {
   }
 
   const buildRoute = () => {
-    const segments = latestDir.split('/');
-    const segObj = segments.reduce((x, y) => {
+    const segments = directory.split('/');
+    const segObj = segments.reduce((x: any, y) => {
       const last = x.at(-1);
       if (last) {
         x.push(`${last}/${y}`);
@@ -54,7 +53,7 @@ const Gallery: React.FC = () => {
               <span>Gallery</span>
             </Link>
           </li>
-          {latestDir && buildRoute()}
+          {directory && buildRoute()}
         </ul>
       </nav>
 
