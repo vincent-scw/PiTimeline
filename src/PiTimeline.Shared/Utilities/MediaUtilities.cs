@@ -79,7 +79,7 @@ namespace PiTimeline.Shared.Utilities
                 return;
 
             using var bitmap = AutoOrient(originBitmap, codec.EncodedOrigin);
-            var resizeFactor = bitmap.Height > resolutionFactor ? (float)resolutionFactor / bitmap.Height : 1f;
+            var resizeFactor = bitmap.Width > resolutionFactor ? (float)resolutionFactor / bitmap.Width : 1f;
             var toBitmap = new SKBitmap((int)Math.Round(bitmap.Width * resizeFactor), (int)Math.Round(bitmap.Height * resizeFactor), bitmap.ColorType, bitmap.AlphaType);
             var canvas = new SKCanvas(toBitmap);
             // Draw a bitmap rescaled

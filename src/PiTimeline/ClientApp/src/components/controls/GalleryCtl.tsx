@@ -23,8 +23,6 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   const [itemIndex, setItemIndex] = useState<number>(0);
 
   const masonryOptions = {
-    // columnWidth: '.grid-sizer',
-    // itemSelector: '.grid-item',
     gutter: 5,
     horizontalOrder: true,
     fitWidth: true
@@ -57,25 +55,24 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
       </div>
       <hr />
       <div className="gallery-container">
-        {directoryInfo.media &&
+        <Masonry
+          elementType={'ul'}
+          options={masonryOptions}>
+          {directoryInfo.media &&
             directoryInfo.media.map((ele: Media, index) => (
               <GalleryItem key={ele.name} ele={ele} itemClicked={() => itemClicked(index)} selectable={selectable} itemSelected={itemSelected} />
             ))
           }
-        {/* <Masonry
-          elementType={'ul'}
-          options={masonryOptions}>
-          
-        </Masonry> */}
+        </Masonry>
       </div>
       {isLightxoxOpen &&
         <Lightbox
           mainSrc={buildImgUrl(directoryInfo.media[itemIndex].path)}
-          mainSrcThumbnail={buildImgUrl(directoryInfo.media[itemIndex].path, 240)}
+          mainSrcThumbnail={buildImgUrl(directoryInfo.media[itemIndex].path, 320)}
           nextSrc={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path)}
-          nextSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path, 240)}
+          nextSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path, 320)}
           prevSrc={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path)}
-          prevSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path, 240)}
+          prevSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path, 320)}
           onCloseRequest={() => setIsLightxoxOpen(false)}
           onMovePrevRequest={() => setItemIndex((itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length)}
           onMoveNextRequest={() => setItemIndex((itemIndex + 1) % directoryInfo.media.length)}

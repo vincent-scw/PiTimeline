@@ -5,7 +5,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Media } from "../../services";
 import { buildImgUrl } from '../../utilities/ImgUrlBuilder';
 
-const resolutionFactor = 240;
+const resolutionFactor = 320;
 
 export interface GalleryItemProps {
   ele: Media;
@@ -22,7 +22,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
     let width = ele.metadata?.size?.width;
     let height = ele.metadata?.size?.height;
 
-    let factor = height > resolutionFactor ? resolutionFactor / height : 1;
+    let factor = width > resolutionFactor ? resolutionFactor / width : 1;
     
     return {
       width: width === null ? null : factor * width,
@@ -31,7 +31,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
   }
 
   return (
-    <li style={buildStyle()}
+    <li style={buildStyle()} className="gallery-item"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
       {selectable && hover &&
@@ -43,7 +43,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
       }
 
       <a onClick={() => itemClicked()}>
-        <LazyLoadImage src={buildImgUrl(ele.path, 240)} style={buildStyle()} />
+        <LazyLoadImage src={buildImgUrl(ele.path, 320)} />
       </a>
     </li>
   );

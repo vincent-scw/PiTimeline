@@ -20,23 +20,14 @@
   border: 2px solid $primary;
 }
 
+.gallery-item {
+  margin-bottom: 5px;
+}
+
 .gallery-ctl {
   min-width: 50vw;
 }
 
 [role=tooltip].popup-content {
   width: auto !important;
-}
-
-.grid-sizer,
-.grid-item {
-  width: 22%;
-}
-
-.grid-item {
-  height: 120px;
-  float: left;
-  border: 2px solid #333;
-  border-color: hsla(0, 0%, 0%, 0.5);
-  border-radius: 5px;
 }

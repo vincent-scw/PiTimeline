@@ -18,7 +18,7 @@ export const GalleryDirItem: React.FC<GalleryDirItemProps> = (props) => {
     <div key={ele.name} className="gallery-dir-item">
       <a onClick={() => directoryClicked()}>
         <figure>
-          <img src={buildImgUrl(ele.path, 240)} style={dirItemStyle} className="gallery-dir-img" />
+          <img src={buildImgUrl(ele.path, 320)} style={dirItemStyle} className="gallery-dir-img" />
           <figcaption>{ele.name}</figcaption>
         </figure>
       </a>

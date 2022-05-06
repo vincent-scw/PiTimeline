@@ -83,7 +83,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     if (item) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
-      editor.insertEmbed(cursorPosition, 'mImage', { src: buildImgUrl(item.path, 720), className: 'moment-image' });
+      editor.insertEmbed(cursorPosition, 'mImage', { src: buildImgUrl(item.path, 800), className: 'moment-image' });
       editor.setSelection(cursorPosition + 1);
     }
   }
@@ -93,7 +93,7 @@ export const RichTextInput: React.FC<RichTextInputProps> = (props) => {
     if (item) {
       const editor = quill.current.getEditor();
       const cursorPosition = editor.getSelection().index;
-      editor.insertEmbed(cursorPosition, 'mVideo', { src: buildImgUrl(item.path, 720), clasName: 'moment-video' });
+      editor.insertEmbed(cursorPosition, 'mVideo', { src: buildImgUrl(item.path, 800), clasName: 'moment-video' });
       editor.setSelection(cursorPosition + 1);
     }
   }
