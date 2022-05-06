@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { Media } from "../../services";
+import { Media, MediaType } from "../../services";
 import { buildImgUrl } from '../../utilities/ImgUrlBuilder';
 
 const resolutionFactor = 320;
@@ -23,7 +23,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
     let height = ele.metadata?.size?.height;
 
     let factor = width > resolutionFactor ? resolutionFactor / width : 1;
-    
+
     return {
       width: width === null ? null : factor * width,
       height: height === null ? null : factor * height,
@@ -40,6 +40,12 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
             <FontAwesomeIcon icon={faCheckCircle} />
           </span>
         </a>
+      }
+
+      {ele.metadata.type === MediaType.Video &&
+        <span className='icon is-large has-text-info fa-lg gallery-item-video-tag'>
+          <FontAwesomeIcon icon={faVideo} />
+        </span>
       }
 
       <a onClick={() => itemClicked()}>

@@ -89,7 +89,7 @@ namespace PiTimeline.Shared.Utilities
 
             canvas.Flush();
             var image = SKImage.FromBitmap(toBitmap);
-            var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
+            var data = image.Encode(SKEncodedImageFormat.Jpeg, 100);
             var directory = Path.GetDirectoryName(outputPath);
             if (!System.IO.Directory.Exists(directory))
             {

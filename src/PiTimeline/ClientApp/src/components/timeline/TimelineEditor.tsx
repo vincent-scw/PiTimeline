@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import Popup from "reactjs-popup";
 import { buildImgUrl, PopupGallery, TextInput } from "../controls";
-import * as Svc from '../../services';
-import { createTimeline, updateTimeline } from "../../services";
+import { Timeline, createTimeline, updateTimeline } from "../../services";
 
 export interface TimelineEditorProps {
-  timeline?: Svc.Timeline;
+  timeline?: Timeline;
   done?: Function;
 }
 
 export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
   const dispatch = useDispatch();
-  const [timeline, setTimeline] = useState<Svc.Timeline>(props.timeline || {});
+  const [timeline, setTimeline] = useState<Timeline>(props.timeline || {});
 
   const stateChanged = (prop: string, v: any) => {
     let newEntity = { ...timeline, [prop]: v };
@@ -49,7 +48,7 @@ export const TimelineEditor: React.FC<TimelineEditorProps> = (props) => {
           <a className="button is-primary is-light">Choose Cover Pattern</a>} modal nested position="center center">
           {close =>
             <PopupGallery itemSelected={(item) => {
-              stateChanged('coverPatternUrl', buildImgUrl(item.path, 240)); close();
+              stateChanged('coverPatternUrl', buildImgUrl(item.path, 320)); close();
             }} />}
         </Popup>
 
