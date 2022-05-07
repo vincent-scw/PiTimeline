@@ -25,7 +25,6 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   const masonryOptions = {
     gutter: 5,
     horizontalOrder: true,
-    fitWidth: true
     //transitionDuration: 0
   };
 
@@ -55,7 +54,7 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
             <GalleryDirItem ele={ele} directoryClicked={() => directoryClicked(ele)} key={ele.name} />
           ))}
       </div>
-      <hr />
+      <hr className="hr-text" data-content={`${directoryInfo.media?.length ?? 0} items`}/>
       <div className="gallery-container">
         <Masonry
           elementType={'ul'}

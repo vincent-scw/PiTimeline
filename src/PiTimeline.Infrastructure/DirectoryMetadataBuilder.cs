@@ -45,7 +45,7 @@ namespace PiTimeline.Infrastructure
                 Name = Path.GetFileName(x),
                 Metadata = _mediaUtilities.GetMetadata(Path.Combine(dirPath, x)),
                 Path = Path.GetRelativePath(_configuration.PhotoRoot, x).Replace(Path.DirectorySeparatorChar, '/')
-            }).ToList();
+            }).OrderBy(x => x.Metadata.CreationTime).ToList();
 
             var subDirs = Directory.GetDirectories(dirPath);
             var dirs = subDirs.Select(x => new DirectoryDto

@@ -106,7 +106,7 @@ namespace PiTimeline.Shared.Utilities
             {
                 Size = new SizeDto(),
                 FileSize = fileMetaDirectory?.GetInt64(FileMetadataDirectory.TagFileSize),
-                //CreationTime = fi.CreationTime,
+                CreationTime = fileMetaDirectory?.GetDateTime(FileMetadataDirectory.TagFileModifiedDate),
                 Type = mediaType
             };
 
@@ -116,6 +116,7 @@ namespace PiTimeline.Shared.Utilities
             switch (fileType)
             {
                 case "mp4":
+                case "quicktime":
                     var qtTrackHeaderDirectory = directories.OfType<QuickTimeTrackHeaderDirectory>().FirstOrDefault(qt => qt.GetInt32(QuickTimeTrackHeaderDirectory.TagWidth) > 0);
                     var rotation = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagRotation);
                     var qtWidth = qtTrackHeaderDirectory?.GetInt32(QuickTimeTrackHeaderDirectory.TagWidth);
@@ -149,6 +150,8 @@ namespace PiTimeline.Shared.Utilities
                         meta.Size.Height = tagHeight;
                     }
 
+                    break;
+                default:
                     break;
             }
 
