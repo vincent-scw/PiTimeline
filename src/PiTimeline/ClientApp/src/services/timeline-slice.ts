@@ -16,8 +16,8 @@ const groupMoments = (moments: Moment[]): GroupedMoments[] => {
   const groupedByDate = groupByDate(moments, 'takePlaceAtDateTime');
 
   let result = [];
-  Object.keys(groupedByDate).forEach(g => {
-    result.push({ group: g, moments: groupedByDate[g] })
+  Object.keys(groupedByDate).forEach((g, index) => {
+    result.push({ id: index, group: g, moments: groupedByDate[g] })
   })
   return result;
 }

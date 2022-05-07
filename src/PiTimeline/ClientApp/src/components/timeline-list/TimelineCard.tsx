@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Popup } from "reactjs-popup";
 import 'reactjs-popup/dist/index.css';
@@ -15,12 +15,15 @@ export interface TimelineCardProps {
 
 export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
   const { data, deleteTimeline } = props;
+  const [hover, setHover] = useState<boolean>(false);
 
   return (
-    <div className="card">
+    <div className="card"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}>
       <div className="card-image">
         <figure className="image is-4by3">
-          <img src={data.coverPatternUrl ?? 'assets/favicon.png'} alt="" className="timeline-default-cover"/>
+          <img src={data.coverPatternUrl ?? 'assets/favicon.png'} alt="" className="timeline-default-cover" />
         </figure>
       </div>
       <div className="card-content">
@@ -36,23 +39,27 @@ export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
               </div>
             </div>
             <div className="level-right">
-              <Popup position="center center" modal={true} closeOnDocumentClick={false}
-                trigger={<a>
-                  <span className="icon has-text-info">
-                    <FontAwesomeIcon icon={faEdit} />
-                  </span>
-                </a>
-                }>
-                {close => <TimelineEditor
-                  timeline={data}
-                  done={close} />}
-              </Popup>
+              {hover &&
+                <>
+                  <Popup position="center center" modal={true} closeOnDocumentClick={false}
+                    trigger={<a>
+                      <span className="icon has-text-info">
+                        <FontAwesomeIcon icon={faEdit} />
+                      </span>
+                    </a>
+                    }>
+                    {close => <TimelineEditor
+                      timeline={data}
+                      done={close} />}
+                  </Popup>
 
-              <a onClick={() => deleteTimeline(data)}>
-                <span className="icon has-text-grey-light">
-                  <FontAwesomeIcon icon={faTrashAlt} />
-                </span>
-              </a>
+                  <a onClick={() => deleteTimeline(data)}>
+                    <span className="icon has-text-grey-light">
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </span>
+                  </a>
+                </>
+              }
             </div>
           </div>
         </div>
