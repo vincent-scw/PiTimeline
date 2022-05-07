@@ -33,15 +33,9 @@ namespace PiTimeline.Domain
             CoverPatternUrl = coverPatternUrl;
         }
 
-        public bool CalculateSince(DateTime newDate)
+        public void SetSince(DateTime newDate)
         {
-            if (Since == default || Since > newDate)
-            {
-                Since = newDate;
-                return true;
-            }
-
-            return false;
+            Since = newDate;
         }
     }
 }
