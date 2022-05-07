@@ -18,7 +18,7 @@ export const MomentItem: React.FC<MomentItemProps> = (props) => {
     <div className="timeline-item">
       <div className="timeline-marker"></div>
       <div className="timeline-content">
-        <p className="heading">
+        <p className="heading scrollable-header" id={`m-${moment.id}`}>
           <Moment format="ddd MMM DD">{moment.takePlaceAtDateTime}</Moment>
         </p>
         <p dangerouslySetInnerHTML={{ __html: moment.content }} />
