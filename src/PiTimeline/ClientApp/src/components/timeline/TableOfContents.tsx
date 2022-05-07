@@ -26,7 +26,6 @@ export const TableOfContents: React.FC<TableOfContentsProps> = (props) => {
         if (headerElement.isIntersecting)
           visibleHeaders.push(headerElement);
       });
-      console.log(visibleHeaders)
       const getIndexFromId = (id) =>
         headerElements.findIndex((header) => header.id === id);
 
@@ -47,7 +46,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = (props) => {
     const headerElements = Array.from(document.querySelectorAll(".scrollable-header"));
     headerElements.forEach((element) => observer.observe(element));
 
-    return () => observer.disconnect();
+    return () => { headerElementsRef.current = {}; observer.disconnect(); }
   }, [headers, setActiveId]);
 
   const headClicked = (e, id: string) => {
