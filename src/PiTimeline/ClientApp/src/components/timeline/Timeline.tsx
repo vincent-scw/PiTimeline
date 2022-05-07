@@ -1,17 +1,13 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Moment from 'react-moment';
 import { ActionPanel } from './ActionPanel';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import Popup from "reactjs-popup";
-import { MomentEditor } from "./MomentEditor";
 import { useSelector, useDispatch } from "react-redux";
-import { 
-  getTimelineDetail, 
+import { MomentItem } from "./MomentItem";
+import {
+  getTimelineDetail,
   deleteMoment,
-  selectGroupedMoments, 
-  selectTimeline, 
+  selectGroupedMoments,
+  selectTimeline,
   selectTimelineIsLoading,
   selectAuthenticated
 } from "../../services";
@@ -51,36 +47,7 @@ const Timeline: React.FC = () => {
                 <span className="tag is-primary">{gm.group}</span>
               </header>
               {gm.moments.map(m => (
-                <div className="timeline-item" key={m.id}>
-                  <div className="timeline-marker"></div>
-                  <div className="timeline-content">
-                    <p className="heading">
-                      <Moment format="ddd MMM DD">{m.takePlaceAtDateTime}</Moment>
-                    </p>
-                    <p dangerouslySetInnerHTML={{ __html: m.content }} />
-                    <div className="level is-mobile">
-                      <div className="level-left"></div>
-                      <div className="level-right">
-                        <Popup position="center center" modal={true} closeOnDocumentClick={false}
-                          trigger={
-                            <a className="level-item" >
-                              <span className="icon has-text-info">
-                                <FontAwesomeIcon icon={faEdit} />
-                              </span>
-                            </a>
-                          }>
-                          {close => <MomentEditor done={close} moment={m} />}
-                        </Popup>
-
-                        <a onClick={() => delMoment(m)}>
-                          <span className="icon has-text-grey-light">
-                            <FontAwesomeIcon icon={faTrashAlt} />
-                          </span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <MomentItem key={m.id} moment={m} deleteMoment={delMoment} />
               ))}
             </div>
           ))

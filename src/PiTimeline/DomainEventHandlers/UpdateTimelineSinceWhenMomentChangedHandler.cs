@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using PiTimeline.Domain;
 using PiTimeline.Domain.Events;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,8 +24,8 @@ namespace PiTimeline.DomainEventHandlers
         {
             var timeline = await _timelineRepository.GetByIdAsync(e.Moment.TimelineId);
             var moments = await _momentRepository.GetMomentsByTimelineAsync(e.Moment.TimelineId);
-            var since = moments.Min(x => x.TakePlaceAtDateTime);
-            timeline.SetSince(since);
+            var since = moments == null || moments.Count == 0 ? DateTime.MaxValue : moments.Min(x => x.TakePlaceAtDateTime);
+            timeline.SetSince(since > e.Moment.TakePlaceAtDateTime ? e.Moment.TakePlaceAtDateTime : since);
             await _timelineRepository.UpdateAsync(timeline);
         }
     }
