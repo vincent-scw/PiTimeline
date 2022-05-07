@@ -25,7 +25,6 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   const masonryOptions = {
     gutter: 5,
     horizontalOrder: true,
-    fitWidth: true
     //transitionDuration: 0
   };
 
