@@ -1,6 +1,6 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim-arm32v7 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -27,9 +27,7 @@ RUN dotnet publish "PiTimeline.csproj" -c Release -o /app/publish
 FROM base AS final
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg libgdiplus \
-    && apt-get clean -q -y \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends ffmpeg libgdiplus
 	
 WORKDIR /app
 COPY --from=publish /app/publish .
