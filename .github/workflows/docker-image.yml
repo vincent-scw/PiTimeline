@@ -50,3 +50,4 @@ jobs:
       run: |
         docker push edentidus/pitimeline:$VERSION_NUMBER
         docker push edentidus/pitimeline:latest
+
