@@ -5,7 +5,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 RUN apt-get install --yes curl
 RUN curl --silent --location https://deb.nodesource.com/setup_16.x | bash -
@@ -26,8 +26,8 @@ RUN dotnet publish "PiTimeline.csproj" -c Release -o /app/publish
 
 FROM base AS final
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg libgdiplus
+#RUN apt-get update \
+#    && apt-get install -y --no-install-recommends ffmpeg libgdiplus
 	
 WORKDIR /app
 COPY --from=publish /app/publish .
