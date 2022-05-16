@@ -4,10 +4,8 @@ using Microsoft.Extensions.Options;
 using PiTimeline.Background;
 using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
-using PiTimeline.Shared.Dtos;
 using PiTimeline.Shared.Utilities;
 using System.IO;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -36,14 +34,14 @@ namespace PiTimeline.Controllers
 
         [Authorize]
         [HttpGet("d/{path}")]
-        public async Task<IActionResult> HandleDir(string path)
+        public IActionResult HandleDir(string path)
         {
             var p = path == null ? string.Empty : path;
             var absolutePath = UrlToLocal(p, false);
 
             if (Directory.Exists(absolutePath))
             {
-                var dto = await _indexBuilder.BuildMetaAsync(absolutePath);
+                var dto = _indexBuilder.BuildMetadata(absolutePath);
 
                 return Ok(dto);
             }

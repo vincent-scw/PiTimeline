@@ -23,7 +23,7 @@ namespace PiTimeline.Infrastructure
 
         public async Task<List<TimelineDto>> FetchLinesAsync()
         {
-            var timelines = await _dbContext.Timelines.Where(x => !x.IsDeleted).ToListAsync();
+            var timelines = await _dbContext.Timelines.Where(x => !x.IsDeleted).OrderBy(t => t.Since).ToListAsync();
             return timelines.Select(x => _mapper.Map<TimelineDto>(x)).ToList();
         }
 
