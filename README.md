@@ -1,5 +1,5 @@
 # PiTimeline
-***PiTimeline*** is a web application contains timeline editor and photo gallery. It targets to be hosted in ***Raspberry Pi***.
+***PiTimeline*** is a web application contains timeline editor and photo gallery. It targets to be hosted on low resource servers (eg, ***Raspberry Pi***).
 
 ![demo](doc/demo.gif)
 
