@@ -61,9 +61,9 @@ jobs:
     - name: Build image and Push
       uses: docker/build-push-action@v3
       with:
-        context: ./src
+        context: .
         file: ./src/PiTimeline/Dockerfile 
         platforms: linux/arm/v7
         push: true
         tags: edentidus/pitimeline:${{env.VERSION_NUMBER}},edentidus/pitimeline:latest
-        build-args: SOURCE=./publish
+        build-args: source=./publish
