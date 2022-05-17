@@ -23,7 +23,7 @@ const NavMenu: React.FC = () => {
             <img src="../assets/favicon.png" alt=""></img>
           </Link>
           <Link className="navbar-item" to="/">
-            <img src="../assets/logo.png" alt=""></img>
+            <p className="logo-p">Pi Timeline</p>
           </Link>
 
           <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarContent">
