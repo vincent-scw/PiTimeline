@@ -13,8 +13,9 @@ export const SignIn: React.FC<SignInProps> = (props) => {
   const authenticated = useSelector(selectAuthenticated);
 
   useEffect(() => {
-    if (authenticated && props.done)
-    props.done();
+    if (authenticated && props.done) {
+      props.done();
+    }
   }, [authenticated])
 
   const doLogin = () => {

@@ -14,6 +14,7 @@ import store from './store';
 import { setLoadingProgress, selectLoadingProgress } from './services';
 
 import './styles/main.scss'
+import { ToastContainer } from 'react-toastify';
 
 export default () => {
   const progress = useSelector(selectLoadingProgress);
@@ -34,6 +35,7 @@ export default () => {
           <Route path='*' element={<NoContent />} />
         </Routes>
       </Container>
+      <ToastContainer position='bottom-center' autoClose={3000}/>
       <Background />
     </div>
   );

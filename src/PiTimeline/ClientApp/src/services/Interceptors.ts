@@ -8,8 +8,11 @@ export const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance
   axiosInstance.interceptors.request.use(
     config => {
       const token = localStorage.getItem('access_token');
-      if (token)
+      if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
+      } else if (config.url.indexOf('/login') < 0) {
+        toast.error('Please log in!')
+      }
 
       const i = Math.floor(Math.random() * 40) + 10;
       store.dispatch(setLoadingProgress(i));
@@ -28,7 +31,7 @@ export const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance
     error => {
       console.log(error)
 
-      toast.error(error.response.message, { position: 'bottom-center' });
+      toast.error(error.response.message);
       store.dispatch(setLoadingProgress(100));
       return Promise.reject(error);
     });
