@@ -6,7 +6,7 @@ ARG source
 
 RUN apt-get update
 RUN apt-get upgrade
-RUN apt-get install -y --no-install-recommends ffmpeg
+RUN apt-get install -y --no-install-recommends ffmpeg libgdiplus 
 	
 WORKDIR /app
 COPY $source .
