@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Media, MediaType } from "../../services";
 import { buildImgUrl, ThumbnailSize } from '../../utilities/ImgUrlBuilder';
-import { GalleryItemLoading } from './GalleryItemLoading';
 
 const resolutionFactor = ThumbnailSize.small;
 
@@ -18,6 +17,7 @@ export interface GalleryItemProps {
 export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
   const { ele, itemClicked, selectable, itemSelected } = props;
   const [hover, setHover] = useState<boolean>(false);
+  const [showPlaceHolder, setShowPlaceHolder] = useState<boolean>(true);
 
   const buildStyle = (): React.CSSProperties => {
     let width = ele.metadata?.size?.width;
@@ -53,8 +53,9 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
         <LazyLoadImage
           src={buildImgUrl(ele.path, ThumbnailSize.small)}
           alt={ele.name}
-          placeholder={<GalleryItemLoading />} />
+          afterLoad={() => setShowPlaceHolder(false)} />
       </a>
+      {showPlaceHolder && <img src="../assets/spinner.gif" className="loading-spinner"/>}
     </li>
   );
 }

@@ -18,11 +18,11 @@ export const TimelineCard: React.FC<TimelineCardProps> = (props) => {
   const [hover, setHover] = useState<boolean>(false);
 
   return (
-    <div className="card"
+    <div className="card timeline-card"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
       <div className="card-image">
-        <figure className="image is-4by3">
+        <figure className="image">
           <img src={data.coverPatternUrl ?? 'assets/favicon.png'} alt="" className="timeline-default-cover" />
         </figure>
       </div>

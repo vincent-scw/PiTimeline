@@ -1,18 +1,23 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
+import Masonry from 'react-masonry-component';
 import * as Svc from '../../services';
 import { ActionPanel } from "./ActionPanel";
 import { TimelineCard } from './TimelineCard';
-import { 
-  fetchTimelines, 
-  selectTimelines, 
-  deleteTimeline, 
-  selectTimelineListIsLoading, 
+import {
+  fetchTimelines,
+  selectTimelines,
+  deleteTimeline,
+  selectTimelineListIsLoading,
   selectAuthenticated
 } from "../../services";
 
 const TimelineList: React.FC = () => {
-  const columnsInLine = 4;
+  const masonryOptions = {
+    gutter: 10,
+    horizontalOrder: true,
+    //transitionDuration: 0
+  };
 
   const dispatch = useDispatch();
   const authenticated = useSelector(selectAuthenticated);
@@ -29,21 +34,12 @@ const TimelineList: React.FC = () => {
   }
 
   const buildCard = () => {
-    const data = timelineList;
-
-    var result = [];
-    for (var i = 0; i < data.length; i += columnsInLine) {
-      result.push(data.slice(i, i + columnsInLine));
-    }
-
     return (
-      result.map((r, i) =>
-        <div className="columns timeline-columns" key={`c${i}`}>
-          {r.map(entity =>
-            <div className="column is-3" key={entity.title}>
-              <TimelineCard data={entity} deleteTimeline={delTimeline} />
-            </div>)}
-        </div>)
+      <Masonry options={masonryOptions}>
+        {timelineList.map((t, i) =>
+          <TimelineCard data={t} key={`t-${i}`} deleteTimeline={delTimeline} />
+        )}
+      </Masonry>
     );
   }
 

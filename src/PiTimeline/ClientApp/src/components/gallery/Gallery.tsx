@@ -56,8 +56,9 @@ const Gallery: React.FC = () => {
           {directory && buildRoute()}
         </ul>
       </nav>
-
-      <GalleryCtl directorySelected={directorySelected} directorySrc={directory} />
+      
+      {authenticated &&
+        <GalleryCtl directorySelected={directorySelected} directorySrc={directory} />}
 
       <ActionPanel />
     </React.Fragment>
