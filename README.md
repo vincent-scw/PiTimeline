@@ -17,5 +17,5 @@ docker run -d -p {expose_port}:80 -v {timeline_folder_path}:/var/PiTimeline/ -v 
 |photo_folder_path|The folder contains your photo|
 
 ## Configuration
-By default, you can put a ```config.json``` file into ```timeline_folder_path```. The application will load the configuration on startup. A sample configuration file can be found [here]](src/PiTimeline/appsettings.json).
+By default, you can put a ```config.json``` file into ```timeline_folder_path```. The application will load the configuration on startup. A sample configuration file can be found [here](src/PiTimeline/appsettings.json).
 It is recommended to update ```Auth:Secret```, ```Auth:DefaultAdmin``` and ```Auth:DefaultAdminPassword```.
