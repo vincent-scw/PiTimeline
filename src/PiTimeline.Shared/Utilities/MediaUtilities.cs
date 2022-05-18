@@ -1,14 +1,15 @@
 ﻿using FFMpegCore;
 using MetadataExtractor;
-using MetadataExtractor.Formats.Jpeg;
-using MetadataExtractor.Formats.QuickTime;
+using MetadataExtractor.Formats.Exif;
 using MetadataExtractor.Formats.FileSystem;
 using MetadataExtractor.Formats.FileType;
+using MetadataExtractor.Formats.Jpeg;
+using MetadataExtractor.Formats.QuickTime;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
 using SkiaSharp;
-using MetadataExtractor.Formats.Exif;
 
 namespace PiTimeline.Shared.Utilities
 {
@@ -21,9 +22,13 @@ namespace PiTimeline.Shared.Utilities
     public class MediaUtilities
     {
         private readonly GalleryConfiguration _configuration;
-        public MediaUtilities(IOptions<GalleryConfiguration> options)
+        private readonly ILogger<MediaUtilities> _logger;
+        public MediaUtilities(
+            IOptions<GalleryConfiguration> options,
+            ILogger<MediaUtilities> logger)
         {
             _configuration = options.Value;
+            _logger = logger;
         }
 
         public async Task CreateThumbnailAsync(
@@ -99,7 +104,17 @@ namespace PiTimeline.Shared.Utilities
         public MetadataDto GetMetadata(string path)
         {
             var mediaType = GetMediaType(path);
-            var directories = ImageMetadataReader.ReadMetadata(path);
+            IReadOnlyList<MetadataExtractor.Directory> directories;
+            try
+            {
+                directories = ImageMetadataReader.ReadMetadata(path);
+            }
+            catch (ImageProcessingException ie)
+            {
+                _logger.LogError(ie, $"Image process error for {path}");
+                return new MetadataDto();
+            }
+
             var fileMetaDirectory = directories.OfType<FileMetadataDirectory>().FirstOrDefault();
 
             var meta = new MetadataDto
