@@ -29,9 +29,9 @@ export const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance
       return config
     },
     error => {
-      console.log(error)
+      console.log(error.response)
 
-      toast.error(error.response.message);
+      toast.error(error.response.data.message);
       store.dispatch(setLoadingProgress(100));
       return Promise.reject(error);
     });
