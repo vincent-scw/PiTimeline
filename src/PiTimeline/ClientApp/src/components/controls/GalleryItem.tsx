@@ -43,6 +43,12 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
         </a>
       }
 
+      <div style={{ opacity: hover ? 1 : 0, 
+        position: 'absolute', bottom: 0, 
+        height: '36px', width: '100%' }}>
+        <span className='tag is-primary is-light gallery-item-caption'>{ele.name}</span>
+      </div>
+
       {ele.metadata.type === MediaType.Video &&
         <span className='icon is-large has-text-info fa-lg gallery-item-video-tag'>
           <FontAwesomeIcon icon={faVideo} />
@@ -55,7 +61,7 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
           alt={ele.name}
           afterLoad={() => setShowPlaceHolder(false)} />
       </a>
-      {showPlaceHolder && <img src="../assets/spinner.gif" className="loading-spinner"/>}
+      {showPlaceHolder && <img src="../assets/spinner.gif" className="loading-spinner" />}
     </li>
   );
 }
