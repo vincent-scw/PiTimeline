@@ -1,6 +1,7 @@
 export const ThumbnailSize = {
   small: 260,
-  large: 800
+  large: 800,
+  xlarge: 1200
 }
 
 export const buildImgUrl = (path: string, resFactor?: number) => {

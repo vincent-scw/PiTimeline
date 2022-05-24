@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@edentidus/react-media-lightbox": "^1.0.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.17",
@@ -21,7 +22,6 @@
     "react": "16.11.0",
     "react-date-picker": "^8.4.0",
     "react-dom": "16.11.0",
-    "react-image-lightbox": "^5.1.4",
     "react-lazy-load-image-component": "^1.5.4",
     "react-masonry-component": "^6.3.0",
     "react-moment": "^1.1.1",

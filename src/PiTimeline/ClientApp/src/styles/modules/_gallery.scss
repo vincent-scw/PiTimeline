@@ -31,10 +31,17 @@
 
 .gallery-item-video-tag {
   position: absolute;
+  z-index: 1000;
   right: 5px;
   top: 5px;
   backdrop-filter: blur(5px);
   border-radius: 8px;
+}
+
+.gallery-video {
+  z-index: 1000;
+  max-width: 80vw;
+  max-height: 80vh;
 }
 
 .gallery-ctl {
