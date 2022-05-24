@@ -25,9 +25,23 @@
   margin-bottom: 5px;
 }
 
+.gallery-item-caption {
+  border-radius: 0 4px 4px 0 !important;
+}
+
 .gallery-item-video-tag {
   position: absolute;
-  right: 0;
+  z-index: 1000;
+  right: 5px;
+  top: 5px;
+  backdrop-filter: blur(5px);
+  border-radius: 8px;
+}
+
+.gallery-video {
+  z-index: 1000;
+  max-width: 80vw;
+  max-height: 80vh;
 }
 
 .gallery-ctl {
@@ -39,8 +53,8 @@
 }
 
 .loading-spinner {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
 }
 
 .hr-text {

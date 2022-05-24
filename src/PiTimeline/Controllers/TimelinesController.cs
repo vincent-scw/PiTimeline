@@ -48,7 +48,7 @@ namespace PiTimeline.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateLine([FromBody] TimelineDto dto)
         {
-            var timeline = new Timeline(dto.Title);
+            var timeline = new Timeline(dto.Title, dto.CoverPatternUrl);
             var result = await _timelineRepository.AddAsync(timeline);
             return Ok(result);
         }

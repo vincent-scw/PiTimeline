@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import Masonry from 'react-masonry-component';
-import Lightbox from 'react-image-lightbox';
-import 'react-image-lightbox/style.css';
-import { DirectoryInfo, fetchDir, Media, selectDirectoryInfo } from "../../services";
+import Lightbox from '@edentidus/react-media-lightbox';
+import '@edentidus/react-media-lightbox/style.css';
+import { DirectoryInfo, fetchDir, Media, MediaType, selectDirectoryInfo } from "../../services";
 import { GalleryItem } from './GalleryItem';
 import { GalleryDirItem } from "./GalleryDirItem";
 import { buildImgUrl, ThumbnailSize } from "../../utilities/ImgUrlBuilder";
@@ -46,6 +46,25 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
     setIsLightxoxOpen(true);
   }
 
+  const buildMainContent = (media: Media) => {
+    return buildImgUrl(media.path, ThumbnailSize.xlarge)
+  }
+
+  const buildCustomContent = (media: Media, pos: string) => {
+    if (media.metadata.type === MediaType.Photo) {
+      return null;
+    }
+
+    let videoClass = `ril-image-${pos.toLowerCase()} ril__image gallery-video`;
+    if (pos !== 'Current') {
+      videoClass += ` ril__image${pos}`;
+    }
+    return (
+      <video src={buildImgUrl(media.path)} 
+        controls={true} className={`ril-image-${pos} ril__image gallery-video`}></video>
+    );
+  }
+
   return (
     <div className="gallery-ctl">
       <div className="gallery-container dir-container">
@@ -54,7 +73,7 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
             <GalleryDirItem ele={ele} directoryClicked={() => directoryClicked(ele)} key={ele.name} />
           ))}
       </div>
-      <hr className="hr-text" data-content={`${directoryInfo.media?.length ?? 0} items`}/>
+      <hr className="hr-text" data-content={`${directoryInfo.media?.length ?? 0} items`} />
       <div className="gallery-container">
         <Masonry
           elementType={'ul'}
@@ -68,15 +87,15 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
       </div>
       {isLightxoxOpen &&
         <Lightbox
-          mainSrc={buildImgUrl(directoryInfo.media[itemIndex].path)}
-          mainSrcThumbnail={buildImgUrl(directoryInfo.media[itemIndex].path, ThumbnailSize.small)}
-          nextSrc={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path)}
-          nextSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length].path, ThumbnailSize.small)}
-          prevSrc={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path)}
-          prevSrcThumbnail={buildImgUrl(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path, ThumbnailSize.small)}
+          mainSrc={buildMainContent(directoryInfo.media[itemIndex])}
+          nextSrc={buildMainContent(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length])}
+          prevSrc={buildMainContent(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path)}
           onCloseRequest={() => setIsLightxoxOpen(false)}
           onMovePrevRequest={() => setItemIndex((itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length)}
           onMoveNextRequest={() => setItemIndex((itemIndex + 1) % directoryInfo.media.length)}
+          mainCustomContent={buildCustomContent(directoryInfo.media[itemIndex], 'Current')}
+          prevCustomContent={buildCustomContent(directoryInfo.media[itemIndex], 'Prev')}
+          nextCustomContent={buildCustomContent(directoryInfo.media[itemIndex], 'Next')}
         />
       }
     </div>

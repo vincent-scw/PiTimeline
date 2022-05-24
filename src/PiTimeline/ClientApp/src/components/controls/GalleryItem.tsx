@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Media, MediaType } from "../../services";
 import { buildImgUrl, ThumbnailSize } from '../../utilities/ImgUrlBuilder';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 const resolutionFactor = ThumbnailSize.small;
 
@@ -36,12 +37,22 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
       {selectable && hover &&
-        <a onClick={() => itemSelected(ele)} style={{ opacity: hover ? 1 : 0, position: 'absolute', height: '36px', width: '100%' }}>
+        <a onClick={() => itemSelected(ele)} 
+          style={{ opacity: hover ? 1 : 0, position: 'absolute', 
+          zIndex: 1000,
+          height: '36px', width: '100%' }}>
           <span className="icon is-large has-text-success fa-lg">
             <FontAwesomeIcon icon={faCheckCircle} />
           </span>
         </a>
       }
+
+      <div style={{ opacity: hover ? 1 : 0, 
+        position: 'absolute', bottom: 0, 
+        zIndex: 1000,
+        height: '36px', width: '100%' }}>
+        <span className='tag is-primary is-light gallery-item-caption'>{ele.name}</span>
+      </div>
 
       {ele.metadata.type === MediaType.Video &&
         <span className='icon is-large has-text-info fa-lg gallery-item-video-tag'>
@@ -53,9 +64,10 @@ export const GalleryItem: React.FC<GalleryItemProps> = (props) => {
         <LazyLoadImage
           src={buildImgUrl(ele.path, ThumbnailSize.small)}
           alt={ele.name}
+          effect="blur"
           afterLoad={() => setShowPlaceHolder(false)} />
       </a>
-      {showPlaceHolder && <img src="../assets/spinner.gif" className="loading-spinner"/>}
+      {showPlaceHolder && <img src="../assets/spinner.gif" className="loading-spinner" />}
     </li>
   );
 }

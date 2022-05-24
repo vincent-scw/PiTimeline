@@ -10,13 +10,14 @@ namespace PiTimeline.Domain
         {
         }
 
-        public Timeline(string title)
+        public Timeline(string title, string coverPatternUrl)
             : this()
         {
             Id = IdGen.Generate();
             CreatedDateTime = DateTime.Now;
 
             Title = title;
+            CoverPatternUrl = coverPatternUrl;
         }
 
         public string Title { get; private set; }
