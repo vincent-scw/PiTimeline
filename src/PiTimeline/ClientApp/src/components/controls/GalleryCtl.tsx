@@ -47,6 +47,7 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   }
 
   const buildMainContent = (media: Media) => {
+    console.log(media)
     return buildImgUrl(media.path, ThumbnailSize.xlarge)
   }
 
@@ -60,7 +61,7 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
       videoClass += ` ril__image${pos}`;
     }
     return (
-      <video src={buildImgUrl(media.path)} 
+      <video src={buildImgUrl(media.path)} style={{width: media.metadata.size?.width, height: media.metadata.size?.height}}
         controls={true} className={`ril-image-${pos} ril__image gallery-video`}></video>
     );
   }
@@ -89,13 +90,13 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
         <Lightbox
           mainSrc={buildMainContent(directoryInfo.media[itemIndex])}
           nextSrc={buildMainContent(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length])}
-          prevSrc={buildMainContent(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length].path)}
+          prevSrc={buildMainContent(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length])}
           onCloseRequest={() => setIsLightxoxOpen(false)}
           onMovePrevRequest={() => setItemIndex((itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length)}
           onMoveNextRequest={() => setItemIndex((itemIndex + 1) % directoryInfo.media.length)}
           mainCustomContent={buildCustomContent(directoryInfo.media[itemIndex], 'Current')}
-          prevCustomContent={buildCustomContent(directoryInfo.media[itemIndex], 'Prev')}
-          nextCustomContent={buildCustomContent(directoryInfo.media[itemIndex], 'Next')}
+          prevCustomContent={buildCustomContent(directoryInfo.media[(itemIndex + directoryInfo.media.length - 1) % directoryInfo.media.length], 'Prev')}
+          nextCustomContent={buildCustomContent(directoryInfo.media[(itemIndex + 1) % directoryInfo.media.length], 'Next')}
         />
       }
     </div>
