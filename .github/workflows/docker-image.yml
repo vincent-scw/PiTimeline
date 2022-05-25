@@ -26,9 +26,12 @@ jobs:
         node-version: 16
     - name: Install dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-
+    - name: Build and Test
+      run: |
+        dotnet test --configuration Release --no-restore
+        cd ./src/PiTimeline/ClientApp
+        npm test -- --coverage
+        
   deploy:
     needs: build
     if: ${{ github.ref_name == 'main' && github.event_name != 'pull_request' }}

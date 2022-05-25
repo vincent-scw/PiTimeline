@@ -37,6 +37,6 @@ const accountSlice = createSlice({
   }
 })
 
-export const selectAuthenticated = store => store.account.authenticated;
+export const selectAuthenticated = store => store.account?.authenticated;
 export const { logout } = accountSlice.actions;
 export const accountReducer = accountSlice.reducer;

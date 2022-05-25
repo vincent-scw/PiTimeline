@@ -93,6 +93,6 @@ export const timelineListSlice = createSlice<TimelineListInitialState, SliceCase
   }
 })
 
-export const selectTimelines = state => state.timelineList.timelines;
-export const selectTimelineListIsLoading = state => state.timelineList.status === 'loading';
+export const selectTimelines = state => state.timelineList?.timelines;
+export const selectTimelineListIsLoading = state => state.timelineList?.status === 'loading';
 export const timelineListReducer = timelineListSlice.reducer;
