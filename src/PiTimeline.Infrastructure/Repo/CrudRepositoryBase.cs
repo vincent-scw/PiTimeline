@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using PiTimeline.Domain.SeedWork;
-using System.Threading.Tasks;
 
-namespace PiTimeline.Infrastructure
+namespace PiTimeline.Infrastructure.Repo
 {
     public abstract class CrudRepositoryBase<T> : IRepository<T> 
         where T : Entity, IAggregateRoot

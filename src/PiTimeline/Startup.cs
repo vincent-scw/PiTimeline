@@ -18,7 +18,9 @@ using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
 using System.Text;
-using PiTimeline.Services;
+using PiTimeline.Infrastructure.Media;
+using PiTimeline.Infrastructure.Repo;
+using PiTimeline.Infrastructure.Services;
 
 namespace PiTimeline
 {
@@ -66,10 +68,10 @@ namespace PiTimeline
             services.AddScoped<ITimelineRepository, TimelineRepository>();
             services.AddScoped<IMomentRepository, MomentRepository>();
             services.AddScoped<TimelineQueries>();
-            services.AddScoped<DirectoryMetadataBuilder>();
+            services.AddScoped<IDirectoryMetadataBuilder, DirectoryMetadataBuilder>();
 
-            services.AddSingleton<MediaUtilities>();
-            services.AddSingleton<ThumbnailService>();
+            services.AddSingleton<IMediaHandler, MediaHandler>();
+            services.AddSingleton<IThumbnailService, ThumbnailService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -89,7 +91,6 @@ namespace PiTimeline
             }
             else
             {
-                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }

@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PiTimeline.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using PiTimeline.Domain;
 
-namespace PiTimeline.Infrastructure
+namespace PiTimeline.Infrastructure.Repo
 {
     public class MomentRepository : CrudRepositoryBase<Moment>, IMomentRepository
     {

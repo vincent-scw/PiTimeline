@@ -1,11 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using PiTimeline.Shared.Dtos;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using PiTimeline.Shared.Dtos;
 
-namespace PiTimeline.Infrastructure
+namespace PiTimeline.Infrastructure.Repo
 {
     public class TimelineQueries
     {

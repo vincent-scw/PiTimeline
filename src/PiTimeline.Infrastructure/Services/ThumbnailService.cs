@@ -5,17 +5,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PiTimeline.Infrastructure;
+using PiTimeline.Infrastructure.Media;
 using PiTimeline.Shared.Configuration;
-using PiTimeline.Shared.Utilities;
 
-namespace PiTimeline.Services
+namespace PiTimeline.Infrastructure.Services
 {
-    public class ThumbnailService
+    public class ThumbnailService : IThumbnailService
     {
+        private readonly IMediaHandler _mediaHandler;
         private readonly ILogger<ThumbnailService> _logger;
+
         private readonly GalleryConfiguration _configuration;
-        private readonly MediaUtilities _mediaUtilities;
         private readonly SemaphoreSlim _semaphoreSlim;
         private readonly string _allHandlingExtensions;
 
@@ -23,12 +23,12 @@ namespace PiTimeline.Services
 
         public ThumbnailService(
             IOptions<GalleryConfiguration> options,
-            MediaUtilities mediaUtilities,
+            IMediaHandler mediaHandler,
             ILogger<ThumbnailService> logger)
         {
             _logger = logger;
             _configuration = options.Value;
-            _mediaUtilities = mediaUtilities;
+            _mediaHandler = mediaHandler;
             _semaphoreSlim = new SemaphoreSlim(MaxConcurrentFactor);
 
             _allHandlingExtensions = $"{_configuration.PhotoExtensions}|{_configuration.VideoExtensions}";
@@ -111,7 +111,7 @@ namespace PiTimeline.Services
 
             try
             {
-                await _mediaUtilities.CreateThumbnailAsync(
+                await _mediaHandler.CreateThumbnailAsync(
                     input,
                     output,
                     resolutionFactor

@@ -16,15 +16,15 @@ using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
 using SkiaSharp;
 
-namespace PiTimeline.Infrastructure
+namespace PiTimeline.Infrastructure.Media
 {
-    public class MediaUtilities
+    public class MediaHandler : IMediaHandler
     {
         private readonly GalleryConfiguration _configuration;
-        private readonly ILogger<MediaUtilities> _logger;
-        public MediaUtilities(
+        private readonly ILogger<MediaHandler> _logger;
+        public MediaHandler(
             IOptions<GalleryConfiguration> options,
-            ILogger<MediaUtilities> logger)
+            ILogger<MediaHandler> logger)
         {
             _configuration = options.Value;
             _logger = logger;
