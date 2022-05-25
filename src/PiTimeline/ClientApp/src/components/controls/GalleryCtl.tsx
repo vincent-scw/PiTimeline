@@ -47,7 +47,6 @@ export const GalleryCtl: React.FC<GalleryCtlProps> = (props) => {
   }
 
   const buildMainContent = (media: Media) => {
-    console.log(media)
     return buildImgUrl(media.path, ThumbnailSize.xlarge)
   }
 
