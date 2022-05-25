@@ -1,33 +1,35 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using PiTimeline.Shared.Configuration;
-using PiTimeline.Shared.Utilities;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PiTimeline.Infrastructure;
+using PiTimeline.Shared.Configuration;
+using PiTimeline.Shared.Utilities;
 
-namespace PiTimeline.Background
+namespace PiTimeline.Services
 {
     public class ThumbnailService
     {
         private readonly ILogger<ThumbnailService> _logger;
         private readonly GalleryConfiguration _configuration;
+        private readonly MediaUtilities _mediaUtilities;
+        private readonly SemaphoreSlim _semaphoreSlim;
         private readonly string _allHandlingExtensions;
 
-        private readonly PhotoThumbnailService _photoService;
-        private readonly VideoThumbnailService _videoService;
+        protected int MaxConcurrentFactor => 5;
 
         public ThumbnailService(
             IOptions<GalleryConfiguration> options,
-            PhotoThumbnailService photoService,
-            VideoThumbnailService videoService,
+            MediaUtilities mediaUtilities,
             ILogger<ThumbnailService> logger)
         {
             _logger = logger;
             _configuration = options.Value;
-            _photoService = photoService;
-            _videoService = videoService;
+            _mediaUtilities = mediaUtilities;
+            _semaphoreSlim = new SemaphoreSlim(MaxConcurrentFactor);
 
             _allHandlingExtensions = $"{_configuration.PhotoExtensions}|{_configuration.VideoExtensions}";
         }
@@ -47,7 +49,7 @@ namespace PiTimeline.Background
                 return output;
             }
 
-            await _photoService.EnqueueAndWaitAsync(origin, output, resolutionFactor);
+            await this.EnqueueAndWaitAsync(origin, output, resolutionFactor);
            
             return output;
         }
@@ -101,6 +103,28 @@ namespace PiTimeline.Background
             }
 
             return null;
+        }
+        
+        private async Task EnqueueAndWaitAsync(string input, string output, int resolutionFactor)
+        {
+            await _semaphoreSlim.WaitAsync();
+
+            try
+            {
+                await _mediaUtilities.CreateThumbnailAsync(
+                    input,
+                    output,
+                    resolutionFactor
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            finally
+            {
+                _semaphoreSlim.Release();
+            }
         }
     }
 }

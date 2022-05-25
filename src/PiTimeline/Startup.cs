@@ -12,13 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using PiTimeline.Background;
 using PiTimeline.Controllers;
 using PiTimeline.Domain;
 using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
 using System.Text;
+using PiTimeline.Services;
 
 namespace PiTimeline
 {
@@ -68,10 +68,8 @@ namespace PiTimeline
             services.AddScoped<TimelineQueries>();
             services.AddScoped<DirectoryMetadataBuilder>();
 
-            services.AddSingleton<Shared.Utilities.MediaUtilities>();
+            services.AddSingleton<MediaUtilities>();
             services.AddSingleton<ThumbnailService>();
-            services.AddSingleton<PhotoThumbnailService>();
-            services.AddSingleton<VideoThumbnailService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

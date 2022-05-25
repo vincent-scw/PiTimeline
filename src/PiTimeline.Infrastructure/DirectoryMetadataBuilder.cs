@@ -10,11 +10,11 @@ namespace PiTimeline.Infrastructure
     public class DirectoryMetadataBuilder
     {
         private readonly GalleryConfiguration _configuration;
-        private readonly MediaUtilities _mediaUtilities;
+        private readonly MediaHandler _mediaUtilities;
         private readonly string _allHandlingExtensions;
 
         public DirectoryMetadataBuilder(
-            MediaUtilities mediaUtilities,
+            MediaHandler mediaUtilities,
             IOptions<GalleryConfiguration> options)
         {
             if (!Directory.Exists(options.Value.PhotoRoot))

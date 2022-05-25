@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using PiTimeline.Background;
 using PiTimeline.Infrastructure;
+using PiTimeline.Services;
 using PiTimeline.Shared.Configuration;
-using PiTimeline.Shared.Utilities;
+using PiTimeline.Shared.Dtos;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -18,13 +18,13 @@ namespace PiTimeline.Controllers
         private readonly GalleryConfiguration _configuration;
         private readonly DirectoryMetadataBuilder _indexBuilder;
         private readonly ThumbnailService _thumbnailService;
-        private readonly MediaUtilities _mediaUtilities;
+        private readonly MediaHandler _mediaUtilities;
 
         public GalleryController(
             IOptions<GalleryConfiguration> options,
             DirectoryMetadataBuilder indexBuilder,
             ThumbnailService thumbnailService,
-            MediaUtilities mediaUtilities)
+            MediaHandler mediaUtilities)
         {
             _configuration = options.Value;
             _indexBuilder = indexBuilder;
