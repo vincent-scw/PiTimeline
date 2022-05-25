@@ -10,7 +10,7 @@ it('renders correctly', () => {
     title: 'timeline',
     description: 'desc',
     coverPatternUrl: 'http://mock',
-    since: new Date(2022, 5, 1) // 01 Jun 2022, month is zero-based
+    since: new Date(2022, 5, 1, 0, 0, 0, 0) // 01 Jun 2022, month is zero-based
   };
   const delFunc = jest.fn();
   const wrapper = mount(<MemoryRouter><TimelineCard data={timeline} deleteTimeline={delFunc} /></MemoryRouter>);
