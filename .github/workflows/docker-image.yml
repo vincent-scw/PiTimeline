@@ -30,6 +30,7 @@ jobs:
       run: |
         dotnet test --configuration Release --no-restore
         cd ./src/PiTimeline/ClientApp
+        npm install
         npm test -- --coverage
         
   deploy:
