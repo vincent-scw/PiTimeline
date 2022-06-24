@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PiTimeline.Domain;
-using PiTimeline.Domain.SeedWork;
-using System.Threading.Tasks;
+﻿using PiTimeline.Domain;
 
-namespace PiTimeline.Infrastructure
+namespace PiTimeline.Infrastructure.Repo
 {
     public class TimelineRepository : CrudRepositoryBase<Timeline>, ITimelineRepository
     {

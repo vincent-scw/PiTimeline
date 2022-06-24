@@ -1,13 +1,14 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using PiTimeline.Domain;
-using System;
+﻿using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using PiTimeline.Domain;
+using PiTimeline.Infrastructure.Extensions;
 
-namespace PiTimeline.Infrastructure
+namespace PiTimeline.Infrastructure.Repo
 {
     public class MyDbContext : DbContext
     {

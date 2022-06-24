@@ -115,7 +115,7 @@ export const timelineSlice = createSlice<TimelineInitialState, SliceCaseReducers
   }
 })
 
-export const selectTimeline = state => state.timeline.details;
-export const selectGroupedMoments = state => state.timeline.groupedMoments;
+export const selectTimeline = state => state.timeline?.details;
+export const selectGroupedMoments = state => state.timeline?.groupedMoments;
 export const selectTimelineIsLoading = state => state.timeline.status === 'loading';
 export const timelineReducer = timelineSlice.reducer;

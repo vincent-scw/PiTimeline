@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using PiTimeline.Background;
-using PiTimeline.Infrastructure;
+using PiTimeline.Infrastructure.Media;
 using PiTimeline.Shared.Configuration;
-using PiTimeline.Shared.Utilities;
+using PiTimeline.Shared.Dtos;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using PiTimeline.Infrastructure.Services;
 
 namespace PiTimeline.Controllers
 {
@@ -16,20 +16,20 @@ namespace PiTimeline.Controllers
     public class GalleryController : ControllerBase
     {
         private readonly GalleryConfiguration _configuration;
-        private readonly DirectoryMetadataBuilder _indexBuilder;
-        private readonly ThumbnailService _thumbnailService;
-        private readonly MediaUtilities _mediaUtilities;
+        private readonly IDirectoryMetadataBuilder _indexBuilder;
+        private readonly IThumbnailService _thumbnailService;
+        private readonly IMediaHandler _mediaHandler;
 
         public GalleryController(
             IOptions<GalleryConfiguration> options,
-            DirectoryMetadataBuilder indexBuilder,
-            ThumbnailService thumbnailService,
-            MediaUtilities mediaUtilities)
+            IDirectoryMetadataBuilder indexBuilder,
+            IThumbnailService thumbnailService,
+            IMediaHandler mediaHandler)
         {
             _configuration = options.Value;
             _indexBuilder = indexBuilder;
             _thumbnailService = thumbnailService;
-            _mediaUtilities = mediaUtilities;
+            _mediaHandler = mediaHandler;
         }
 
         [Authorize]
@@ -62,7 +62,7 @@ namespace PiTimeline.Controllers
 
             if (System.IO.File.Exists(absolutePath))
             {
-                var mediaType = _mediaUtilities.GetMediaType(absolutePath);
+                var mediaType = _mediaHandler.GetMediaType(absolutePath);
                 if (mediaType == MediaType.Video && !thumbnail)
                 {
                     var video = System.IO.File.OpenRead(absolutePath);

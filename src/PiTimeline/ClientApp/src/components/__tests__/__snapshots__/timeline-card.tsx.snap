@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`timeline-card renders correctly 1`] = `
+<TimelineCard
+  data={
+    Object {
+      "coverPatternUrl": "http://mock",
+      "description": "desc",
+      "id": "id",
+      "since": 2022-06-01T00:00:00.000Z,
+      "title": "timeline",
+    }
+  }
+  deleteTimeline={[MockFunction]}
+>
+  <div
+    className="card timeline-card"
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+  >
+    <div
+      className="card-image"
+    >
+      <figure
+        className="image"
+      >
+        <img
+          alt=""
+          className="timeline-default-cover"
+          src="http://mock"
+        />
+      </figure>
+    </div>
+    <div
+      className="card-content"
+    >
+      <div
+        className="content"
+      >
+        <div
+          className="title is-4"
+        >
+          <Link
+            to="/t/id"
+          >
+            <a
+              href="/t/id"
+              onClick={[Function]}
+            >
+              timeline
+            </a>
+          </Link>
+        </div>
+        <div
+          className="level"
+        >
+          <div
+            className="level-left"
+          >
+            <div
+              className="level-items tags has-addons"
+            >
+              <span
+                className="tag is-dark"
+              >
+                Since
+              </span>
+              <span
+                className="tag is-info"
+              >
+                <time>
+                  01 Jun 2022
+                </time>
+              </span>
+            </div>
+          </div>
+          <div
+            className="level-right"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</TimelineCard>
+`;

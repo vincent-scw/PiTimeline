@@ -32,6 +32,6 @@ export const gallerySlice = createSlice({
   }
 })
 
-export const selectDirectoryInfo = state => state.gallery.directoryInfo;
-export const selectLatestDir = state => state.gallery.latestDir;
+export const selectDirectoryInfo = state => state.gallery?.directoryInfo;
+export const selectLatestDir = state => state.gallery?.latestDir;
 export const galleryReducer = gallerySlice.reducer;

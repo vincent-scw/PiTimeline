@@ -1,20 +1,19 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.IO;
+using System.Linq;
+using Microsoft.Extensions.Options;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
-using PiTimeline.Shared.Utilities;
-using System.IO;
-using System.Linq;
 
-namespace PiTimeline.Infrastructure
+namespace PiTimeline.Infrastructure.Media
 {
-    public class DirectoryMetadataBuilder
+    public class DirectoryMetadataBuilder : IDirectoryMetadataBuilder
     {
         private readonly GalleryConfiguration _configuration;
-        private readonly MediaUtilities _mediaUtilities;
+        private readonly IMediaHandler _mediaUtilities;
         private readonly string _allHandlingExtensions;
 
         public DirectoryMetadataBuilder(
-            MediaUtilities mediaUtilities,
+            IMediaHandler mediaUtilities,
             IOptions<GalleryConfiguration> options)
         {
             if (!Directory.Exists(options.Value.PhotoRoot))
@@ -52,14 +51,6 @@ namespace PiTimeline.Infrastructure
             };
 
             return dto;
-        }
-
-        private string ToLocalPath(string absolutePath)
-        {
-            var relative = Path.GetRelativePath(_configuration.PhotoRoot, absolutePath);
-            if (relative == ".")
-                relative = string.Empty;
-            return Path.Combine(_configuration.ThumbnailRoot, relative);
         }
     }
 }

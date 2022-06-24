@@ -12,13 +12,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using PiTimeline.Background;
 using PiTimeline.Controllers;
 using PiTimeline.Domain;
 using PiTimeline.Infrastructure;
 using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
 using System.Text;
+using PiTimeline.Infrastructure.Media;
+using PiTimeline.Infrastructure.Repo;
+using PiTimeline.Infrastructure.Services;
 
 namespace PiTimeline
 {
@@ -66,12 +68,10 @@ namespace PiTimeline
             services.AddScoped<ITimelineRepository, TimelineRepository>();
             services.AddScoped<IMomentRepository, MomentRepository>();
             services.AddScoped<TimelineQueries>();
-            services.AddScoped<DirectoryMetadataBuilder>();
+            services.AddScoped<IDirectoryMetadataBuilder, DirectoryMetadataBuilder>();
 
-            services.AddSingleton<Shared.Utilities.MediaUtilities>();
-            services.AddSingleton<ThumbnailService>();
-            services.AddSingleton<PhotoThumbnailService>();
-            services.AddSingleton<VideoThumbnailService>();
+            services.AddSingleton<IMediaHandler, MediaHandler>();
+            services.AddSingleton<IThumbnailService, ThumbnailService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -81,7 +81,7 @@ namespace PiTimeline
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MyDbContext dbContext)
         {
             if (env.IsDevelopment())
             {
@@ -91,10 +91,11 @@ namespace PiTimeline
             }
             else
             {
-                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            dbContext.Database.Migrate();
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();

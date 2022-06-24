@@ -1,4 +1,9 @@
-﻿using FFMpegCore;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using FFMpegCore;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using MetadataExtractor.Formats.FileSystem;
@@ -11,21 +16,15 @@ using PiTimeline.Shared.Configuration;
 using PiTimeline.Shared.Dtos;
 using SkiaSharp;
 
-namespace PiTimeline.Shared.Utilities
+namespace PiTimeline.Infrastructure.Media
 {
-    public enum MediaType
-    {
-        Photo,
-        Video
-    }
-
-    public class MediaUtilities
+    public class MediaHandler : IMediaHandler
     {
         private readonly GalleryConfiguration _configuration;
-        private readonly ILogger<MediaUtilities> _logger;
-        public MediaUtilities(
+        private readonly ILogger<MediaHandler> _logger;
+        public MediaHandler(
             IOptions<GalleryConfiguration> options,
-            ILogger<MediaUtilities> logger)
+            ILogger<MediaHandler> logger)
         {
             _configuration = options.Value;
             _logger = logger;
@@ -165,8 +164,6 @@ namespace PiTimeline.Shared.Utilities
                         meta.Size.Height = tagHeight;
                     }
 
-                    break;
-                default:
                     break;
             }
 

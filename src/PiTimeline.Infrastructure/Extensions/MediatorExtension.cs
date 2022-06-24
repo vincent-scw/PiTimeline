@@ -1,9 +1,10 @@
-﻿using MediatR;
-using PiTimeline.Domain.SeedWork;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
+using PiTimeline.Domain.SeedWork;
+using PiTimeline.Infrastructure.Repo;
 
-namespace PiTimeline.Infrastructure
+namespace PiTimeline.Infrastructure.Extensions
 {
     static class MediatorExtension
     {

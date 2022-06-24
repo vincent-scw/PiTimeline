@@ -1,7 +1,11 @@
-﻿using PiTimeline.Shared.Utilities;
-
-namespace PiTimeline.Shared.Dtos
+﻿namespace PiTimeline.Shared.Dtos
 {
+    public enum MediaType
+    {
+        Photo,
+        Video
+    }
+
     public class MediaDto
     {
         public string? Name { get; set; }
