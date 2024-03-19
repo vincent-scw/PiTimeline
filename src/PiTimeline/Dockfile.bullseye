@@ -1,11 +1,11 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim-arm32v7 AS base
 EXPOSE 80
 EXPOSE 443
 
 ARG source
 
 RUN apt-get update
-RUN apt-get upgrade -y
+RUN apt-get upgrade
 RUN apt-get install -y --no-install-recommends ffmpeg libgdiplus 
 	
 WORKDIR /app
