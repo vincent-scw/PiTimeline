@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim-arm32v7 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 EXPOSE 80
 EXPOSE 443
 
