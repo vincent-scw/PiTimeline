@@ -67,7 +67,6 @@ jobs:
       with:
         context: .
         file: ./src/PiTimeline/Dockerfile 
-        platforms: linux/arm/v7
         push: true
         tags: edentidus/pitimeline:${{env.VERSION_NUMBER}},edentidus/pitimeline:latest
         build-args: source=./publish
